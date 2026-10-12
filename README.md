@@ -19,7 +19,7 @@ A pixel-art medieval story game. Your father is dead and the throne of **Emberfa
 | Path | What it is |
 |---|---|
 | `index.html` | The whole game: one file of HTML, CSS and JavaScript. All art is drawn in code. |
-| `fonts/` | Pixelify Sans (SIL Open Font License, see `fonts/OFL.txt`), bundled so the game works offline. |
+| `fonts/` | Cinzel (names, headings), Alegreya (story text, numbers) and Pixelify Sans (logo, top bar), all SIL Open Font License (see `fonts/OFL.txt`), bundled so the game works offline. |
 | `app/` | Capacitor wrapper for the iPhone and Android apps (same setup as TypeMonkey). |
 | `app/resources/` | App icon, adaptive-icon layers and splash screens. |
 | `app/store/` | App Store listing text (`APP_STORE.md`) and 1206×2622 screenshots. |
