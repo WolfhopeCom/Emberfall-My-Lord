@@ -15,17 +15,18 @@
 | Screenshots | `screenshots/` (1206×2622, iPhone 6.9") |
 
 ## Promotional text (170)
-The throne of Emberfall is yours. Nine days. Fourteen voices at your door. Thirteen endings. Will your city stand when the Baron's banners reach the river?
+The throne of Emberfall is yours. A year of seasons, fourteen voices at your door, thirteen endings. Will your city stand when the Baron's banners reach the river?
 
 ## Description
 Your father is dead, and the throne of Emberfall is yours.
 
-Every day, petitioners walk the red carpet to your throne. A miller begging grain for a starving village. Your wife, with a marriage offer for your daughter. A hedge-witch from the fen with a bargain she won't name. A smiling envoy from Baron Vex, who wants your city.
+Month after month, petitioners walk the red carpet to your throne. A miller begging grain for a starving village. Your wife, with a marriage offer for your daughter. A hedge-witch from the fen with a bargain she won't name. A smiling envoy from Baron Vex, who wants your city.
 
-Every answer costs something. Keep your gold, grain, army and the favor of your people alive for nine days, because on the ninth, Vex's banners appear on the river.
+Every answer costs something. Keep your gold, grain, army and the favor of your people alive through spring planting and summer heat, and raise granaries, markets and walls with your master mason, because in high summer, Vex's banners appear on the river.
 
 • A hand-crafted story with 13 endings: victory, exile, ruin, a crown, and stranger fates
-• Choices that come back: alliances, betrayals, curses and secrets carry across days
+• Choices that come back: alliances, betrayals, curses and secrets carry across the months
+• A living calendar: spring rain, summer sun, autumn leaves and winter snow, plus buildings to raise
 • 14 characters with animated pixel-art portraits and their own voices
 • A living throne room: torchlight, drifting embers, guards, and the castle hound
 • An original medieval soundtrack that shifts from lute to night bells to war drums
@@ -41,4 +42,4 @@ kingdom,medieval,choices,story,throne,king,lord,pixel,narrative,castle,ruler,fan
 The throne of Emberfall awaits.
 
 ## Review notes
-No account or login. The game is fully offline. Tap New Reign, then pick an answer for each visitor. A full playthrough takes about 15 minutes.
+No account or login. The game is fully offline. Tap New Reign, then pick an answer for each visitor. Chapter One (March to July) takes about 30 minutes.

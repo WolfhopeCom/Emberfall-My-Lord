@@ -60,9 +60,9 @@ function crest(x, sky){
   await s.locator('#choices .ch:not([disabled])').first().click(); await s.waitForTimeout(900);
   await s.screenshot({ path: path.join(SHOTS, '03-choice.png') });
   // jump to the witch on day 3 for a dramatic portrait
-  await s.evaluate(() => { finishType(); SC.walker = null; S.day = 3; buildDay(); next(); });
+  await s.evaluate(() => { finishType(); SC.walker = null; S.month = 3; buildMonth(); next(); });
   await waitChoices(); await s.screenshot({ path: path.join(SHOTS, '04-witch.png') });
-  await s.evaluate(() => { S.day = 8; S.f.witchFire = 1; S.f.plan_wall = 1; S.men = 40; S.day = 9; });
+  await s.evaluate(() => { S.month = 5; S.f.plan_wall = 1; S.men = 40; });
   await s.evaluate(() => siege()); await s.waitForTimeout(3800);
   await s.screenshot({ path: path.join(SHOTS, '05-siege.png') });
   await s.evaluate(() => ending('crowned')); await s.waitForTimeout(2500);

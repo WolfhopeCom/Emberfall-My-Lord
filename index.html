@@ -75,10 +75,15 @@ img.px{image-rendering:pixelated}
 .box ul{text-align:left;padding-left:18px;font-size:16px;line-height:1.45}
 .elist div{padding:7px 4px;border-bottom:1px dashed #4a3a50;font-size:16px;text-align:left}
 .elist .lock{opacity:.4}
+.bld{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;max-width:400px;background:#1e1424;border:2px solid #000;box-shadow:inset 0 0 0 1px #5a4020;padding:8px 10px;margin:4px 0;text-align:left}
+.bld b{color:#f2c14e;font-size:16px}.bld small{display:block;color:#b8a488;font-size:13px}
+.bld button{font-family:inherit;font-size:14px;font-weight:700;background:#a8322a;color:#fff4dc;border:2px solid #000;padding:6px 10px;cursor:pointer;white-space:nowrap}
+.bld button:disabled{opacity:.4}.bld.done{opacity:.55}
 .siege p{opacity:0;animation:appear 1s forwards}
 @keyframes appear{to{opacity:1}}
 #card{position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(5,3,8,.85);color:var(--gold);pointer-events:none}
 #card b{font-size:54px;text-shadow:4px 4px 0 #3a1408;animation:pop .6s}
+#pips{display:flex;gap:4px;margin-top:16px}#pips i{width:14px;height:14px;border:2px solid #000;display:block}#pips i.now{outline:2px solid #fff4dc;transform:scale(1.25)}#pips i.past{opacity:.35}
 #card span{color:#f4e2c0;font-size:16px;letter-spacing:4px;margin-top:6px}
 @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}}
 @keyframes fade{from{opacity:0}}
@@ -96,7 +101,7 @@ img.px{image-rendering:pixelated}
   <div id="txt"></div>
   <div id="choices"></div>
  </div>
- <div id="card"><b></b><span></span></div>
+ <div id="card"><b></b><span></span><div id="pips"></div></div>
  <div id="overlay"></div>
  <div id="modal"></div>
 </div>
@@ -126,6 +131,7 @@ const C={
  widow:{n:"Widow Agna",r:"A villager of Thornby",skin:"#a87048",hair:"#999999",robe:"#5a4a44",acc:"hood",dress:1,mood:"sad",voice:280},
  herald:{n:"Royal Herald",r:"Voice of King Osmund",skin:"#8a5a3a",hair:"#1a120a",robe:"#2a3a8a",trim:"#e0b040",acc:"hat",mood:"neutral",voice:260},
  eastlord:{n:"Lord Harwin",r:"Lord of the Eastern Marches",skin:"#e0b48a",hair:"#dddddd",robe:"#2a4a6a",acc:"circlet",beard:1,mood:"stern",voice:145},
+ mason:{n:"Hildra",r:"Master mason",skin:"#c8906a",hair:"#b84a20",robe:"#7a6a50",trim:"#4a3a2a",mood:"kind",blush:1,voice:235},
  lord:{skin:"#ecc49c",hair:"#5a3418",robe:"#6a1f2a",trim:"#e0b040",crown:1,cape:"#4a1220"},
  guard:{skin:"#d8a880",hair:"#3a2a1a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",trim:"#3a3030"},
  guard2:{skin:"#8a5a3a",hair:"#1a1a1a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",trim:"#3a3030"},
@@ -336,18 +342,26 @@ function banner(ctx,x,y,w,h){ctx.fillStyle="#c99a3a";ctx.fillRect(x-2,y,w+4,2);c
  ctx.fillStyle="#a83040";ctx.fillRect(x+w-1,y+2,1,h);ctx.fillStyle="#c99a3a";ctx.fillRect(x,y+4,w,1);ctx.fillRect(x,y+h-1,w,1);
  const half=w/2;for(let i=0;i<half;i++){ctx.fillStyle=i===0?"#c99a3a":"#8c1f2c";ctx.fillRect(x,y+2+h+i,half-i,1);ctx.fillRect(x+half+i,y+2+h+i,half-i,1)}
  ctx.drawImage(EMBLEM,Math.round(x+w/2-3.5),y+Math.round(h/2-3))}
-function buildBG(phase){
+const SEASKY={spring:["#8ccbe8","#dff2e6"],summer:["#4fa0ec","#c8e6ff"],autumn:["#e49a5c","#f8d8a0"],winter:["#a4b4cc","#e8eef6"]},LAND={spring:"#5aa04a",summer:"#3e8a34",autumn:"#b8702a",winter:"#eef2f8"};
+function buildBG(phase,season="spring"){
  const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");seed=11;
  x.fillStyle="#1d1622";x.fillRect(0,0,W,86);
  const bp=["#2f2636","#2b2232","#33293b","#2d2434"];
  for(let row=0;row<15;row++){const y=row*6,off=row%2?6:0;for(let bx=-off;bx<W;bx+=12){x.fillStyle=bp[Math.floor(rnd()*4)];x.fillRect(bx+1,y+1,10,4);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(bx+1,y+1,10,1)}}
  const gr=x.createLinearGradient(0,0,0,70);gr.addColorStop(0,"rgba(0,0,0,.5)");gr.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gr;x.fillRect(0,0,W,70);
- const sky={day:["#8fc3ea","#d8eef8"],dusk:["#d0503a","#f2a860"],night:["#141c44","#2c3a74"]}[phase];
+ const sky=phase==="day"?SEASKY[season]:{dusk:["#d0503a","#f2a860"],night:["#141c44","#2c3a74"]}[phase];
  for(const wx of[50,104]){arch(x,wx-2,12,18,40,"#4e4458");arch(x,wx,14,14,36,t=>lerpCol(sky[0],sky[1],t));
   if(phase==="night"){x.fillStyle="#fff";x.fillRect(wx+3,20,1,1);x.fillRect(wx+10,26,1,1);x.fillRect(wx+5,32,1,1);x.fillStyle="#f0ead0";x.fillRect(wx+8,18,3,3)}
-  if(phase==="day"){x.fillStyle="rgba(255,255,255,.6)";x.fillRect(wx+2,22,4,1);x.fillRect(wx+3,21,2,1)}
-  x.fillStyle="#2a2232";x.fillRect(wx+6,14,2,36);x.fillRect(wx,31,14,1);x.fillStyle="#5c5266";x.fillRect(wx-3,50,20,2)}
+  if(phase==="day"&&season!=="winter"){x.fillStyle="rgba(255,255,255,.6)";x.fillRect(wx+2,22,4,1);x.fillRect(wx+3,21,2,1)}
+  if(phase!=="night"){x.fillStyle=LAND[season];x.fillRect(wx,44,14,6);x.fillRect(wx+2,43,7,1);x.fillStyle=shade(LAND[season],-.25);x.fillRect(wx+8,46,6,4);
+   if(season!=="winter"){x.fillStyle=season==="autumn"?"#c8481a":"#2a6a24";x.fillRect(wx+10,40,3,3);x.fillStyle="#4a3020";x.fillRect(wx+11,43,1,2)}}
+  x.fillStyle="#2a2232";x.fillRect(wx+6,14,2,36);x.fillRect(wx,31,14,1);x.fillStyle="#5c5266";x.fillRect(wx-3,50,20,2);
+  if(season==="winter"){x.fillStyle="#eef2f8";x.fillRect(wx-3,49,20,1);x.fillStyle="#cfe0f0";for(let i=0;i<14;i+=3)x.fillRect(wx+i,52,1,1+(i%2))}}
  banner(x,78,2,12,32);banner(x,167,0,16,24);
+ if(season==="spring"){x.fillStyle="#7a4a2a";x.fillRect(37,80,6,5);x.fillStyle="#3e8a34";x.fillRect(36,76,8,4);x.fillStyle="#f08ab0";x.fillRect(37,75,2,2);x.fillRect(41,76,2,2);x.fillStyle="#fff4a0";x.fillRect(39,74,2,2)}
+ if(season==="summer"){x.fillStyle="#7a4a2a";x.fillRect(37,80,6,5);x.fillStyle="#3e8a34";x.fillRect(39,71,2,9);x.fillStyle="#f2c14e";x.fillRect(37,68,6,4);x.fillStyle="#6a3a1a";x.fillRect(39,69,2,2)}
+ if(season==="autumn"){x.fillStyle="#e07a20";x.fillRect(35,80,6,5);x.fillRect(42,81,5,4);x.fillStyle="#b85a10";x.fillRect(37,80,1,5);x.fillRect(44,81,1,4);x.fillStyle="#3e6a24";x.fillRect(37,79,2,1);x.fillRect(44,80,1,1);x.fillStyle="#d8b050";x.fillRect(47,72,3,13);x.fillStyle="#a88030";x.fillRect(47,78,3,1)}
+ if(season==="winter"){x.fillStyle="#6a4428";x.fillRect(35,81,12,2);x.fillRect(36,79,10,2);x.fillRect(38,77,6,2);x.fillStyle="#8a6040";x.fillRect(35,81,1,2);x.fillRect(36,79,1,2);x.fillRect(38,77,1,2)}
  x.fillStyle="#4a3f54";x.fillRect(0,82,W,4);x.fillStyle="#5e5268";x.fillRect(0,82,W,1);x.fillStyle="#251d2b";x.fillRect(0,85,W,1);
  const rows=[86,91,97,104,112,121];
  for(let i=0;i<rows.length-1;i++){const y=rows[i],hh=rows[i+1]-y,tw=12+i*3,off=i%2?tw/2:0;
@@ -362,7 +376,7 @@ function buildBG(phase){
  x.fillStyle="#c99a3a";x.fillRect(158,71,28,4);x.fillStyle="#e8c860";x.fillRect(158,71,28,1);x.fillStyle="#8a6420";x.fillRect(158,75,28,9);x.fillStyle="#6a4a18";x.fillRect(160,78,2,6);x.fillRect(182,78,2,6);
  return c}
 const VIG=(()=>{const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");const r=x.createRadialGradient(W/2,H*.55,40,W/2,H*.55,130);r.addColorStop(0,"rgba(0,0,0,0)");r.addColorStop(1,"rgba(0,0,0,.6)");x.fillStyle=r;x.fillRect(0,0,W,H);return c})();
-function setPhase(p){if(SC.phase!==p||!SC.BG){SC.phase=p;SC.BG=buildBG(p)}}
+function setPhase(p,season){season=season||SC.season||"spring";if(SC.phase!==p||SC.season!==season||!SC.BG){SC.phase=p;SC.season=season;SC.BG=buildBG(p,season)}}
 function part(o){SC.parts.push(Object.assign({vx:0,vy:0,life:40,max:40,sz:1,grav:0},o))}
 const bobOf=k=>((SC.t+k*23)%80)<40?0:1, blinkOf=k=>((SC.t+k*97)%230)<6;
 function drawDoor(x){
@@ -380,7 +394,11 @@ function drawScene(){
  x.drawImage(SC.BG,0,0);
  if(SC.phase!=="night"){x.fillStyle=SC.phase==="dusk"?"rgba(255,140,80,.07)":"rgba(255,240,200,.07)";
   for(const wx of[50,104]){x.beginPath();x.moveTo(wx,50);x.lineTo(wx+14,50);x.lineTo(wx+40,118);x.lineTo(wx+18,118);x.closePath();x.fill()}
-  if(SC.t%14===0)part({x:50+Math.random()*80,y:60+Math.random()*50,vx:(Math.random()-.5)*.1,vy:-.05,life:160,max:160,col:"#fff4d0",dust:1})}
+  if(SC.t%14===0)part({x:50+Math.random()*80,y:60+Math.random()*50,vx:(Math.random()-.5)*.1,vy:-.05,life:160,max:160,col:"#fff4d0",dust:1});
+  const ss=SC.season,wx=Math.random()<.5?50:104;
+  if(ss==="winter"&&SC.t%6===0)part({x:wx+Math.random()*14,y:14,vx:(Math.random()-.5)*.15,vy:.22,life:200,max:200,col:"#ffffff",win:1});
+  if(ss==="autumn"&&SC.t%22===0)part({x:wx+Math.random()*14,y:14,vx:.15,vy:.18,life:200,max:200,col:Math.random()<.5?"#e07a20":"#c8401a",win:1,leaf:1});
+  if(ss==="spring"&&SC.t%3===0&&Math.floor(SC.t/900)%2===0)part({x:wx+Math.random()*14,y:14,vx:-.2,vy:1.6,life:40,max:40,col:"#cfe4f4",win:1})}
  drawDoor(x);
  for(const[tx,ty]of TORCH){x.fillStyle="#3a3030";x.fillRect(tx,ty,2,5);x.fillStyle="#5a4a3a";x.fillRect(tx-1,ty-1,4,2);
   const f=Math.floor(SC.t/4+tx)%3;x.fillStyle="#f08020";x.fillRect(tx-1,ty-5-f%2,4,5);x.fillStyle="#ffd060";x.fillRect(tx,ty-4-f,2,4);x.fillStyle="#fff4c0";x.fillRect(tx,ty-2,1,2);
@@ -405,7 +423,8 @@ function drawScene(){
   const im=EMO[e.type];x.drawImage(im,by+Math.round((11-im.width)/2),yy+Math.round((9-im.height)/2));x.globalAlpha=1;if(e.t>100)SC.emote=null}
  for(let i=SC.parts.length-1;i>=0;i--){const p=SC.parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=p.grav;p.life--;
   if(p.dust)p.vx+=(Math.random()-.5)*.02;
-  if(p.life<=0){SC.parts.splice(i,1);continue}
+  if(p.leaf)p.vx=Math.sin((SC.t+i*13)/18)*.25;
+  if(p.life<=0||(p.win&&p.y>43)){SC.parts.splice(i,1);continue}
   x.globalAlpha=p.dust?Math.sin(Math.PI*p.life/p.max)*.6:Math.min(1,p.life/p.max*1.5);x.fillStyle=p.col;x.fillRect(Math.round(p.x),Math.round(p.y),p.sz,p.sz)}
  x.globalAlpha=1;
  if(SC.phase==="night"){x.fillStyle="rgba(8,12,40,.5)";x.fillRect(0,0,W,H)}
@@ -435,7 +454,10 @@ const CM={
  night:{sky:["#05081a","#0a1026","#0e1632","#141e40","#1a284e","#22325c"],m1:"#121a34",m2:"#0c1228",hill:"#080c1c",cst:"#060814",riv:"#0c1430",win:"#ffcf6a",stars:1,moon:1,emb:.3},
  dawn:{sky:["#3a5aa0","#5a7cc0","#8ca4d4","#d4b0b0","#f2c894","#fae2a8"],m1:"#6a7aa8",m2:"#4a5a88",hill:"#2e3a5a",cst:"#1e2640",riv:"#6a8ac0",win:"#ffe6a0",sun:1,birds:1,emb:0},
  burn:{sky:["#140404","#2e0808","#5a1010","#8a2210","#be4416","#e47424"],m1:"#2a0a0a",m2:"#1c0606",hill:"#0e0404",cst:"#0a0303",riv:"#3a0c08",win:"#ff7a30",fire:1,emb:4},
- snow:{sky:["#1a2030","#262e40","#343c50","#444c60","#545c70","#646c80"],m1:"#5a6274",m2:"#3a4254",hill:"#c8d0dc",cst:"#1a1e28",riv:"#2a3240",win:"#c8a060",snow:1,emb:0},
+ spring:{sky:["#2a3a6a","#4a5a8a","#7a7aa0","#c89aa0","#e8b8a0","#f8d8b0"],m1:"#5a6a8a",m2:"#3a4a6a",hill:"#2a4a2a",cst:"#141a24",riv:"#3a5a8a",win:"#ffd890",trees:"#3a6a2a",birds:1,emb:0},
+ summer:{sky:["#1a3a7a","#2a5aa0","#4a80c0","#80b0e0","#c0d8f0","#f0e8c0"],m1:"#5a7aa8",m2:"#3a5a88",hill:"#2a5a2a",cst:"#18202c",riv:"#4a7ab8",win:"#ffe6a0",trees:"#2a5a20",sun:1,birds:1,emb:0},
+ autumn:{sky:["#2a1a3a","#5a2a4a","#9a3a3a","#d06a3a","#f0a050","#f8d080"],m1:"#6a3a4a",m2:"#4a2a3a",hill:"#3a2a14",cst:"#160c10",riv:"#5a3a4a",win:"#ffc070",trees:"#b05a1a",leaves:1,emb:.4},
+ snow:{trees:"#e8eef4",sky:["#1a2030","#262e40","#343c50","#444c60","#545c70","#646c80"],m1:"#5a6274",m2:"#3a4254",hill:"#c8d0dc",cst:"#1a1e28",riv:"#2a3240",win:"#c8a060",snow:1,emb:0},
 };
 const CS={mode:"title",t:0,parts:[]};
 seed=99;const STARS=Array.from({length:46},()=>({x:Math.floor(rnd()*CW),y:Math.floor(rnd()*60),p:rnd()*6}));
@@ -460,6 +482,7 @@ function drawCastle(x){
  const wave=Math.floor(t/12)%2;cfill(x,"#9a1f1f",81,20,5,2);cfill(x,"#9a1f1f",81+wave,22,5,1);cfill(x,"#9a1f1f",55,36,4,2);cfill(x,ccol,55,36,1,8);cfill(x,"#9a1f1f",105,36,4,2);cfill(x,ccol,105,36,1,8);
  WINS.forEach(([a,b],i)=>{x.globalAlpha=.6+.4*Math.abs(Math.sin(t/(25+i*3)+i));cfill(x,M.win,a,b,1,2)});x.globalAlpha=1;
  x.fillStyle=M.hill;for(let px=0;px<CW;px++){const top=Math.round(86+Math.pow((px-80)/50,2)*8);x.fillRect(px,Math.min(top,100),1,CH)}
+ if(M.trees)[[22,86],[32,88],[128,86],[138,88],[12,92],[148,92],[40,92],[120,92]].forEach(([tx,ty])=>{cfill(x,"#2a1a10",tx+2,ty+3,1,3);cfill(x,M.trees,tx,ty,5,4);cfill(x,M.trees,tx+1,ty-1,3,1);cfill(x,shade(M.trees,-.25),tx+3,ty+1,2,3)});
  HOUSES.forEach(([hx,hw],i)=>{const hy=88+(i%3);cfill(x,ccol,hx,hy,hw,8);roof(x,ccol,hx+hw/2,hy-5,6);if(i%2){x.globalAlpha=.8;cfill(x,M.win,hx+2,hy+3,1,1);x.globalAlpha=1}});
  cfill(x,M.riv,0,102,CW,18);
  x.fillStyle=shade(M.riv,.25);for(let i=0;i<14;i++){const ry=104+(i*5)%15,rx=((i*37+t*.3*(i%2?1:-1))%(CW+20)+CW+20)%(CW+20)-10;x.fillRect(Math.round(rx),ry,6+(i%3)*3,1)}
@@ -467,6 +490,7 @@ function drawCastle(x){
  if(M.fire&&t%3===0)[[55,44],[105,44],[80,28],[30,86],[130,86],[60,72],[95,72],[44,88]].forEach(([fx,fy])=>{for(let k=0;k<2;k++)CS.parts.push({x:fx+(Math.random()-.5)*6,y:fy,vx:(Math.random()-.5)*.2,vy:-.3-Math.random()*.4,life:24,max:24,col:["#ffe080","#ff9a30","#e04010"][k+Math.floor(Math.random()*2)],sz:2,fire:1})});
  if(M.fire&&t%7===0)CS.parts.push({x:40+Math.random()*80,y:50,vx:.1,vy:-.25,life:120,max:120,col:"#3a2a2a",sz:4,smoke:1});
  if(M.emb&&Math.random()<.18*M.emb)CS.parts.push({x:30+Math.random()*100,y:92,vx:(Math.random()-.5)*.2,vy:-.25-Math.random()*.35,life:140,max:140,col:Math.random()<.5?"#ffb040":"#ff6a20",sz:1,emb:1});
+ if(M.leaves&&Math.random()<.12)CS.parts.push({x:Math.random()*CW,y:-2,vx:.2,vy:.25+Math.random()*.2,life:500,max:500,col:Math.random()<.5?"#e07a20":"#c8401a",sz:1,emb:1});
  if(M.snow&&Math.random()<.6)CS.parts.push({x:Math.random()*CW,y:-2,vx:(Math.random()-.5)*.2,vy:.3+Math.random()*.3,life:400,max:400,col:"#ffffff",sz:1});
  if(M.birds)for(let i=0;i<3;i++){const bx=((t*.3+i*40)%(CW+20))-10,by=34+i*7+Math.sin(t/20+i)*2,f=Math.floor(t/8+i)%2;cfill(x,"#2a3050",bx,by,1,1);cfill(x,"#2a3050",bx-1-f,by-1+f,1,1);cfill(x,"#2a3050",bx+1+f,by-1+f,1,1)}
  for(let i=CS.parts.length-1;i>=0;i--){const p=CS.parts[i];p.x+=p.vx+(p.emb?Math.sin((t+i)/15)*.15:0);p.y+=p.vy;p.life--;if(p.life<=0||p.y>CH){CS.parts.splice(i,1);continue}
@@ -490,137 +514,174 @@ function loop(){
    STATE + STORY
    ========================================================= */
 let S,LAST={};
-function fresh(){return{day:1,gold:60,food:60,men:20,favor:50,f:{},chron:[],queue:[],qi:0}}
-const has=f=>!!S.f[f],set=(f,v=1)=>S.f[f]=v,note=t=>S.chron.push(`Day ${S.day}: ${t}`);
+const MONTHS=["March","April","May","June","July","August","September","October","November","December","January","February"];
+const SEASON=m=>["spring","spring","spring","summer","summer","summer","autumn","autumn","autumn","winter","winter","winter"][m-1];
+const SCOL={spring:"#6ac05a",summer:"#f2c14e",autumn:"#e07a20",winter:"#cfe0f0"};
+const LAST_MONTH=5; // Chapter One ends with the Vex battle in July. Autumn and winter come next.
+function fresh(){return{month:1,gold:60,food:60,men:20,favor:50,f:{},b:{},chron:[],queue:[],qi:0,usedR:[]}}
+const has=f=>!!S.f[f],set=(f,v=1)=>S.f[f]=v,note=t=>S.chron.push(`${MONTHS[S.month-1]}: ${t}`);
 function fx(o){for(const k of["gold","food","men","favor"])if(o[k]){S[k]+=o[k];LAST[k]=(LAST[k]||0)+o[k];floatStat(k,o[k])}S.favor=Math.min(100,S.favor);for(const k of["gold","food","men"])S[k]=Math.max(-99,S[k])}
 const can=c=>!c.cost||Object.entries(c.cost).every(([k,v])=>S[k]>=v);
 
+/* ---------------------------------------------------------
+   THE STORY. Each event: m (month 1 = March), who, text, req (optional), choices.
+   choice: {t, cost (optional), req (optional), go: () => reply text}
+   Chapter One: March to July (the Vex battle). Autumn and winter come next.
+   --------------------------------------------------------- */
 const E=[
-/* ---- DAY 1 ---- */
-{day:1,who:"aldric",text:"My lord. Your father is three days in the crypt, and the throne of Emberfall is yours now.\n\nMind our gold, our grain, our soldiers... and the favor of the people. Lose any one of them and the city will fall. Baron Vex watches from across the river.",
+/* ---- MARCH ---- */
+{m:1,who:"aldric",text:"My lord. The snows are melting, your father is in the crypt, and the throne of Emberfall is yours.\n\nA lord is judged by his first year. Mind our gold, our grain, our soldiers... and the favor of the people. Baron Vex watches from across the river.",
  choices:[{t:"\"Then let them in, Aldric.\"",go:()=>"\"Your father would be proud.\" He bows and opens the doors."},
   {t:"\"I never wanted this throne.\"",go:()=>{set("reluctant");return "\"None of the good ones do, my lord.\""}}]},
-{day:1,who:"peasant",text:"M'lord, the blight took half of Thornby's wheat. If we don't get grain from the castle stores, there'll be empty bellies by midwinter.",
- choices:[{t:"Give them grain",cost:{food:15},go:()=>{fx({food:-15,favor:10});set("fedThornby");note("Fed Thornby through the blight.");return "Hob weeps openly. \"Thornby won't forget this, m'lord.\""}},
-  {t:"Give half",cost:{food:7},go:()=>{fx({food:-7,favor:3});return "\"Half's better than naught... I suppose.\""}},
+{m:1,who:"peasant",text:"M'lord, the long winter ate Thornby's stores. We've no seed grain left for planting. No seed now means no harvest come autumn.",
+ choices:[{t:"Give them seed grain",cost:{food:15},go:()=>{fx({food:-15,favor:10});set("fedThornby");note("Gave Thornby seed grain for planting.");return "Hob weeps openly. \"Thornby won't forget this, m'lord.\""}},
+  {t:"Give half",cost:{food:7},go:()=>{fx({food:-7,favor:3});set("halfThornby");return "\"Half a field's better than none... I suppose.\""}},
   {t:"Refuse. The castle must eat too.",go:()=>{fx({favor:-10});set("refusedThornby");return "His cap trembles in his hands. He leaves without a word."}}]},
-{day:1,who:"brannoc",text:"Twenty men is not a garrison, my lord, it's a drinking club. Vex has two hundred. Give me coin and I'll find sellswords.",
+{m:1,who:"brannoc",text:"Twenty men is not a garrison, my lord, it's a drinking club. Vex has two hundred. Give me coin and I'll find sellswords.",
  choices:[{t:"Hire 15 sellswords",cost:{gold:25},go:()=>{fx({gold:-25,men:15});return "\"Hard men, but they'll hold a wall.\""}},
   {t:"Train villagers instead",go:()=>{fx({men:8,food:-5,favor:-4});return "Farmers with spears. They'll learn, or they'll die."}},
   {t:"Not yet",go:()=>"Brannoc grunts. \"Don't wait too long.\""}]},
-/* ---- DAY 2 ---- */
-{day:2,who:"vexenvoy",text:"Baron Vex sends condolences on your father's death. And a reminder: the Emberfall ford was promised to him, years ago. He asks a tribute of 30 gold to... forget the matter.",
+{m:1,who:"mason",text:"Hildra, master mason. Your father let this castle crumble, my lord.\n\nGold buys stone, and stone buys safety. At the end of every month, tell me what to build: a granary, a market, a chapel, barracks... or walls.",
+ choices:[{t:"\"Start planning the walls.\"",go:()=>{set("masonWalls");return "\"Ha! A lord who thinks ahead. I'll knock ten gold off the walls.\""}},
+  {t:"\"We'll see what the treasury allows.\"",go:()=>"\"Stone is patient, my lord. Barons aren't.\""}]},
+/* ---- APRIL ---- */
+{m:2,who:"vexenvoy",text:"Baron Vex sends condolences on your father's death. And a reminder: the Emberfall ford was promised to him, years ago. He asks a tribute of 30 gold to... forget the matter.",
  choices:[{t:"Pay the tribute",cost:{gold:30},go:()=>{fx({gold:-30});set("paidVex");note("Paid tribute to Baron Vex.");return "Sir Gerrit smiles. \"A wise young lord.\" Somehow, it sounds like a threat."}},
-  {t:"\"Tell your Baron to come take it.\"",go:()=>{set("defiedVex");fx({favor:6});note("Defied Baron Vex.");return "The hall cheers. Gerrit does not. \"He will.\""}},
+  {t:"\"Tell your Baron to come take it.\"",go:()=>{set("defiedVex");fx({favor:6});note("Defied Baron Vex.");return "The hall cheers. Gerrit does not. \"He will. When the summer comes.\""}},
   {t:"Stall him with a feast",cost:{food:10},go:()=>{fx({food:-10});set("stalledVex");return "Gerrit eats your venison and leaves undecided. Time bought, at least."}}]},
-{day:2,who:"elinor",text:"Lord Harwin of the Eastern Marches has written. He wants Maren for his son. A marriage would bind his spears to ours... but she does not know the boy.",
+{m:2,who:"elinor",text:"Lord Harwin of the Eastern Marches has written. He wants Maren for his son. A marriage would bind his spears to ours... but she does not know the boy.",
  choices:[{t:"Accept the match",go:()=>{set("marenBetrothed");note("Betrothed Maren to Harwin's son.");return "Elinor nods slowly. \"I'll tell her. She won't thank you.\""}},
   {t:"\"Let Maren decide.\"",go:()=>{set("marenChoice");fx({favor:2});return "Elinor's face softens. \"That's why I married you.\""}},
   {t:"Refuse the match",go:()=>{set("refusedHarwin");return "\"Harwin's pride won't like it. But I'm glad.\""}}]},
-{day:2,who:"merchant",text:"My lord! The Guild can lend you 50 gold today. A trifle, repaid with modest interest on the seventh day. Say, 80?",
- choices:[{t:"Take the loan",go:()=>{fx({gold:50});set("loan");note("Borrowed from the Merchant Guild.");return "\"Splendid! I'll return on the seventh day.\" He's already counting."}},
+{m:2,who:"merchant",text:"My lord! The Guild can lend you 50 gold today. A trifle, repaid with modest interest at midsummer. Say, 80?",
+ choices:[{t:"Take the loan",go:()=>{fx({gold:50});set("loan");note("Borrowed 50 gold from the Merchant Guild.");return "\"Splendid! I'll return in July.\" He's already counting."}},
   {t:"Decline",go:()=>"\"A pity. The offer won't come twice.\""}]},
-/* ---- DAY 3 ---- */
-{day:3,who:"morwen",text:"Don't call your guards, little lord. I came through the fen to make you an offer.\n\nI can see what's coming. Fire on the river. I can turn it aside... for a price I'll name later.",
+{m:2,who:"widow",text:"The spring rains have the river over its banks, m'lord. The low fields by the ford are drowning.",
+ choices:[{t:"Pay for a levee",cost:{gold:12},go:()=>{fx({gold:-12,favor:5});set("levee");return "Mud to the knees, but the fields hold."}},
+  {t:"Feed the flooded families",cost:{food:10},go:()=>{fx({food:-10,favor:7});return "Bread and dry blankets. Thornby remembers kindness."}},
+  {t:"\"The river will fall on its own.\"",go:()=>{fx({favor:-6,food:-5});return "It does. Eventually. So does Thornby's opinion of you."}}]},
+/* ---- MAY ---- */
+{m:3,who:"morwen",text:"Don't call your guards, little lord. I came through the fen to make you an offer.\n\nI can see what's coming. Fire on the river, when summer is at its height. I can turn it aside... for a price I'll name later.",
  choices:[{t:"Accept her bargain",go:()=>{set("witchPact");note("Made a pact with Morwen.");return "She laughs. \"Later always comes, little lord.\" And then she is simply gone."}},
   {t:"Have her seized",go:()=>{set("witchEnemy");fx({favor:4});return "Your guards grab only a cloak full of moths."}},
-  {t:"Ask what she sees",go:()=>{set("witchWarned");return "\"Vex's banners on the ninth day. Count your men, little lord. Count them twice.\""}}]},
-{day:3,who:"cuthbert",text:"The abbey roof leaks onto the altar, my lord. Your father always promised to mend it. The faithful notice such things.",
+  {t:"Ask what she sees",go:()=>{set("witchWarned");return "\"Vex's banners on the river in July. Count your men, little lord. Count them twice.\""}}]},
+{m:3,who:"cuthbert",text:"The abbey roof leaks onto the altar, my lord. Your father always promised to mend it. The faithful notice such things.",
  choices:[{t:"Donate 20 gold",cost:{gold:20},go:()=>{fx({gold:-20,favor:8});set("church");note("Mended the abbey roof.");return "\"Heaven sees your generosity. So does the city.\""}},
   {t:"\"Heaven can fix its own roof.\"",go:()=>{fx({favor:-8});set("churchAngry");return "Cuthbert makes a sign against ill luck. Twice."}}]},
-{day:3,who:"brannoc",text:"Caught a boy stealing bread from the kitchens. Old law says a flogging in the square, my lord.",
+{m:3,who:"maren",text:"Father, May Day is coming! Let us hold the May Fair in the square again. Ribbons, a tourney for the squires, dancing. It's been years.",
+ choices:[{t:"Hold a grand fair",cost:{gold:15},go:()=>{fx({gold:-15,favor:9});set("mayfair");note("Held the May Fair.");return "Maren crowns the May Queen. For one whole day, nobody talks about Vex."}},
+  {t:"A small fair",cost:{gold:5},go:()=>{fx({gold:-5,favor:3});return "A few ribbons, one fiddler. Maren makes the best of it."}},
+  {t:"\"Not this year.\"",go:()=>{fx({favor:-3});return "\"It's always 'not this year.'\" She doesn't slam the door. Quite."}}]},
+{m:3,who:"brannoc",text:"Caught a boy stealing bread from the kitchens. Old law says a flogging in the square, my lord.",
  choices:[{t:"Spare him. Put him to work.",go:()=>{fx({favor:5});set("boyPage");return "The boy's name is Pip. He scrubs pots like his life depends on it."}},
   {t:"Follow the law",go:()=>{fx({favor:-6,men:1});set("harsh");return "The hall is very quiet. Nobody steals again."}},
   {t:"Make him a squire",go:()=>{fx({food:-2});set("pipSquire");return "\"A thief as a squire?\" Brannoc shakes his head. Pip grins."}}]},
-/* ---- DAY 4 ---- */
-{day:4,who:"whisper",text:"You have a traitor in your hall, my lord. I can tell you who. My price is 25 gold, and a seat at your table when this is over.",
- choices:[{t:"Pay The Whisper",cost:{gold:25},go:()=>{fx({gold:-25});set("spy");note("Hired The Whisper.");return "\"Wise. I'll bring you a name in two days.\""}},
+{m:3,who:"whisper",text:"You have a traitor in your hall, my lord. I can tell you who. My price is 25 gold, and a seat at your table when this is over.",
+ choices:[{t:"Pay The Whisper",cost:{gold:25},go:()=>{fx({gold:-25});set("spy");note("Hired The Whisper.");return "\"Wise. I'll bring you a name before midsummer.\""}},
   {t:"Throw him out",go:()=>"\"Then keep your eyes on your cup, my lord.\""}]},
-{day:4,who:"tobin",text:"Father, let me ride with Brannoc's patrols! I'm old enough. You were riding at my age, everyone says so.",
+/* ---- JUNE ---- */
+{m:4,who:"tobin",text:"Father, let me ride with Brannoc's patrols this summer! I'm old enough. You were riding at my age, everyone says so.",
  choices:[{t:"Let him ride",go:()=>{set("tobinRides");fx({men:2});return "He whoops and runs for the stables. Elinor glares at you from across the hall."}},
   {t:"\"You'll study with Aldric.\"",go:()=>{set("tobinStudy");return "He sulks for an hour. Aldric says he has a gift for numbers."}}]},
-{day:4,who:"maren",req:()=>has("marenBetrothed"),text:"You promised me to a stranger for a few spears. Did you even ask what I wanted?",
+{m:4,who:"maren",req:()=>has("marenBetrothed")&&!has("marenLoves"),text:"You promised me to a stranger for a few spears. Did you even ask what I wanted?",
  choices:[{t:"\"It was for Emberfall.\"",go:()=>{set("marenBitter");return "\"Then Emberfall can love you. I won't.\""}},
   {t:"Break the betrothal",go:()=>{delete S.f.marenBetrothed;set("refusedHarwin");set("marenLoves");fx({favor:3});return "She throws her arms around you. Somewhere in the east, Harwin is insulted."}}]},
-{day:4,who:"maren",req:()=>has("marenChoice"),text:"I met Harwin's son, Edric. He reads poetry and is terrible at it. Father... I think I like him.",
+{m:4,who:"maren",req:()=>has("marenChoice"),text:"I met Harwin's son, Edric. He reads poetry and is terrible at it. Father... I think I like him.",
  choices:[{t:"Give your blessing",go:()=>{set("marenBetrothed");set("marenLoves");fx({favor:4});note("Maren chose Edric of the Marches.");return "She kisses your cheek. Elinor is beaming."}},
   {t:"\"Take your time.\"",go:()=>"\"I will. But not too much.\""}]},
-/* ---- DAY 5 ---- */
-{day:5,who:"widow",text:"The coughing sickness, m'lord. It's in Thornby. Three dead, and Brother Cuthbert's prayers aren't working.",
- choices:[{t:"Quarantine the village",cost:{food:10},go:()=>{fx({food:-10,favor:-3});set("plagueContained");return "Harsh, but the sickness stays in Thornby."}},
-  {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{set("plagueContained");set("witchHealed");fx({favor:5});note("Morwen cured the sickness.");return "The witch comes. The coughing stops. Cuthbert is furious."}},
-  {t:"Pray and wait",go:()=>{set("plague");fx({favor:-8,men:-6});note("Sickness spread to the castle.");return "It spreads. Six of your men are buried within the week."}}]},
-{day:5,who:"aldric",text:"Refugees, my lord. Forty of them, fleeing Vex's lands. He's been burning his own villages to pay for his army.",
- choices:[{t:"Take them in",cost:{food:10},go:()=>{fx({food:-10,men:6,favor:4});set("refugees");return "Among them are six men who know how to fight, and who hate Vex."}},
-  {t:"Turn them away",go:()=>{fx({favor:-5});return "They walk on into the cold."}}]},
-/* ---- DAY 6 ---- */
-{day:6,who:"vexenvoy",req:()=>has("paidVex"),text:"The Baron thanks you for your gift. He finds he needs another. Sixty gold this time.",
+{m:4,who:"widow",text:"The summer fever, m'lord. It's in Thornby. Three dead, and Brother Cuthbert's prayers aren't working.",
+ choices:[{t:"Quarantine the village",cost:{food:10},go:()=>{fx({food:-10,favor:-3});set("plagueContained");return "Harsh, but the fever stays in Thornby."}},
+  {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{set("plagueContained");set("witchHealed");fx({favor:5});note("Morwen cured the summer fever.");return "The witch comes. The coughing stops. Cuthbert is furious."}},
+  {t:"Pray and wait",go:()=>{set("plague");fx({favor:-8,men:-6});note("The fever spread to the castle.");return "It spreads. Six of your soldiers are buried within the week."}}]},
+{m:4,who:"aldric",text:"Refugees, my lord. Forty of them, fleeing Vex's lands. He's been burning his own villages to pay for his army.",
+ choices:[{t:"Take them in",cost:{food:10},go:()=>{fx({food:-10,men:6,favor:4});set("refugees");return "Among them are six who know how to fight, and who hate Vex."}},
+  {t:"Turn them away",go:()=>{fx({favor:-5});return "They walk on into the heat."}}]},
+{m:4,who:"vexenvoy",req:()=>has("paidVex"),text:"The Baron thanks you for your gift. He finds he needs another. Sixty gold this time.",
  choices:[{t:"Pay again",cost:{gold:60},go:()=>{fx({gold:-60});set("paidVex2");return "\"The Baron's love for you grows, my lord.\""}},
   {t:"\"No more.\"",go:()=>{set("defiedVex");return "\"Then he'll come for the ford. And the rest.\""}}]},
-{day:6,who:"vexenvoy",req:()=>!has("paidVex"),text:"Last chance, young lord. Kneel to Baron Vex as your liege, and Emberfall keeps its roofs.",
+{m:4,who:"vexenvoy",req:()=>!has("paidVex"),text:"Last chance, young lord. Kneel to Baron Vex as your liege, and Emberfall keeps its roofs.",
  choices:[{t:"Kneel",go:()=>{set("knelt");fx({favor:-20});note("Knelt to Baron Vex.");return "Your knee touches the stone. Your people will remember this."}},
   {t:"Refuse",go:()=>{set("defiedVex");return "Gerrit leaves. Brannoc begins sharpening blades."}}]},
-{day:6,who:"whisper",req:()=>has("spy"),text:"Your traitor is Captain Brannoc. He's been taking Vex's silver since your father's funeral. He'll open the postern gate when the Baron comes.",
+{m:4,who:"whisper",req:()=>has("spy"),text:"Your traitor is Captain Brannoc. He's been taking Vex's silver since your father's funeral. He'll open the postern gate when the Baron comes.",
  choices:[{t:"Arrest Brannoc",go:()=>{set("brannocJailed");fx({men:-4});note("Unmasked Brannoc as a traitor.");return "Brannoc doesn't deny it. \"Vex pays better than a dead man's son.\""}},
   {t:"Feed him false plans",go:()=>{set("brannocTrap");note("Set a trap for Brannoc.");return "The Whisper smiles. \"Oh, I like you.\""}},
-  {t:"\"I don't believe you.\"",go:()=>"\"Believe it on the ninth day, then.\""}]},
-/* ---- DAY 7 ---- */
-{day:7,who:"merchant",req:()=>has("loan"),text:"The seventh day, my lord! Eighty gold, as agreed.",
+  {t:"\"I don't believe you.\"",go:()=>"\"Believe it in July, then.\""}]},
+/* ---- JULY: the Baron comes ---- */
+{m:5,who:"merchant",req:()=>has("loan"),text:"Midsummer, my lord! Eighty gold, as agreed.",
  choices:[{t:"Repay 80 gold",cost:{gold:80},go:()=>{fx({gold:-80});delete S.f.loan;return "\"A pleasure, as always.\""}},
   {t:"Default",go:()=>{set("guildEnemy");fx({favor:-6,food:-10});note("Defaulted on the Guild.");return "The Guild seizes grain wagons on the road. Prices in Emberfall double."}}]},
-{day:7,who:"eastlord",req:()=>has("marenBetrothed"),text:"Our houses are one now, Emberfall. When Vex comes, my riders will come too. Forty lances.",
+{m:5,who:"eastlord",req:()=>has("marenBetrothed"),text:"Our houses are one now, Emberfall. When Vex comes, my riders will come too. Forty lances.",
  choices:[{t:"\"Emberfall is grateful.\"",go:()=>{set("harwinAlly");fx({favor:3});note("Lord Harwin pledged his lances.");return "He clasps your arm. \"Family is family.\""}}]},
-{day:7,who:"eastlord",req:()=>has("refusedHarwin"),text:"You refused my son. The Marches will remember the insult.",
+{m:5,who:"eastlord",req:()=>has("refusedHarwin"),text:"You refused my son. The Marches will remember the insult.",
  choices:[{t:"Offer gold as apology",cost:{gold:20},go:()=>{fx({gold:-20});return "\"Gold mends pride, if not friendship.\""}},
   {t:"\"So be it.\"",go:()=>{set("harwinEnemy");return "He rides out without a backward look."}}]},
-{day:7,who:"herald",text:"Hear the word of King Osmund! The crown is aware of strife between Emberfall and Vex. The King will favor whichever lord keeps the King's peace... or wins.",
+{m:5,who:"herald",text:"Hear the word of King Osmund! The crown is aware of strife between Emberfall and Vex. The King will favor whichever lord keeps the King's peace... or wins.",
  choices:[{t:"Send the King a gift",cost:{gold:15},go:()=>{fx({gold:-15});set("kingFavor");return "\"His Majesty will hear of Emberfall's loyalty.\""}},
   {t:"Ask the King for aid",go:()=>"\"The King's armies are in the north. You stand alone.\""}]},
-/* ---- DAY 8 ---- */
-{day:8,who:"morwen",req:()=>has("witchPact"),text:"Later has come, little lord. My price: when the fire comes, you'll let me burn Baron Vex myself. And afterwards, the fen is mine. No priests. No laws.",
- choices:[{t:"Honor the pact",go:()=>{set("witchFire");note("Honored the witch's pact.");return "\"Good. The river will run red on the ninth day... with his blood, not yours.\""}},
+{m:5,who:"morwen",req:()=>has("witchPact"),text:"Later has come, little lord. My price: when the fire comes, you'll let me burn Baron Vex myself. And afterwards, the fen is mine. No priests. No laws.",
+ choices:[{t:"Honor the pact",go:()=>{set("witchFire");note("Honored the witch's pact.");return "\"Good. The river will run red... with his blood, not yours.\""}},
   {t:"Break it",go:()=>{set("witchCurse");fx({food:-15,favor:-5});note("Broke the witch's pact.");return "Your granary rots overnight. Her laughter echoes in the walls."}}]},
-{day:8,who:"tobin",req:()=>has("tobinRides"),text:"Father! We ambushed Vex's scouts at the mill! I... I've never seen a real fight before.",
+{m:5,who:"tobin",req:()=>has("tobinRides"),text:"Father! We ambushed Vex's scouts at the mill! I... I've never seen a real fight before.",
  choices:[{t:"Hold him",go:()=>{set("tobinHardened");return "He shakes. Then he stops shaking. He's not a boy anymore."}},
   {t:"\"You did well.\"",go:()=>{set("tobinProud");fx({men:3});return "The men cheer him. He looks back at you for a long time."}}]},
-{day:8,who:"tobin",req:()=>has("tobinStudy"),text:"Father, I went through the old ledgers with Aldric. There's a tunnel under the east wall. Grandfather used it for smuggling!",
- choices:[{t:"Use it to raid Vex's supplies",go:()=>{set("tunnelRaid");fx({food:15});note("Raided Vex's camp via the tunnel.");return "Your men return with three wagons of Vex's grain."}},
+{m:5,who:"tobin",req:()=>has("tobinStudy"),text:"Father, I went through the old ledgers with Aldric. There's a tunnel under the east wall. Grandfather used it for smuggling!",
+ choices:[{t:"Use it to raid Vex's supplies",go:()=>{set("tunnelRaid");fx({food:15});note("Raided Vex's camp through the tunnel.");return "Your men return with three wagons of Vex's grain."}},
   {t:"Keep it as an escape route",go:()=>{set("tunnel");return "If the walls fall, your family can live."}}]},
-{day:8,who:"elinor",text:"Whatever happens tomorrow... I want you to know. You were a better lord than your father. Kinder.",
+{m:5,who:"elinor",text:"Whatever happens when Vex comes... I want you to know. You were a better lord than your father. Kinder.",
  choices:[{t:"\"Take the children and leave.\"",go:()=>{set("familySafe");return "\"I'll stay until the last moment. Then I'll go.\""}},
   {t:"\"We stand together.\"",go:()=>{set("familyStays");fx({favor:5});return "She takes your hand. It doesn't tremble."}}]},
-/* ---- DAY 9 ---- */
-{day:9,who:"aldric",text:"My lord... Vex's banners on the river. He's come. Every soul in Emberfall is looking at you now.",
- choices:[{t:"Fortify the walls",go:()=>{set("plan_wall");return "Stones stacked, oil boiled. Let him come."}},
-  {t:"Sally out and attack",go:()=>{set("plan_attack");return "\"For Emberfall!\" The gates open."}},
+{m:5,who:"aldric",text:"My lord... Vex's banners on the river. He's come at last. Every soul in Emberfall is looking at you now.",
+ choices:[{t:"Hold the walls",go:()=>{set("plan_wall");return "Stones stacked, oil boiled. Let him come."}},
+  {t:"Ride out and attack",go:()=>{set("plan_attack");return "\"For Emberfall!\" The gates open."}},
   {t:"Parley with Vex",go:()=>{set("plan_parley");return "You ride out under a white banner."}},
   {t:"Flee through the tunnel",req:()=>has("tunnel"),go:()=>{set("plan_flee");return "In the dark, you lead your family away from Emberfall."}}]},
 ];
+/* everyday petitions: s = season ("any" fits all). One or two are mixed into each month. */
 const R=[
- {who:"widow",text:"Wolves took my goats, m'lord. Will you send hunters?",choices:[
+ {s:"any",who:"widow",text:"Wolves took my goats, m'lord. Will you send hunters?",choices:[
   {t:"Send hunters",cost:{men:2},go:()=>{fx({favor:4});return "The pelts hang in the square by nightfall."}},{t:"\"Buy a dog.\"",go:()=>{fx({favor:-2});return "She mutters something unrepeatable."}}]},
- {who:"merchant",text:"A shipment of fine southern wine, my lord. For the lord's table. 10 gold.",choices:[
+ {s:"any",who:"merchant",text:"A shipment of fine southern wine, my lord. For the lord's table. 10 gold.",choices:[
   {t:"Buy it",cost:{gold:10},go:()=>{fx({gold:-10,favor:2});return "The feast is merrier."}},{t:"Pass",go:()=>"\"Your loss.\""}]},
- {who:"peasant",text:"The bridge at Thornby is rotting. Wagons can't cross to market.",choices:[
+ {s:"any",who:"peasant",text:"The bridge at Thornby is rotting. Wagons can't cross to market.",choices:[
   {t:"Repair it",cost:{gold:12},go:()=>{fx({gold:-12,food:8});return "Trade flows again."}},{t:"Later",go:()=>{fx({favor:-2});return "Hob nods, unconvinced."}}]},
- {who:"cuthbert",text:"The Feast of Embers approaches, my lord. The people would love a festival.",choices:[
-  {t:"Hold a festival",cost:{food:8},go:()=>{fx({food:-8,favor:7});return "Lanterns fill the square. There is dancing until dawn."}},{t:"No",go:()=>"\"A quiet feast, then.\""}]},
- {who:"brannoc",text:"Two of the guards were drunk on watch. What punishment?",choices:[
+ {s:"any",who:"brannoc",text:"Two of the guards were drunk on watch. What punishment?",choices:[
   {t:"Extra night watches",go:()=>{fx({favor:-1});return "Nobody drinks on watch again."}},{t:"Dock their pay",go:()=>{fx({gold:3});return "Grumbles, but they understand."}}]},
+ {s:"spring",who:"peasant",text:"Lambing's come early, m'lord, and half the ewes are sickly. Buy healthy stock from the Marches?",choices:[
+  {t:"Buy the flock",cost:{gold:12},go:()=>{fx({gold:-12,food:10});return "Fat lambs by summer."}},{t:"Make do",go:()=>"\"We'll say a word over 'em, then.\""}]},
+ {s:"spring",who:"cuthbert",text:"Pilgrims are coming for the spring blessing, my lord. They'll need beds and bread.",choices:[
+  {t:"Host them",cost:{food:6},go:()=>{fx({food:-6,favor:5,gold:4});return "They leave coins in the abbey box, and good words on the road."}},{t:"Send them on",go:()=>{fx({favor:-2});return "\"The next town will be glad of them, I'm sure.\""}}]},
+ {s:"summer",who:"widow",text:"The well in Thornby's gone dry in the heat, m'lord.",choices:[
+  {t:"Dig a new well",cost:{gold:10},go:()=>{fx({gold:-10,favor:5});return "Cold water, and a blessing on your name."}},{t:"\"Haul it from the river.\"",go:()=>{fx({favor:-4});return "It's a long walk with a bucket."}}]},
+ {s:"summer",who:"merchant",text:"A spice caravan wants to trade, my lord. Grain for silver, at a fair price.",choices:[
+  {t:"Sell 10 grain",cost:{food:10},go:()=>{fx({food:-10,gold:18});return "Silver jingles in the treasury."}},{t:"Keep our grain",go:()=>"\"Grain doesn't jingle, my lord.\""}]},
+ {s:"summer",who:"cuthbert",text:"The Feast of Embers approaches, my lord. The people would love a festival.",choices:[
+  {t:"Hold a festival",cost:{food:8},go:()=>{fx({food:-8,favor:7});return "Lanterns fill the square. There is dancing until dawn."}},{t:"No",go:()=>"\"A quiet feast, then.\""}]},
 ];
+/* things Hildra can build at the end of a month */
+const BUILD={
+ granary:{n:"Granary",cost:30,d:"+5 grain every month"},
+ market:{n:"Market",cost:35,d:"+8 gold every month"},
+ chapel:{n:"Chapel",cost:25,d:"+2 favor every month"},
+ barracks:{n:"Barracks",cost:30,d:"+8 soldiers now"},
+ walls:{n:"Stone Walls",cost:45,d:"A far stronger defense when Vex comes"},
+};
 
 /* =========================================================
    ENGINE
    ========================================================= */
 function buildStats(){$("stats").innerHTML=[["gold","Gold"],["food","Grain"],["men","Army"],["favor","Favor"]].map(([k,l])=>`<div class="stat" id="s-${k}"><img class="px" src="${ICONURL[k]}"><div><b>0</b><small>${l.toUpperCase()}</small></div></div>`).join("")}
-function render(){for(const k of["gold","food","men","favor"])$("s-"+k).querySelector("b").textContent=S[k];$("daylbl").textContent=`DAY ${S.day} OF 9`}
+function render(){for(const k of["gold","food","men","favor"])$("s-"+k).querySelector("b").textContent=S[k];$("daylbl").textContent=`${MONTHS[S.month-1].toUpperCase()} · ${SEASON(S.month).toUpperCase()} · YEAR 1`}
 function floatStat(k,v){const el=$("s-"+k);const f=document.createElement("span");f.className="float";f.textContent=(v>0?"+":"")+v;f.style.color=v>0?"#9ef08a":"#ff7a6a";
  el.appendChild(f);setTimeout(()=>f.remove(),1400);el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
-function buildDay(){S.queue=E.map((e,i)=>i).filter(i=>E[i].day===S.day);if(S.day<9)S.queue.splice(1,0,"r"+Math.floor(Math.random()*R.length));S.qi=0}
+function buildMonth(){
+ S.queue=E.map((e,i)=>i).filter(i=>E[i].m===S.month);
+ if(S.month<=3){const se=SEASON(S.month);const pool=R.map((r,i)=>i).filter(i=>(R[i].s===se||R[i].s==="any")&&!S.usedR.includes(i));
+  for(let k=0;k<(S.month===3?1:2)&&pool.length;k++){const j=pool.splice(Math.floor(Math.random()*pool.length),1)[0];S.usedR.push(j);S.queue.splice(1+k*2,0,"r"+j)}}
+ S.qi=0}
 function current(){const q=S.queue[S.qi];return typeof q==="string"?R[+q.slice(1)]:E[q]}
 function next(){
  while(S.qi<S.queue.length){const e=current();if(!e.req||e.req())break;S.qi++}
- if(S.qi>=S.queue.length)return endDay();
+ if(S.qi>=S.queue.length)return endMonth();
  const e=current();save();render();
  PCHAR=null;$("who").textContent="";$("role").textContent="";$("choices").innerHTML="";
  const t=$("txt");t.className="wait";t.textContent="The great doors creak open...";
@@ -662,35 +723,50 @@ function typeText(str,voice,done){
 function finishType(){if(!TY)return;clearTimeout(TY.to);$("txt").textContent=TY.str;SC.talk=false;const d=TY.done;TY=null;d&&d()}
 $("dialog").addEventListener("click",e=>{if(!e.target.closest("button"))finishType()});
 
-function endDay(){
- if(S.day>=9)return siege();
- const tax=Math.round(S.favor/6)+(has("guildEnemy")?0:4),eat=Math.ceil(S.men/8)+3,harvest=(has("fedThornby")?8:5)-(has("witchCurse")?3:0);
- LAST={};fx({gold:tax,food:harvest-eat});render();
- setPhase("night");Music.play("night");SFX.toll();setCastle("night");
- overlay(`${castleHTML()}</div><div class="ovb"><h3>Night falls on Emberfall</h3>
-  <div class="sumrow"><span><img class="px" src="${ICONURL.gold}">Taxes</span><b>+${tax}</b></div>
-  <div class="sumrow"><span><img class="px" src="${ICONURL.food}">Harvest</span><b>+${harvest}</b></div>
-  <div class="sumrow"><span><img class="px" src="${ICONURL.food}">The hall eats</span><b>−${eat}</b></div>
-  <p class="dim">${S.food<12?"The granary is nearly empty, my lord.":S.favor<20?"There is muttering in the taverns tonight.":"The city sleeps."}</p>
-  <button class="pb" id="dawnBtn">Sleep until dawn</button></div>`);
- $("dawnBtn").onclick=()=>{SFX.click();closeOverlay();if(fail())return;S.day++;setPhase(S.day>=9?"dusk":"day");Music.play(S.day>=9?"battle":"hall");dayCard(()=>{buildDay();next()})};
+function ledgerRows(){const b=S.b,se=SEASON(S.month);
+ const tax=Math.round(S.favor/5)+4+(b.market?8:0)-(has("guildEnemy")?4:0);
+ const crops={spring:4,summer:7,autumn:30,winter:0}[se]+(has("fedThornby")?3:has("halfThornby")?1:0)+(b.granary?5:0)-(has("witchCurse")?3:0);
+ const eat=Math.ceil(S.men/6)+4,pray=b.chapel?2:0;return{tax,crops,eat,pray}}
+function endMonth(){
+ if(S.month>=LAST_MONTH)return siege();
+ const L=ledgerRows();LAST={};fx({gold:L.tax,food:L.crops-L.eat,favor:L.pray});render();
+ const se=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();setCastle(se==="winter"?"snow":se);
+ S.built=false;showLedger(L);
 }
-function dayCard(cb){render();const c=$("card");c.querySelector("b").textContent="DAY "+S.day;c.querySelector("span").textContent=S.day>=9?"THE BANNERS COME":"OF NINE";c.style.display="flex";
- setTimeout(()=>{c.style.display="none";cb()},FAST?0:1500)}
+function showLedger(L){
+ const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}">${l}</span><b>${v>=0?"+":"−"}${Math.abs(v)}</b></div>`;
+ const builds=Object.entries(BUILD).map(([k,o])=>{const cost=k==="walls"&&has("masonWalls")?o.cost-10:o.cost;
+  return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built</small></div></div>`:
+  `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${S.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("");
+ overlay(`${castleHTML()}</div><div class="ovb"><h3>The end of ${MONTHS[S.month-1]}</h3>
+  ${row("gold","Taxes",L.tax)}${row("food","Fields &amp; stores",L.crops)}${row("food","The castle eats",-L.eat)}${L.pray?row("favor","Chapel",L.pray):""}
+  <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.favor<20?"There is muttering in the taverns.":S.month===4?"Scouts say Vex's army is on the march.":"Emberfall sleeps."}</p>
+  <h3 style="font-size:20px;margin-top:10px">Hildra's Works</h3><p class="dim" style="margin-top:0">${S.built?"The masons are busy until next month.":"Choose one thing to build this month."}</p>
+  ${builds}<br><button class="pb" id="nextBtn">Begin ${MONTHS[S.month]}</button></div>`);
+ $("nextBtn").onclick=()=>{SFX.click();closeOverlay();if(fail())return;S.month++;S.built=false;const war=S.month>=LAST_MONTH;
+  setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>{buildMonth();next()})};
+}
+function build(k,cost){if(S.built||S.gold<cost)return;S.b[k]=1;S.built=true;LAST={};fx({gold:-cost});if(k==="barracks")fx({men:8});
+ note(`Hildra's masons built the ${BUILD[k].n}.`);SFX.thud();SFX.coin();render();save();
+ const sc=$("overlay").scrollTop;showLedger(ledgerRows());$("overlay").scrollTop=sc}
+function monthCard(cb){render();const c=$("card"),se=SEASON(S.month);c.querySelector("b").textContent=MONTHS[S.month-1].toUpperCase();
+ c.querySelector("b").style.color=SCOL[se];c.querySelector("span").textContent=S.month>=LAST_MONTH?"THE BANNERS COME":`${se.toUpperCase()} · MONTH ${S.month} OF 12`;
+ $("pips").innerHTML=MONTHS.map((_,i)=>`<i class="${i+1===S.month?"now":i+1<S.month?"past":""}" style="background:${SCOL[SEASON(i+1)]}"></i>`).join("");
+ c.style.display="flex";setTimeout(()=>{c.style.display="none";cb()},FAST?0:1700)}
 function fail(){if(S.food<0)return ending("famine");if(S.favor<=0)return ending("revolt");if(S.gold<-20)return ending("debt");return false}
 function battle(){
  if(has("plan_flee"))return"exile";if(has("knelt"))return"vassal";
  if(has("plan_parley")){if(has("kingFavor")&&S.favor>=50)return"peace";if(has("paidVex2"))return"vassal"}
- let p=S.men+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
+ let p=S.men+(S.b.walls?20:0)+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
  if(has("harwinEnemy"))p-=10;if(has("brannocTrap"))p+=30;else if(!has("brannocJailed"))p-=35;
  if(has("witchFire"))return p>30?"witchQueen":"witchFall";
  if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")?"lastStandSafe":"fallen"}
 function siege(){
  const k=battle(),calm=["exile","vassal","peace"].includes(k);
  setCastle(calm?"night":"burn");Music.play(calm?"night":"battle");if(!calm)SFX.war();
- const plan=has("plan_flee")?"Torches gutter in the tunnel as Emberfall grows small behind you.":has("plan_parley")?"You ride out beneath a white banner to meet the Baron.":has("plan_attack")?"The gates swing wide. You lead the charge into the river.":"Arrows rain from the walls of Emberfall.";
+ const plan=has("plan_flee")?"Torches gutter in the tunnel as Emberfall grows small behind you.":has("plan_parley")?"You ride out beneath a white banner to meet the Baron.":has("plan_attack")?"The gates swing wide. You lead the charge into the river.":(S.b.walls?"Arrows rain from Hildra's new stone walls.":"Arrows rain from the old walls of Emberfall.");
  const twist=has("brannocTrap")?"The postern gate opens... onto a wall of your spears. Brannoc's treachery becomes Vex's trap.":(!has("brannocJailed")&&!calm)?"Behind you, a postern gate swings open that should have been barred.":has("witchFire")?"Green fire crawls up out of the fen.":"";
- overlay(`${castleHTML()}</div><div class="ovb siege"><h3>The Ninth Day</h3><p style="animation-delay:.3s">Baron Vex's host crosses the ford at dusk.</p>
+ overlay(`${castleHTML()}</div><div class="ovb siege"><h3>High Summer</h3><p style="animation-delay:.3s">Baron Vex's host crosses the ford at dusk.</p>
   <p style="animation-delay:1.3s">${plan}</p>${twist?`<p style="animation-delay:2.3s">${twist}</p>`:""}
   <button class="pb" style="opacity:0;animation:appear 1s ${FAST?0:3}s forwards" id="fateBtn">Face your fate</button></div>`);
  $("fateBtn").onclick=()=>{SFX.click();ending(k)};
@@ -710,14 +786,16 @@ const ENDINGS={
  witchQueen:["The Witch's Fire","Green fire swallowed Vex's army whole. Emberfall is safe. But the fen grows closer every year, and Morwen sits at your table now."],
  witchFall:["Fire Without End","Morwen's fire did not stop at Vex's army. It took the ford, the city, the abbey. You won, and there is nothing left to rule."],
 };
+const CONTINUES=["peace","crowned","victory","pyrrhic","witchQueen","vassal"];
 const GOOD=["peace","crowned","victory"],BAD=["revolt","fallen","witchFall","debt"];
 function gotEndings(){try{return JSON.parse(localStorage.getItem("ef_end")||"[]")}catch(e){return[]}}
 function ending(k){
  const[t,d]=ENDINGS[k];const got=gotEndings();if(!got.includes(k))got.push(k);
- try{localStorage.setItem("ef_end",JSON.stringify(got));localStorage.removeItem("ef_save")}catch(e){}
+ try{localStorage.setItem("ef_end",JSON.stringify(got));localStorage.removeItem("ef_save2")}catch(e){}
  setCastle(k==="famine"?"snow":GOOD.includes(k)?"dawn":BAD.includes(k)?"burn":"night");
  Music.play(GOOD.includes(k)?"hall":"night");GOOD.includes(k)?SFX.fanfare():SFX.doom();
  overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— AN ENDING —</div><h3>${t}</h3><p>${d}</p>
+  ${CONTINUES.includes(k)?`<p style="color:#f2c14e">Chapter One is complete. Your reign continues into autumn and winter in the next update.</p>`:""}
   <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
   <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="title()">Title Screen</button></div>`);
  return true}
@@ -733,12 +811,12 @@ function openSettings(){SFX.click();modal(`<h3>Settings</h3>
  <button class="pb alt" onclick="closeModal();title()">Save &amp; Quit to Title</button>
  <button class="pb" onclick="closeModal()">Back</button>`)}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? Undiscovered</div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
-function save(){try{localStorage.setItem("ef_save",JSON.stringify(S))}catch(e){}}
-function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();setPhase("day");SC.walker=null;Music.play("hall");dayCard(()=>{buildDay();next()})}
-function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save"))}catch(e){}if(!s)return newGame();S=s;closeOverlay();setPhase(S.day>=9?"dusk":"day");SC.walker=null;Music.play(S.day>=9?"battle":"hall");render();next()}
+function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
+function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
+function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;closeOverlay();const war=S.month>=LAST_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
 function title(){
  if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;
- let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save")}catch(e){}
+ let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save2")}catch(e){}
  setCastle("title");Music.play("night");
  overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
   <p class="dim">The throne is yours. So is everything that follows.</p>
@@ -746,7 +824,7 @@ function title(){
   <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
   <button class="pb alt" onclick="openSettings()">Settings</button></div>`)}
 
-buildStats();S=fresh();render();setPhase("day");title();loop();
+buildStats();S=fresh();render();setPhase("day","spring");title();loop();
 </script>
 </body>
 </html>

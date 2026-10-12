@@ -1,13 +1,15 @@
 # Emberfall: My Lord 👑🔥
 
-A pixel-art medieval story game. Your father is dead and the throne of **Emberfall** is yours. For nine days, petitioners walk up the red carpet to your throne: villagers, your family, a witch from the fen, a moneylender, a spy and the envoy of the Baron who wants your city. Every answer costs something. On the ninth day, Baron Vex's banners appear on the river.
+A pixel-art medieval story game. Your father is dead and the throne of **Emberfall** is yours. Over your first year, month by month, petitioners walk up the red carpet to your throne: villagers, your family, a witch from the fen, a moneylender, a spy and the envoy of the Baron who wants your city. Every answer costs something. In high summer, Baron Vex's banners appear on the river.
 
 ## The game
 
 - **4 resources:** Gold, Grain, Army and Favor. Let any one collapse and your reign ends early (famine, revolt, or the Guild owns you).
-- **9 days, 14 characters, 13 endings.** Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
+- **A year in 12 months** with seasons (spring rain, summer sun, autumn leaves, winter snow), a month-end ledger, and **Hildra's Works**: build a granary, market, chapel, barracks or stone walls.
+- **Chapter One is playable now:** March to July, ending with the Vex battle. Autumn and winter are next.
+- **15 characters, 13 endings so far.** Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
 - **Animated throne room:** visitors walk in through the great doors, talk with animated portraits and react with emotes and particles.
-- **Synthesized music and sound:** an original medieval theme played on lute by day, bells by night and war drums on day 9; footsteps, doors, coins, bells and a babble "voice" for each character. No audio files.
+- **Synthesized music and sound:** an original medieval theme played on lute by day, bells at month's end and war drums when Vex comes; footsteps, doors, coins, bells and a babble "voice" for each character. No audio files.
 - **Animated castle vistas** for the title, each night and every ending (dawn, moonlight, fire, snow).
 - **Chronicle** of your big decisions, an **endings collection**, autosave, and Music/Sound switches.
 - Fully offline. No accounts, no ads, no tracking.
@@ -46,15 +48,15 @@ To re-render the icon, splash screens and App Store screenshots: `cd app && npx 
 
 ## Writing more story
 
-Events live in the `E` array in `index.html`. Each one is:
+Events live in the `E` array in `index.html` (`m` is the month: 1 = March … 12 = February). Each one is:
 
 ```js
-{day:3, who:"morwen", req:()=>has("someFlag"),   // req is optional
+{m:3, who:"morwen", req:()=>has("someFlag"),   // req is optional
  text:"What they say.",
  choices:[{t:"Button text", cost:{gold:20},        // cost is optional
            go:()=>{ fx({gold:-20,favor:5}); set("flag"); note("Line for the Chronicle."); return "Their reply."; }}]}
 ```
 
-Random everyday petitions live in `R`. Endings are in `ENDINGS`, and `battle()` decides which one the ninth day leads to.
+Random everyday petitions live in `R` (tagged by season). Buildings are in `BUILD`, the month-end numbers in `ledgerRows()`, endings in `ENDINGS`, and `battle()` decides how the July battle ends. `LAST_MONTH` is where the current chapter stops.
 
 © 2026 Wolfhope. All rights reserved.
