@@ -1,0 +1,60 @@
+# Emberfall: My Lord 👑🔥
+
+A pixel-art medieval story game. Your father is dead and the throne of **Emberfall** is yours. For nine days, petitioners walk up the red carpet to your throne: villagers, your family, a witch from the fen, a moneylender, a spy and the envoy of the Baron who wants your city. Every answer costs something. On the ninth day, Baron Vex's banners appear on the river.
+
+## The game
+
+- **4 resources:** Gold, Grain, Army and Favor. Let any one collapse and your reign ends early (famine, revolt, or the Guild owns you).
+- **9 days, 14 characters, 13 endings.** Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
+- **Animated throne room:** visitors walk in through the great doors, talk with animated portraits and react with emotes and particles.
+- **Synthesized music and sound:** an original medieval theme played on lute by day, bells by night and war drums on day 9; footsteps, doors, coins, bells and a babble "voice" for each character. No audio files.
+- **Animated castle vistas** for the title, each night and every ending (dawn, moonlight, fire, snow).
+- **Chronicle** of your big decisions, an **endings collection**, autosave, and Music/Sound switches.
+- Fully offline. No accounts, no ads, no tracking.
+
+## Files
+
+| Path | What it is |
+|---|---|
+| `index.html` | The whole game: one file of HTML, CSS and JavaScript. All art is drawn in code. |
+| `fonts/` | Pixelify Sans (SIL Open Font License, see `fonts/OFL.txt`), bundled so the game works offline. |
+| `app/` | Capacitor wrapper for the iPhone and Android apps (same setup as TypeMonkey). |
+| `app/resources/` | App icon, adaptive-icon layers and splash screens. |
+| `app/store/` | App Store listing text (`APP_STORE.md`) and 1206×2622 screenshots. |
+
+The Privacy Policy, Terms, Support and marketing pages live on the public website repo, at
+**https://wolfhopecom.github.io/emberfall/**, so this repo can be made private at any time.
+
+## Play it
+
+Open `index.html` in Safari or Chrome. Tap **New Reign** (the tap also starts the music).
+Add `?fast` to the address to skip animations when testing.
+
+## Build the iPhone app (on the Mac)
+
+```
+cd app
+npm install
+python3 build_app.py --setup     # first time only: adds ios/ and android/ and the icons
+npm run ios                       # rebuilds and opens Xcode
+```
+
+After changing `index.html`, run `python3 build_app.py` again, then **Product → Clean Build Folder** and **▶ Run** in Xcode.
+To set the version: `python3 build_app.py --set-version 1.0.1`.
+
+To re-render the icon, splash screens and App Store screenshots: `cd app && npx playwright install chromium && npm run render`.
+
+## Writing more story
+
+Events live in the `E` array in `index.html`. Each one is:
+
+```js
+{day:3, who:"morwen", req:()=>has("someFlag"),   // req is optional
+ text:"What they say.",
+ choices:[{t:"Button text", cost:{gold:20},        // cost is optional
+           go:()=>{ fx({gold:-20,favor:5}); set("flag"); note("Line for the Chronicle."); return "Their reply."; }}]}
+```
+
+Random everyday petitions live in `R`. Endings are in `ENDINGS`, and `battle()` decides which one the ninth day leads to.
+
+© 2026 Wolfhope. All rights reserved.

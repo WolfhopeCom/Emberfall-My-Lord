@@ -1,0 +1,40 @@
+{
+  "appId": "com.wolfhope.emberfall",
+  "appName": "Emberfall",
+  "webDir": "www",
+  "backgroundColor": "#120B16",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "capacitor",
+    "hostname": "localhost"
+  },
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#120B16",
+    "preferredContentMode": "mobile",
+    "scrollEnabled": false,
+    "allowsLinkPreview": false
+  },
+  "android": {
+    "backgroundColor": "#120B16",
+    "allowMixedContent": false,
+    "captureInput": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 800,
+      "launchAutoHide": true,
+      "launchFadeOutDuration": 300,
+      "backgroundColor": "#120B16",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "overlaysWebView": false,
+      "backgroundColor": "#1A1220"
+    }
+  }
+}

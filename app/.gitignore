@@ -1,0 +1,35 @@
+# dependencies and build outputs (commit ios/ and android/ themselves)
+node_modules/
+www/
+__pycache__/
+.DS_Store
+
+# copies of www/ and config that `npx cap sync` writes into the native projects
+ios/App/App/public/
+ios/App/App/capacitor.config.json
+ios/App/App/config.xml
+ios/App/build/
+ios/App/DerivedData/
+ios/App/Pods/
+ios/App/output/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcuserdata/
+ios/capacitor-cordova-ios-plugins/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/
+android/local.properties
+android/.idea/
+android/*.iml
+
+# signing secrets: never commit
+*.jks
+*.keystore
+android/keystore.properties
+*.p12
+*.mobileprovision

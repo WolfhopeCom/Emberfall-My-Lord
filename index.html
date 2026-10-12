@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Emberfall: My Lord</title>
+<style>
+@font-face{font-family:'Pixelify Sans';src:url('fonts/PixelifySans.ttf') format('truetype');font-weight:400 700;font-display:block}
+:root{--ink:#2a1810;--parch:#efdcb2;--parch2:#e2c896;--gold:#f2c14e;--blood:#8a1f2a;--night:#0b0710}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+html,body{margin:0;height:100%;background:var(--night);font-family:'Pixelify Sans',monospace;overflow:hidden;color:var(--ink)}
+canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+img.px{image-rendering:pixelated}
+#app{position:relative;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;background:#120b16;overflow:hidden}
+/* HUD */
+#hud{background:#1a1220;padding:calc(env(safe-area-inset-top) + 8px) 10px 6px;border-bottom:3px solid #000;box-shadow:inset 0 -2px 0 #5a4020;z-index:2}
+#stats{display:flex;justify-content:space-between}
+.stat{display:flex;align-items:center;gap:5px;color:#f4e2c0;font-size:20px;font-weight:700;position:relative;min-width:64px}
+.stat img{width:24px;height:24px}
+.stat small{display:block;font-size:10px;font-weight:400;color:#b8a080;letter-spacing:1px;line-height:1}
+.stat b{line-height:1;display:inline-block}
+.stat.bump b{animation:bump .45s}
+@keyframes bump{30%{transform:scale(1.45)}}
+.float{position:absolute;left:28px;top:-2px;font-weight:700;font-size:16px;pointer-events:none;animation:up 1.4s forwards;text-shadow:2px 2px 0 #000}
+@keyframes up{to{transform:translateY(-22px);opacity:0}}
+#hudrow{display:flex;justify-content:space-between;align-items:center;margin-top:5px}
+#daylbl{color:var(--gold);font-size:14px;letter-spacing:2px}
+.hb{font-family:inherit;background:#2e2234;color:#f4e2c0;border:2px solid #000;box-shadow:inset 0 0 0 1px #5a4020;font-size:13px;padding:3px 9px;margin-left:6px;cursor:pointer}
+/* scene */
+#scene{width:100%;height:auto;background:#000}
+/* dialog */
+#dialog{flex:1;margin:8px 8px calc(env(safe-area-inset-bottom) + 8px);background:var(--parch);border:4px solid var(--ink);
+ box-shadow:inset 0 0 0 3px #c9a46a,inset 0 0 30px rgba(140,90,30,.35),0 4px 0 #000;padding:12px 12px 10px;overflow-y:auto;position:relative}
+.head{display:flex;gap:10px;align-items:center}
+#pbox{width:84px;height:84px;flex:none;background:#2a1d2e;border:3px solid var(--ink);box-shadow:inset 0 0 0 2px #6a4a2a;position:relative;overflow:hidden}
+#pbox::after{content:"";position:absolute;inset:0;background:radial-gradient(transparent 55%,rgba(0,0,0,.35))}
+#portrait{width:78px;height:78px}
+#who{font-weight:700;font-size:21px;color:var(--blood);line-height:1.05}
+#role{font-size:14px;color:#6a4a2a;margin-top:3px}
+#txt{font-size:18px;line-height:1.32;margin:10px 2px 8px;min-height:4.2em;white-space:pre-line}
+#txt.wait{color:#8a6a4a;font-style:italic}
+#choices{display:flex;flex-direction:column;gap:9px;padding-bottom:4px}
+.ch{font-family:inherit;font-size:17px;text-align:left;padding:10px 12px 10px 28px;background:#fff4dc;color:var(--ink);border:3px solid var(--ink);
+ box-shadow:0 4px 0 var(--ink);cursor:pointer;position:relative;animation:slide .3s backwards}
+.ch::before{content:"▸";position:absolute;left:10px;color:#a03020}
+.ch:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.ch:disabled{opacity:.45}
+.ch .cost{display:flex;gap:8px;font-size:13px;color:#7a4a2a;margin-top:3px;align-items:center}
+.ch .cost img{width:14px;height:14px;vertical-align:-2px;margin-right:2px}
+.ch.go{background:#a8322a;color:#fff4dc;text-align:center;padding-left:12px;font-weight:700;letter-spacing:1px}
+.ch.go::before{content:""}
+@keyframes slide{from{opacity:0;transform:translateX(-14px)}}
+/* overlays */
+#overlay,#modal{position:absolute;inset:0;display:none;flex-direction:column;background:var(--night);z-index:10;overflow-y:auto}
+#modal{z-index:20;background:rgba(5,3,8,.82);align-items:center;justify-content:center;padding:20px}
+.cwrap{position:relative;flex:none}
+#castle{width:100%;height:auto}
+.logo{position:absolute;left:0;right:0;top:3%;text-align:center;pointer-events:none;animation:fade 1.6s}
+.logo h1{margin:0;font-size:min(13vw,62px);font-weight:700;color:var(--gold);letter-spacing:3px;
+ text-shadow:3px 0 #3a1408,-3px 0 #3a1408,0 3px #3a1408,0 -3px #3a1408,3px 3px #3a1408,-3px 3px #3a1408,3px -3px #3a1408,-3px -3px #3a1408,0 7px #7a2a10,0 0 30px rgba(255,140,40,.5)}
+.logo h2{margin:4px 0 0;color:#f4e2c0;letter-spacing:9px;font-size:18px;text-shadow:2px 2px 0 #000}
+.ovb{flex:1;padding:18px 22px calc(env(safe-area-inset-bottom) + 20px);text-align:center;color:#f4e2c0;display:flex;flex-direction:column;align-items:center;animation:fade .8s}
+.ovb h3{font-size:28px;color:var(--gold);margin:4px 0 8px;text-shadow:3px 3px 0 #000}
+.ovb p{font-size:18px;line-height:1.4;max-width:440px;margin:6px 0}
+.ovb .dim{opacity:.65;font-size:15px}
+.pb{font-family:inherit;font-size:19px;font-weight:700;min-width:240px;margin:6px;padding:11px 16px;background:#a8322a;color:#fff4dc;border:3px solid #000;
+ box-shadow:inset 0 0 0 2px #e0705a,0 4px 0 #000;cursor:pointer;letter-spacing:1px}
+.pb.alt{background:#3a2c40;box-shadow:inset 0 0 0 2px #6a5070,0 4px 0 #000}
+.pb:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #e0705a,0 1px 0 #000}
+.sumrow{display:flex;justify-content:space-between;width:250px;font-size:18px;margin:3px 0}
+.sumrow img{width:18px;height:18px;vertical-align:-3px;margin-right:6px}
+.box{background:#1e1424;border:3px solid #000;box-shadow:inset 0 0 0 2px #5a4020;padding:18px;color:#f4e2c0;max-width:420px;width:100%;max-height:85%;overflow:auto;text-align:center;animation:fade .3s}
+.box h3{color:var(--gold);margin:0 0 12px;font-size:24px}
+.box ul{text-align:left;padding-left:18px;font-size:16px;line-height:1.45}
+.elist div{padding:7px 4px;border-bottom:1px dashed #4a3a50;font-size:16px;text-align:left}
+.elist .lock{opacity:.4}
+.siege p{opacity:0;animation:appear 1s forwards}
+@keyframes appear{to{opacity:1}}
+#card{position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(5,3,8,.85);color:var(--gold);pointer-events:none}
+#card b{font-size:54px;text-shadow:4px 4px 0 #3a1408;animation:pop .6s}
+#card span{color:#f4e2c0;font-size:16px;letter-spacing:4px;margin-top:6px}
+@keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}}
+@keyframes fade{from{opacity:0}}
+</style>
+</head>
+<body>
+<div id="app">
+ <div id="hud">
+  <div id="stats"></div>
+  <div id="hudrow"><div id="daylbl">EMBERFALL</div><div><button class="hb" onclick="openChron()">Chronicle</button><button class="hb" onclick="openSettings()">⚙</button></div></div>
+ </div>
+ <canvas id="scene" width="192" height="120"></canvas>
+ <div id="dialog">
+  <div class="head"><div id="pbox"><canvas id="portrait" width="32" height="32"></canvas></div><div><div id="who"></div><div id="role"></div></div></div>
+  <div id="txt"></div>
+  <div id="choices"></div>
+ </div>
+ <div id="card"><b></b><span></span></div>
+ <div id="overlay"></div>
+ <div id="modal"></div>
+</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const FAST=new URLSearchParams(location.search).has('fast');
+function shade(hex,a){const n=parseInt(hex.slice(1),16);const f=v=>Math.max(0,Math.min(255,Math.round(a<0?v*(1+a):v+(255-v)*a)));
+ return '#'+((1<<24)|(f(n>>16)<<16)|(f(n>>8&255)<<8)|f(n&255)).toString(16).slice(1)}
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+
+/* =========================================================
+   CHARACTERS
+   ========================================================= */
+const C={
+ aldric:{n:"Aldric",r:"Your old steward",skin:"#e8c39e",hair:"#c8c8c8",robe:"#5b4128",chain:1,beard:1,mood:"kind",voice:170},
+ elinor:{n:"Lady Elinor",r:"Your wife",skin:"#f1cfae",hair:"#a8401c",robe:"#2f6e44",acc:"circlet",long:1,dress:1,blush:1,mood:"kind",voice:330},
+ maren:{n:"Maren",r:"Your eldest daughter",skin:"#f3d4b5",hair:"#e8bf5a",robe:"#3a62a0",long:1,dress:1,blush:1,mood:"neutral",voice:390},
+ tobin:{n:"Tobin",r:"Your son",skin:"#f0cba6",hair:"#3a2618",robe:"#9a2a2a",blush:1,mood:"neutral",voice:300},
+ brannoc:{n:"Captain Brannoc",r:"Master of your guard",skin:"#b07a52",hair:"#2a1a10",robe:"#5c6470",acc:"helm",beard:1,scar:1,tabard:"#8a1f2a",mood:"stern",voice:115},
+ cuthbert:{n:"Brother Cuthbert",r:"Abbot of Emberfall",skin:"#efc9a2",hair:"#7a5a3a",robe:"#d8d0bf",trim:"#7a5a2a",acc:"tonsure",mood:"kind",voice:200},
+ morwen:{n:"Morwen",r:"The hedge-witch of the fen",skin:"#cfd8c4",hair:"#1a1a26",robe:"#4a2a62",acc:"hood",long:1,dress:1,eyes:"#5cf25c",lips:"#4a1a4a",mood:"sly",voice:250},
+ vexenvoy:{n:"Sir Gerrit",r:"Envoy of Baron Vex",skin:"#d9b391",hair:"#111111",robe:"#1d1d22",trim:"#9a1f1f",acc:"helm",plume:"#9a1f1f",mood:"sly",voice:140},
+ merchant:{n:"Osric Fairweather",r:"Merchant of the Guild",skin:"#c8925e",hair:"#4a2a12",robe:"#a07a1a",trim:"#6a2a8a",acc:"hat",beard:1,mood:"sly",voice:235},
+ whisper:{n:"The Whisper",r:"A stranger in grey",skin:"#c9b49e",hair:"#333333",robe:"#4a4a52",acc:"hood",mask:1,mood:"stern",voice:210,eyes:"#9ab0c8"},
+ peasant:{n:"Hob the Miller",r:"A villager of Thornby",skin:"#d9a67a",hair:"#6a4a2a",robe:"#8a7050",beard:1,mood:"sad",voice:165},
+ widow:{n:"Widow Agna",r:"A villager of Thornby",skin:"#a87048",hair:"#999999",robe:"#5a4a44",acc:"hood",dress:1,mood:"sad",voice:280},
+ herald:{n:"Royal Herald",r:"Voice of King Osmund",skin:"#8a5a3a",hair:"#1a120a",robe:"#2a3a8a",trim:"#e0b040",acc:"hat",mood:"neutral",voice:260},
+ eastlord:{n:"Lord Harwin",r:"Lord of the Eastern Marches",skin:"#e0b48a",hair:"#dddddd",robe:"#2a4a6a",acc:"circlet",beard:1,mood:"stern",voice:145},
+ lord:{skin:"#ecc49c",hair:"#5a3418",robe:"#6a1f2a",trim:"#e0b040",crown:1,cape:"#4a1220"},
+ guard:{skin:"#d8a880",hair:"#3a2a1a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",trim:"#3a3030"},
+ guard2:{skin:"#8a5a3a",hair:"#1a1a1a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",trim:"#3a3030"},
+};
+
+/* full-body side sprite: x = center, y = feet */
+function drawBody(ctx,c,x,y,dir,o={}){
+ const P=(rx,ry,w,h,col)=>{if(!col)return;ctx.fillStyle=col;const yy=y-30+ry+(ry<25?(o.bob||0):0);const xx=dir>0?x-7+rx:x+7-rx-w;ctx.fillRect(Math.round(xx),Math.round(yy),w,h)};
+ const s=c.skin,ss=shade(s,-.2),h=c.hair,hs=shade(h,-.3),r=c.robe,rs=shade(r,-.32),rl=shade(r,.15),t=c.trim||"#d8a840",pants=shade(r,-.5),boot="#24181a";
+ if(c.long&&c.acc!=="hood")P(2,3,3,12,hs);
+ if(c.acc==="hood")P(2,2,3,14,rs);
+ if(c.cape)P(1,12,4,o.seated?13:15,c.cape);
+ if(o.seated){P(6,22,7,3,pants);P(11,25,2,5,pants);P(11,30,3,1,boot)}
+ else if(c.dress){P(4,29,2,1,boot);P(9,29,2,1,boot)}
+ else if(o.frame){P(8,25,2,4,pants);P(9,29,3,1,boot);P(3,25,2,4,shade(pants,-.25));P(2,29,3,1,boot)}
+ else{P(4,25,2,4,shade(pants,-.25));P(4,29,3,1,boot);P(8,25,2,4,pants);P(8,29,3,1,boot)}
+ const th=o.seated?11:12;
+ P(3,13,8,th,r);P(3,13,2,th,rs);P(9,14,1,th-2,rl);
+ if(c.dress&&!o.seated){P(2,20,10,9,r);P(2,20,2,9,rs);P(10,21,1,7,rl);P(2,28,10,1,shade(r,-.2))}
+ if(c.tabard){P(5,14,4,11,c.tabard);P(6,17,2,2,"#e0b040")}
+ P(3,20,8,1,t);
+ if(c.chain){P(5,14,5,1,"#e8c050");P(6,15,3,1,"#e8c050");P(7,16,1,1,"#e8c050")}
+ const ax=o.seated?7:(o.frame?8:6);
+ P(ax,14,2,7,rs);P(ax,21,2,2,s);
+ P(6,11,3,2,ss);
+ P(4,3,7,8,s);P(5,2,5,1,s);P(5,11,5,1,s);P(4,4,1,6,ss);P(11,6,1,2,s);
+ if(c.blush)P(9,8,1,1,"#e89a8a");
+ if(o.blink)P(9,7,1,1,shade(s,-.45));else P(9,6,1,2,c.eyes||"#1a1014");
+ P(8,5,2,1,hs);
+ if(c.beard){P(6,8,5,3,h);P(7,11,4,1,h)}
+ if(o.talk)P(9,9,2,2,"#3a1010");else P(9,9,2,1,c.beard?shade(h,-.45):(c.lips||"#8a3a3a"));
+ if(c.mask)P(7,8,5,3,"#2a2a30");
+ switch(c.acc){
+  case"helm":P(3,1,9,5,"#8e95a3");P(3,5,2,4,"#6c7280");P(5,2,3,1,"#c8cdd6");P(10,5,1,3,"#6c7280");if(c.plume)P(5,-2,4,3,c.plume);break;
+  case"hood":P(3,0,9,4,r);P(4,0,6,1,rl);P(3,3,2,8,r);P(10,1,2,3,rs);break;
+  case"hat":P(1,3,13,1,shade(r,-.35));P(4,0,7,3,r);P(4,2,7,1,t);P(3,-3,1,4,"#efe6d6");break;
+  case"tonsure":P(4,3,2,4,h);P(10,3,1,2,h);break;
+  default:P(4,1,7,3,h);P(3,2,3,6,h);P(10,2,1,2,h);P(5,1,3,1,shade(h,.25));
+ }
+ if(c.acc==="circlet"){P(4,3,7,1,"#e8c050");P(10,3,1,1,"#4ac0e0")}
+ if(c.crown){P(4,0,7,2,"#e8c050");P(4,-2,1,2,"#e8c050");P(7,-2,1,2,"#e8c050");P(10,-2,1,2,"#e8c050");P(7,0,1,1,"#d02030")}
+ if(c.long&&c.acc!=="hood")P(3,2,2,10,h);
+}
+
+/* 32x32 front portrait */
+function drawPortrait(ctx,c,o){
+ ctx.clearRect(0,0,32,32);if(!c)return;
+ const Q=(x,y,w,h,col)=>{if(col){ctx.fillStyle=col;ctx.fillRect(x,y,w,h)}};
+ const s=c.skin,ss=shade(s,-.18),sl=shade(s,.12),h=c.hair,hs=shade(h,-.3),hl=shade(h,.25),r=c.robe,rs=shade(r,-.3),rl=shade(r,.15),t=c.trim||"#d8a840";
+ if(c.long&&c.acc!=="hood"){Q(7,9,4,19,hs);Q(21,9,4,19,hs)}
+ if(c.acc==="hood")Q(5,6,22,26,rs);
+ Q(4,26,24,6,r);Q(22,26,6,6,rs);Q(6,27,4,5,rl);Q(3,28,1,4,r);Q(28,28,1,4,rs);
+ if(c.tabard){Q(11,27,10,5,c.tabard);Q(15,29,2,2,"#e0b040")}
+ Q(13,22,6,5,ss);
+ Q(12,26,8,1,t);Q(13,27,1,2,t);Q(18,27,1,2,t);Q(14,26,4,2,ss);Q(14,28,4,1,t);
+ if(c.chain)for(let i=0;i<8;i++)Q(8+i*2,29+(i>1&&i<6?1:0),1,1,"#e8c050");
+ Q(10,9,12,13,s);Q(11,8,10,1,s);Q(11,22,10,1,s);Q(13,23,6,1,ss);Q(20,10,2,11,ss);Q(10,10,1,8,sl);
+ Q(9,14,1,3,s);Q(22,14,1,3,ss);
+ const ec=c.eyes||"#2a1810",dk=shade(s,-.45);
+ if(o.blink){Q(12,15,3,1,dk);Q(17,15,3,1,dk)}
+ else{Q(12,14,3,2,"#f4efe6");Q(13,14,2,2,ec);Q(17,14,3,2,"#f4efe6");Q(17,14,2,2,ec);Q(13,14,1,1,"#ffffff");Q(17,14,1,1,"#ffffff")}
+ const m=c.mood;
+ if(m==="stern"){Q(12,12,2,1,hs);Q(14,13,1,1,hs);Q(17,13,1,1,hs);Q(18,12,2,1,hs)}
+ else if(m==="kind"||m==="sad"){Q(12,13,1,1,hs);Q(13,12,2,1,hs);Q(17,12,2,1,hs);Q(19,13,1,1,hs)}
+ else if(m==="sly"){Q(12,12,3,1,hs);Q(17,11,3,1,hs)}
+ else{Q(12,12,3,1,hs);Q(17,12,3,1,hs)}
+ Q(16,16,1,3,ss);Q(15,18,2,1,ss);
+ if(c.blush){Q(11,18,2,1,"#e8a090");Q(19,18,2,1,"#e8a090")}
+ if(c.scar)Q(19,12,1,6,"#7a3a30");
+ if(c.beard){Q(10,18,12,4,h);Q(11,22,10,2,h);Q(13,24,6,1,h);Q(12,18,8,1,hs);Q(20,18,2,6,hs)}
+ const lip=c.lips||"#8a3a3a";
+ if(o.talk){Q(14,20,4,2,"#3a1414");Q(15,21,2,1,"#b04848")}
+ else if(m==="kind"){Q(13,19,1,1,lip);Q(14,20,4,1,lip);Q(18,19,1,1,lip)}
+ else if(m==="sad"){Q(13,21,1,1,lip);Q(14,20,4,1,lip);Q(18,21,1,1,lip)}
+ else if(m==="sly"){Q(14,20,4,1,lip);Q(18,19,1,1,lip)}
+ else Q(14,20,4,1,lip);
+ if(c.mask){Q(10,17,12,6,"#2e2e36");Q(10,17,12,1,"#45454f")}
+ switch(c.acc){
+  case"helm":Q(8,3,16,8,"#8e95a3");Q(9,2,14,1,"#8e95a3");Q(8,10,3,9,"#6c7280");Q(21,10,3,9,"#6c7280");Q(15,10,2,7,"#6c7280");Q(11,4,6,1,"#c8cdd6");Q(8,9,16,1,"#5a5f6a");if(c.plume){Q(13,0,6,3,c.plume);Q(14,0,4,1,shade(c.plume,.3))}break;
+  case"hood":Q(8,3,16,6,r);Q(10,2,12,1,r);Q(6,7,4,21,r);Q(22,7,4,21,rs);Q(10,3,8,1,rl);Q(10,9,12,1,"rgba(0,0,0,.35)");Q(10,10,12,1,"rgba(0,0,0,.18)");if(c.long){Q(10,10,2,9,h);Q(20,10,2,9,h)}break;
+  case"hat":Q(4,8,24,2,shade(r,-.35));Q(9,1,14,7,r);Q(9,6,14,1,t);Q(10,2,3,4,rl);Q(23,0,2,8,"#efe6d6");Q(10,10,12,1,"rgba(0,0,0,.2)");break;
+  case"tonsure":Q(9,10,2,6,h);Q(21,10,2,6,h);Q(10,9,2,2,h);Q(20,9,2,2,h);Q(13,8,5,1,sl);break;
+  default:Q(9,6,14,4,h);Q(11,5,10,1,h);Q(9,9,2,5,h);Q(21,9,2,5,hs);Q(12,9,4,2,h);Q(18,9,3,1,h);Q(12,6,5,1,hl);
+ }
+ if(c.long&&c.acc!=="hood"){Q(8,9,2,16,h);Q(22,9,2,16,hs)}
+ if(c.acc==="circlet"){Q(9,9,14,1,"#e8c050");Q(15,8,2,2,"#4ac0e0")}
+}
+
+/* =========================================================
+   PIXEL ICONS
+   ========================================================= */
+function bmp(rows,pal){const c=document.createElement("canvas");c.width=rows[0].length;c.height=rows.length;const x=c.getContext("2d");
+ rows.forEach((r,y)=>[...r].forEach((ch,i)=>{if(pal[ch]){x.fillStyle=pal[ch];x.fillRect(i,y,1,1)}}));return c}
+const IP={k:"#3a2008",Y:"#f2c14e",y:"#c98a1a",W:"#fff6c0",g:"#8a6a2a",R:"#e0413a",r:"#a02020",P:"#ffb0a8",s:"#9aa4b0",S:"#e8eef4",b:"#6a4a2a",K:"#2a1810",O:"#f08020",w:"#f4ecd8"};
+const ICON={
+ gold:bmp(["..kkkk..",".kYYYYk.","kYWYYyYk","kYWYYyYk","kYYYYyYk","kYyyyyYk",".kYYYYk.","..kkkk.."],IP),
+ food:bmp(["..Y..Y..",".YyYYyY.","..YyyY..",".YyYYyY.","..YyyY..",".YyYYyY.","...gg...","...gg..."],IP),
+ men:bmp([".......S","......Ss",".....Ss.","....Ss..",".b.Ss...","..bs....","..Yb....",".Y..b..."],IP),
+ favor:bmp([".RR..RR.","RPRRRRRR","RPRRRRRr","RRRRRRRr",".RRRRRr.","..RRRr..","...Rr...","........"],IP),
+};
+const ICONURL={};for(const k in ICON)ICONURL[k]=ICON[k].toDataURL();
+const EMO={
+ heart:bmp([".RR.RR.","RPRRRRR","RRRRRRR",".RRRRR.","..RRR..","...R..."],IP),
+ coin:bmp(["..YYY..",".YWYYy.","YYWYYyY","YYYYYyY",".YyyyY.","..YYY.."],IP),
+ anger:bmp(["R.R.R.R",".RR.RR.","RR...RR",".RR.RR.","R.R.R.R"],IP),
+ dots:bmp([".......",".......","K.K.K..",],IP),
+ bang:bmp(["..R..","..R..","..R..","..R..",".....","..R.."],IP),
+ skull:bmp([".www.","wwwww","wKwKw","wwwww",".w.w."],IP),
+};
+const EMBLEM=bmp(["...Y...","..YY...","..YYY..",".YYOY..",".YOOYY.","YYOOOYY","YYOOOYY",".YYOYY.","..YYY.."],IP);
+
+/* =========================================================
+   AUDIO — all synthesized, no files needed
+   ========================================================= */
+const AU={ctx:null,musicOn:true,sfxOn:true,
+ init(){if(this.ctx){if(this.ctx.state!=="running")this.ctx.resume();return}
+  try{this.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){return}
+  const x=this.ctx;this.comp=x.createDynamicsCompressor();this.comp.connect(x.destination);
+  this.mg=x.createGain();this.mg.gain.value=0;this.mg.connect(this.comp);
+  this.sg=x.createGain();this.sg.gain.value=this.sfxOn?.6:0;this.sg.connect(this.comp);
+  const b=x.createBuffer(1,x.sampleRate,x.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;this.noiseBuf=b;
+  if(Music.want){const w=Music.want;Music.want=null;Music.play(w)}
+ }};
+try{const p=JSON.parse(localStorage.getItem("ef_prefs")||"{}");if(p.m===false)AU.musicOn=false;if(p.s===false)AU.sfxOn=false}catch(e){}
+const mtof=n=>440*Math.pow(2,(n-69)/12);
+function osc(type,f,t,dur,peak,dest,a=.005,filt=0,sus=0,f2=0){
+ const x=AU.ctx,o=x.createOscillator(),g=x.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+ let n=o;if(filt){const q=x.createBiquadFilter();q.type="lowpass";q.frequency.value=filt;o.connect(q);n=q}
+ n.connect(g);g.connect(dest);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(peak,t+a);
+ if(sus){g.gain.linearRampToValueAtTime(peak*.7,t+dur*.75);g.gain.linearRampToValueAtTime(0,t+dur)}else g.gain.exponentialRampToValueAtTime(.0001,t+a+dur);
+ o.start(t);o.stop(t+a+dur+.05)}
+function noise(t,dur,vol,dest,type="lowpass",freq=800){const x=AU.ctx,s=x.createBufferSource(),q=x.createBiquadFilter(),g=x.createGain();
+ s.buffer=AU.noiseBuf;q.type=type;q.frequency.value=freq;s.connect(q);q.connect(g);g.connect(dest);
+ g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+dur);s.start(t,Math.random()*.5);s.stop(t+dur+.02)}
+const INST={
+ pluck(n,t,v,d,len){const f=mtof(n);osc("triangle",f,t,Math.min(.9,len+.25),v,d,.004);osc("square",f,t,.16,v*.3,d,.003,2200)},
+ harp(n,t,v,d){const f=mtof(n);osc("sine",f,t,.9,v,d,.004);osc("triangle",f*2,t,.25,v*.3,d,.004)},
+ bell(n,t,v,d){const f=mtof(n);osc("sine",f,t,1.8,v,d,.008);osc("sine",f*2.756,t,.5,v*.22,d,.005)},
+ brass(n,t,v,d,len){const f=mtof(n),L=Math.max(.15,len*.9);osc("sawtooth",f,t,L,v,d,.03,1000,1);osc("sawtooth",f*1.006,t,L,v*.7,d,.03,900,1)},
+ drone(n,t,v,d,len){osc("triangle",mtof(n),t,len,v,d,.25,0,1);osc("sine",mtof(n+7),t,len,v*.4,d,.3,0,1)},
+ drum(t,v,d){osc("sine",130,t,.28,v,d,.002,0,0,45);noise(t,.08,v*.25,d,"lowpass",300)},
+ tick(t,v,d){noise(t,.035,v,d,"highpass",6000)},
+};
+const SFX={
+ ok(){return AU.ctx&&AU.sfxOn},
+ blip(v){if(!this.ok())return;osc("square",v*(.94+Math.random()*.12),AU.ctx.currentTime,.035,.03,AU.sg,.002,2600)},
+ click(){if(!this.ok())return;const t=AU.ctx.currentTime;osc("square",660,t,.04,.05,AU.sg,.002,3000);osc("square",990,t+.035,.05,.04,AU.sg,.002,3000)},
+ step(){if(!this.ok())return;noise(AU.ctx.currentTime,.06,.12,AU.sg,"lowpass",420)},
+ door(){if(!this.ok())return;const t=AU.ctx.currentTime;osc("sawtooth",70,t,.55,.05,AU.sg,.05,700,1,120);noise(t,.35,.05,AU.sg,"bandpass",500)},
+ thud(){if(!this.ok())return;const t=AU.ctx.currentTime;INST.drum(t,.35,AU.sg);noise(t,.15,.2,AU.sg,"lowpass",220)},
+ coin(){if(!this.ok())return;const t=AU.ctx.currentTime;osc("square",988,t,.07,.05,AU.sg,.002,4000);osc("square",1319,t+.07,.28,.05,AU.sg,.002,4000)},
+ heart(){if(!this.ok())return;const t=AU.ctx.currentTime;INST.bell(84,t,.12,AU.sg);INST.bell(88,t+.12,.12,AU.sg);INST.bell(91,t+.24,.1,AU.sg)},
+ good(){if(!this.ok())return;const t=AU.ctx.currentTime;[62,66,69,74].forEach((n,i)=>INST.pluck(n,t+i*.07,.12,AU.sg,.4))},
+ bad(){if(!this.ok())return;const t=AU.ctx.currentTime;INST.brass(50,t,.06,AU.sg,.3);INST.brass(46,t+.25,.06,AU.sg,.6);INST.drum(t,.3,AU.sg)},
+ toll(){if(!this.ok())return;const t=AU.ctx.currentTime;INST.bell(55,t,.25,AU.sg);INST.bell(62,t+.02,.12,AU.sg);INST.bell(55,t+1.4,.2,AU.sg)},
+ fanfare(){if(!this.ok())return;const t=AU.ctx.currentTime;[62,66,69].forEach(n=>INST.brass(n,t,.05,AU.sg,.25));[62,66,69].forEach(n=>INST.brass(n,t+.3,.05,AU.sg,.15));[74,78,81].forEach(n=>INST.brass(n,t+.5,.05,AU.sg,1.4))},
+ doom(){if(!this.ok())return;const t=AU.ctx.currentTime;INST.drum(t,.5,AU.sg);INST.brass(38,t,.07,AU.sg,2.2);INST.brass(41,t,.05,AU.sg,2.2);INST.drum(t+.6,.4,AU.sg)},
+ page(){if(!this.ok())return;noise(AU.ctx.currentTime,.22,.08,AU.sg,"bandpass",2400)},
+ war(){if(!this.ok())return;const t=AU.ctx.currentTime;for(let i=0;i<6;i++)INST.drum(t+i*.22,.4,AU.sg)},
+};
+/* original melody in D dorian, reused across moods */
+const MEL=[[62,1],[69,1],[67,.5],[65,.5],[64,1],[65,.5],[67,.5],[69,1],[62,2],
+ [72,1],[69,1],[71,.5],[69,.5],[67,1],[69,1],[65,.5],[64,.5],[62,2],
+ [65,1],[67,.5],[69,.5],[72,1],[74,1],[72,.5],[69,.5],[67,1],[69,2],
+ [74,1],[72,.5],[69,.5],[67,1],[65,1],[64,.5],[65,.5],[64,1],[62,2]];
+const MELM=MEL.map(([n,d])=>[n===71?70:n,d]);
+const BASS=[50,50,48,50,53,45,50,45];
+const TRACKS={
+ hall:{bpm:92,lead:"pluck",vol:.2,mel:MEL,arp:"harp",arpVol:.045,drums:"light"},
+ night:{bpm:56,lead:"bell",vol:.1,mel:MEL,oct:12,arp:"harp",arpVol:.035},
+ battle:{bpm:136,lead:"brass",vol:.055,mel:MELM,arp:"pluck",arpVol:.035,drums:"heavy"},
+};
+const Music={cur:null,want:null,ptr:0,events:[],
+ play(name){if(!AU.ctx){this.want=name;return}if(this.cur===name)return;
+  const g=AU.mg.gain,now=AU.ctx.currentTime;g.cancelScheduledValues(now);g.setValueAtTime(g.value,now);g.linearRampToValueAtTime(0,now+.4);
+  clearTimeout(this.sw);this.cur=name;
+  this.sw=setTimeout(()=>{this.build(name);this.ptr=0;this.loopStart=AU.ctx.currentTime+.05;const n=AU.ctx.currentTime;
+   g.cancelScheduledValues(n);g.setValueAtTime(0,n);g.linearRampToValueAtTime(AU.musicOn?.5:0,n+.8)},420);
+  if(!this.timer)this.timer=setInterval(()=>this.tick(),30)},
+ build(name){const T=TRACKS[name],ev=[];let b=0;
+  for(const[n,d]of T.mel){ev.push({b,k:"lead",n:n+(T.oct||0),d});b+=d}
+  BASS.forEach((r,i)=>{ev.push({b:i*4,k:"bass",n:r-12,d:4});[12,19,24,19].forEach((o,j)=>ev.push({b:i*4+j+.5,k:"arp",n:r+o}));
+   if(T.drums==="light"){ev.push({b:i*4,k:"drum",v:.3});ev.push({b:i*4+2,k:"drum",v:.15});ev.push({b:i*4+1,k:"tick",v:.05});ev.push({b:i*4+3,k:"tick",v:.05})}
+   if(T.drums==="heavy")for(let j=0;j<4;j++){ev.push({b:i*4+j,k:"drum",v:j%2?.25:.42});ev.push({b:i*4+j+.5,k:"tick",v:.07})}});
+  ev.sort((a,c)=>a.b-c.b);this.events=ev;this.L=b;this.spb=60/T.bpm;this.T=T},
+ tick(){if(!this.events.length||!AU.ctx)return;const x=AU.ctx,ahead=x.currentTime+.2;
+  for(let guard=0;guard<5000;guard++){if(this.ptr>=this.events.length){this.ptr=0;this.loopStart+=this.L*this.spb}
+   const e=this.events[this.ptr],t=this.loopStart+e.b*this.spb;if(t>ahead)break;
+   if(t>=x.currentTime-.05&&AU.musicOn)this.fire(e,t);this.ptr++}},
+ fire(e,t){const T=this.T,d=AU.mg;
+  if(e.k==="lead")INST[T.lead](e.n,t,T.vol,d,e.d*this.spb);
+  else if(e.k==="bass")INST.drone(e.n,t,.09,d,e.d*this.spb);
+  else if(e.k==="arp")INST[T.arp](e.n,t,T.arpVol,d,this.spb);
+  else if(e.k==="drum")INST.drum(t,e.v,d);else if(e.k==="tick")INST.tick(t,e.v,d)}
+};
+document.addEventListener("pointerdown",()=>AU.init(),{capture:true});
+document.addEventListener("visibilitychange",()=>{if(!AU.ctx)return;document.hidden?AU.ctx.suspend():AU.ctx.resume()});
+
+/* =========================================================
+   THRONE ROOM SCENE
+   ========================================================= */
+const W=192,H=120,cv=$("scene"),g=cv.getContext("2d");
+const SC={t:0,door:0,doorT:0,walker:null,parts:[],shake:0,phase:"day",emote:null,BG:null,talk:false};
+const TORCH=[[38,50],[128,50],[157,44]];
+function arch(ctx,x,y,w,h,col){const r=w/2;for(let i=0;i<h;i++){let inset=0;if(i<r){inset=Math.round(r-Math.sqrt(r*r-(r-i)*(r-i)))}ctx.fillStyle=typeof col==="function"?col(i/h):col;ctx.fillRect(x+inset,y+i,w-inset*2,1)}}
+function lerpCol(a,b,t){const A=parseInt(a.slice(1),16),B=parseInt(b.slice(1),16);const m=(s)=>Math.round(((A>>s)&255)*(1-t)+((B>>s)&255)*t);return `rgb(${m(16)},${m(8)},${m(0)})`}
+function banner(ctx,x,y,w,h){ctx.fillStyle="#c99a3a";ctx.fillRect(x-2,y,w+4,2);ctx.fillStyle="#8c1f2c";ctx.fillRect(x,y+2,w,h);ctx.fillStyle="#6a1520";ctx.fillRect(x,y+2,2,h);
+ ctx.fillStyle="#a83040";ctx.fillRect(x+w-1,y+2,1,h);ctx.fillStyle="#c99a3a";ctx.fillRect(x,y+4,w,1);ctx.fillRect(x,y+h-1,w,1);
+ const half=w/2;for(let i=0;i<half;i++){ctx.fillStyle=i===0?"#c99a3a":"#8c1f2c";ctx.fillRect(x,y+2+h+i,half-i,1);ctx.fillRect(x+half+i,y+2+h+i,half-i,1)}
+ ctx.drawImage(EMBLEM,Math.round(x+w/2-3.5),y+Math.round(h/2-3))}
+function buildBG(phase){
+ const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");seed=11;
+ x.fillStyle="#1d1622";x.fillRect(0,0,W,86);
+ const bp=["#2f2636","#2b2232","#33293b","#2d2434"];
+ for(let row=0;row<15;row++){const y=row*6,off=row%2?6:0;for(let bx=-off;bx<W;bx+=12){x.fillStyle=bp[Math.floor(rnd()*4)];x.fillRect(bx+1,y+1,10,4);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(bx+1,y+1,10,1)}}
+ const gr=x.createLinearGradient(0,0,0,70);gr.addColorStop(0,"rgba(0,0,0,.5)");gr.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gr;x.fillRect(0,0,W,70);
+ const sky={day:["#8fc3ea","#d8eef8"],dusk:["#d0503a","#f2a860"],night:["#141c44","#2c3a74"]}[phase];
+ for(const wx of[50,104]){arch(x,wx-2,12,18,40,"#4e4458");arch(x,wx,14,14,36,t=>lerpCol(sky[0],sky[1],t));
+  if(phase==="night"){x.fillStyle="#fff";x.fillRect(wx+3,20,1,1);x.fillRect(wx+10,26,1,1);x.fillRect(wx+5,32,1,1);x.fillStyle="#f0ead0";x.fillRect(wx+8,18,3,3)}
+  if(phase==="day"){x.fillStyle="rgba(255,255,255,.6)";x.fillRect(wx+2,22,4,1);x.fillRect(wx+3,21,2,1)}
+  x.fillStyle="#2a2232";x.fillRect(wx+6,14,2,36);x.fillRect(wx,31,14,1);x.fillStyle="#5c5266";x.fillRect(wx-3,50,20,2)}
+ banner(x,78,2,12,32);banner(x,167,0,16,24);
+ x.fillStyle="#4a3f54";x.fillRect(0,82,W,4);x.fillStyle="#5e5268";x.fillRect(0,82,W,1);x.fillStyle="#251d2b";x.fillRect(0,85,W,1);
+ const rows=[86,91,97,104,112,121];
+ for(let i=0;i<rows.length-1;i++){const y=rows[i],hh=rows[i+1]-y,tw=12+i*3,off=i%2?tw/2:0;
+  for(let fx=-off;fx<W;fx+=tw){x.fillStyle=((fx/tw|0)+i)%2?"#3d3244":"#362c3d";x.fillRect(fx,y,tw,hh);x.fillStyle="#2a2130";x.fillRect(fx,y,1,hh);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(fx+1,y,tw-1,1)}
+  x.fillStyle="#2a2130";x.fillRect(0,y,W,1)}
+ x.fillStyle="#8c2232";x.fillRect(10,98,142,10);x.fillStyle="#c99a3a";x.fillRect(10,98,142,1);x.fillRect(10,107,142,1);
+ x.fillStyle="#a83444";for(let px=14;px<150;px+=8){x.fillRect(px,102,2,2)}x.fillStyle="#241a22";x.fillRect(10,108,142,1);
+ x.fillStyle="#5c5068";x.fillRect(150,84,42,5);x.fillStyle="#6e627a";x.fillRect(150,84,42,1);x.fillStyle="#463c50";x.fillRect(150,89,42,15);x.fillStyle="#3a3044";x.fillRect(150,96,42,1);x.fillStyle="#2a2130";x.fillRect(150,104,42,1);
+ x.fillStyle="#8a6420";x.fillRect(164,32,22,52);x.fillStyle="#c99a3a";x.fillRect(165,33,20,50);x.fillStyle="#6a1a34";x.fillRect(167,37,16,35);
+ x.fillStyle="#521428";x.fillRect(167,37,3,35);x.fillStyle="#8a2a4a";for(let ty=41;ty<70;ty+=8)for(let tx=172;tx<182;tx+=5)x.fillRect(tx,ty,1,1);
+ x.fillStyle="#e0b850";x.fillRect(163,28,4,5);x.fillRect(183,28,4,5);x.fillRect(165,33,20,1);
+ x.fillStyle="#c99a3a";x.fillRect(158,71,28,4);x.fillStyle="#e8c860";x.fillRect(158,71,28,1);x.fillStyle="#8a6420";x.fillRect(158,75,28,9);x.fillStyle="#6a4a18";x.fillRect(160,78,2,6);x.fillRect(182,78,2,6);
+ return c}
+const VIG=(()=>{const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");const r=x.createRadialGradient(W/2,H*.55,40,W/2,H*.55,130);r.addColorStop(0,"rgba(0,0,0,0)");r.addColorStop(1,"rgba(0,0,0,.6)");x.fillStyle=r;x.fillRect(0,0,W,H);return c})();
+function setPhase(p){if(SC.phase!==p||!SC.BG){SC.phase=p;SC.BG=buildBG(p)}}
+function part(o){SC.parts.push(Object.assign({vx:0,vy:0,life:40,max:40,sz:1,grav:0},o))}
+const bobOf=k=>((SC.t+k*23)%80)<40?0:1, blinkOf=k=>((SC.t+k*97)%230)<6;
+function drawDoor(x){
+ arch(x,4,32,28,54,"#4e4458");arch(x,6,35,24,51,"#5e3c22");
+ x.fillStyle="#4a2e1a";for(let i=9;i<30;i+=3)x.fillRect(i,38,1,48);
+ x.fillStyle="#2a2226";x.fillRect(6,48,24,2);x.fillRect(6,74,24,2);
+ const gw=Math.round(22*SC.door);
+ if(gw>0){x.fillStyle="#0c0810";x.fillRect(18-gw/2,37,gw,49);x.fillStyle="#3a2414";x.fillRect(18-gw/2-1,37,1,49);x.fillRect(18+gw/2,37,1,49);
+  x.fillStyle="rgba(255,190,110,.12)";x.fillRect(18-gw/2,37,gw,49)}
+ else{x.fillStyle="#c99a3a";x.fillRect(15,60,2,2);x.fillRect(19,60,2,2)}
+}
+function drawScene(){
+ const x=g;SC.t++;x.save();
+ if(SC.shake>0){x.translate(Math.round((Math.random()-.5)*SC.shake),Math.round((Math.random()-.5)*SC.shake));SC.shake*=.86;if(SC.shake<.6)SC.shake=0}
+ x.drawImage(SC.BG,0,0);
+ if(SC.phase!=="night"){x.fillStyle=SC.phase==="dusk"?"rgba(255,140,80,.07)":"rgba(255,240,200,.07)";
+  for(const wx of[50,104]){x.beginPath();x.moveTo(wx,50);x.lineTo(wx+14,50);x.lineTo(wx+40,118);x.lineTo(wx+18,118);x.closePath();x.fill()}
+  if(SC.t%14===0)part({x:50+Math.random()*80,y:60+Math.random()*50,vx:(Math.random()-.5)*.1,vy:-.05,life:160,max:160,col:"#fff4d0",dust:1})}
+ drawDoor(x);
+ for(const[tx,ty]of TORCH){x.fillStyle="#3a3030";x.fillRect(tx,ty,2,5);x.fillStyle="#5a4a3a";x.fillRect(tx-1,ty-1,4,2);
+  const f=Math.floor(SC.t/4+tx)%3;x.fillStyle="#f08020";x.fillRect(tx-1,ty-5-f%2,4,5);x.fillStyle="#ffd060";x.fillRect(tx,ty-4-f,2,4);x.fillStyle="#fff4c0";x.fillRect(tx,ty-2,1,2);
+  if(Math.random()<.04)part({x:tx+1,y:ty-6,vx:(Math.random()-.5)*.3,vy:-.4,life:50,max:50,col:Math.random()<.5?"#ffb040":"#ff7020"})}
+ drawBody(x,C.guard,70,88,1,{bob:bobOf(0),blink:blinkOf(1)});x.fillStyle="#6a4a2a";x.fillRect(77,44,1,44);x.fillStyle="#c8cdd6";x.fillRect(76,41,3,3);x.fillRect(77,39,1,2);
+ drawBody(x,C.guard2,142,88,-1,{bob:bobOf(3),blink:blinkOf(4)});x.fillStyle="#6a4a2a";x.fillRect(135,44,1,44);x.fillStyle="#c8cdd6";x.fillRect(134,41,3,3);x.fillRect(135,39,1,2);
+ drawBody(x,C.lord,174,79,-1,{seated:1,bob:bobOf(2),blink:blinkOf(2)});
+ x.fillStyle="#c99a3a";x.fillRect(160,64,4,8);x.fillStyle="#e8c860";x.fillRect(160,64,4,1);
+ const wag=Math.floor(SC.t/(SC.walker?6:14))%2,br=bobOf(5);
+ x.fillStyle="#7a5030";x.fillRect(138,95-br,11,4+br);x.fillRect(134,93,5,4);x.fillStyle="#5a3a20";x.fillRect(139,98,9,1);x.fillRect(132,95,2,2);
+ x.fillStyle="#111";x.fillRect(132,95,1,1);x.fillRect(135,94,1,1);x.fillStyle="#4a2a18";x.fillRect(137,93,2,3);x.fillStyle="#6a4428";x.fillRect(132,98,5,1);
+ x.fillStyle="#7a5030";x.fillRect(149,wag?93:95,3,1);x.fillRect(148,94,1,1);
+ const w=SC.walker;
+ if(w&&!(w.waitDoor&&SC.door<.8)){
+  const moving=Math.abs(w.target-w.x)>.5;
+  drawBody(x,w.c,w.x,104,w.dir,{frame:moving?w.frame:0,bob:moving?w.frame:bobOf(6),blink:!moving&&blinkOf(7),talk:SC.talk&&(SC.t%10<5)});
+  x.fillStyle="rgba(0,0,0,.25)";x.fillRect(Math.round(w.x)-6,104,12,1);
+ }
+ if(SC.emote&&w){const e=SC.emote;e.t++;const by=Math.round(w.x)-6,pop=e.t<6?6-e.t:0,yy=58-pop+(e.t>80?(e.t-80)*.5:0);
+  x.globalAlpha=e.t>80?Math.max(0,1-(e.t-80)/20):1;
+  x.fillStyle="#2a1810";x.fillRect(by-1,yy-1,13,11);x.fillStyle="#f4ecd8";x.fillRect(by,yy,11,9);x.fillStyle="#2a1810";x.fillRect(by+4,yy+9,3,1);x.fillRect(by+5,yy+10,1,1);
+  const im=EMO[e.type];x.drawImage(im,by+Math.round((11-im.width)/2),yy+Math.round((9-im.height)/2));x.globalAlpha=1;if(e.t>100)SC.emote=null}
+ for(let i=SC.parts.length-1;i>=0;i--){const p=SC.parts[i];p.x+=p.vx;p.y+=p.vy;p.vy+=p.grav;p.life--;
+  if(p.dust)p.vx+=(Math.random()-.5)*.02;
+  if(p.life<=0){SC.parts.splice(i,1);continue}
+  x.globalAlpha=p.dust?Math.sin(Math.PI*p.life/p.max)*.6:Math.min(1,p.life/p.max*1.5);x.fillStyle=p.col;x.fillRect(Math.round(p.x),Math.round(p.y),p.sz,p.sz)}
+ x.globalAlpha=1;
+ if(SC.phase==="night"){x.fillStyle="rgba(8,12,40,.5)";x.fillRect(0,0,W,H)}
+ if(SC.phase==="dusk"){x.fillStyle="rgba(90,20,10,.16)";x.fillRect(0,0,W,H)}
+ x.globalCompositeOperation="lighter";
+ for(const[tx,ty]of TORCH){const fl=.15+Math.sin(SC.t/7+tx)*.025+Math.random()*.02;const r=x.createRadialGradient(tx+1,ty-3,1,tx+1,ty-3,30);
+  r.addColorStop(0,`rgba(255,150,60,${SC.phase==="night"?fl*1.8:fl})`);r.addColorStop(1,"rgba(255,150,60,0)");x.fillStyle=r;x.fillRect(tx-30,ty-33,62,62)}
+ x.globalCompositeOperation="source-over";
+ x.drawImage(VIG,0,0);x.restore();
+ if(w){const spd=FAST?10:1.7;
+  if(w.waitDoor){if(SC.door>=.95||FAST)w.waitDoor=false}
+  else if(Math.abs(w.target-w.x)>.5){const st=Math.sign(w.target-w.x)*Math.min(spd,Math.abs(w.target-w.x));w.x+=st;w.dist+=Math.abs(st);
+   if(w.dist>=6){w.dist=0;w.frame^=1;SFX.step()}
+   if(w.dir<0&&w.x<52&&SC.doorT===0){SC.doorT=1;SFX.door()}
+   if(Math.abs(w.target-w.x)<=.5){w.x=w.target;const a=w.arrive;w.arrive=null;a&&a()}}}
+ SC.door+=(SC.doorT-SC.door)*(FAST?1:.12);
+}
+SC.enter=(who,cb)=>{SC.doorT=1;SFX.door();SC.emote=null;SC.walker={c:C[who],x:14,dir:1,target:112,frame:0,dist:0,waitDoor:true,arrive:()=>{SC.doorT=0;setTimeout(()=>SFX.thud(),150);cb()}}};
+SC.exit=cb=>{const w=SC.walker;if(!w)return cb();SC.emote=null;w.dir=-1;w.target=14;w.arrive=()=>{SC.walker=null;SC.doorT=0;SFX.thud();setTimeout(cb,FAST?0:220)}};
+
+/* =========================================================
+   CASTLE VISTA (title, nights, endings)
+   ========================================================= */
+const CW=160,CH=120;
+const CM={
+ title:{sky:["#140c26","#26143e","#40184a","#6a2650","#a2404c","#d8703e"],m1:"#2a1838",m2:"#1e1028",hill:"#140a1c",cst:"#0e0814",riv:"#1a1030",win:"#ffb860",stars:1,moon:1,emb:1},
+ night:{sky:["#05081a","#0a1026","#0e1632","#141e40","#1a284e","#22325c"],m1:"#121a34",m2:"#0c1228",hill:"#080c1c",cst:"#060814",riv:"#0c1430",win:"#ffcf6a",stars:1,moon:1,emb:.3},
+ dawn:{sky:["#3a5aa0","#5a7cc0","#8ca4d4","#d4b0b0","#f2c894","#fae2a8"],m1:"#6a7aa8",m2:"#4a5a88",hill:"#2e3a5a",cst:"#1e2640",riv:"#6a8ac0",win:"#ffe6a0",sun:1,birds:1,emb:0},
+ burn:{sky:["#140404","#2e0808","#5a1010","#8a2210","#be4416","#e47424"],m1:"#2a0a0a",m2:"#1c0606",hill:"#0e0404",cst:"#0a0303",riv:"#3a0c08",win:"#ff7a30",fire:1,emb:4},
+ snow:{sky:["#1a2030","#262e40","#343c50","#444c60","#545c70","#646c80"],m1:"#5a6274",m2:"#3a4254",hill:"#c8d0dc",cst:"#1a1e28",riv:"#2a3240",win:"#c8a060",snow:1,emb:0},
+};
+const CS={mode:"title",t:0,parts:[]};
+seed=99;const STARS=Array.from({length:46},()=>({x:Math.floor(rnd()*CW),y:Math.floor(rnd()*60),p:rnd()*6}));
+const MT1=Array.from({length:12},(_,i)=>[i*16-8,44+Math.floor(rnd()*16)]),MT2=Array.from({length:10},(_,i)=>[i*20-10,58+Math.floor(rnd()*12)]);
+const WINS=[[76,52],[83,52],[76,62],[83,62],[54,66],[104,66],[60,78],[98,78],[70,79],[90,79]];
+const HOUSES=[[24,8],[34,7],[44,9],[118,8],[128,7],[138,9],[30,6],[132,6]];
+function cfill(x,col,a,b,c,d){x.fillStyle=col;x.fillRect(a,b,c,d)}
+function roof(x,col,cx,top,h){for(let i=0;i<h;i++){x.fillStyle=col;x.fillRect(Math.round(cx-i/2-.5),top+i,i+1,1)}}
+function mtn(x,pts,col){x.fillStyle=col;x.beginPath();x.moveTo(0,CH);pts.forEach(([a,b])=>x.lineTo(a,b));x.lineTo(CW+10,CH);x.fill()}
+function drawCastle(x){
+ const M=CM[CS.mode],t=++CS.t;
+ M.sky.forEach((c,i)=>{cfill(x,c,0,i*14,CW,14);if(i<5){x.fillStyle=M.sky[i+1];for(let px=(i%2);px<CW;px+=2)x.fillRect(px,i*14+13,1,1)}});cfill(x,M.sky[5],0,84,CW,36);
+ if(M.stars)STARS.forEach(s=>{x.globalAlpha=.4+.6*Math.abs(Math.sin(t/40+s.p));cfill(x,"#fff",s.x,s.y,1,1)});x.globalAlpha=1;
+ if(M.moon){for(let i=-7;i<=7;i++)for(let j=-7;j<=7;j++)if(i*i+j*j<=49)cfill(x,(i*i+j*j>36)?"#d8d0b0":"#f0ead0",22+i,40+j,1,1);cfill(x,"#d8d0b0",19,38,2,2);cfill(x,"#d8d0b0",25,43,2,1)}
+ if(M.sun){x.globalCompositeOperation="lighter";const r=x.createRadialGradient(34,74,2,34,74,40);r.addColorStop(0,"rgba(255,230,160,.6)");r.addColorStop(1,"rgba(255,230,160,0)");x.fillStyle=r;x.fillRect(0,30,80,80);x.globalCompositeOperation="source-over";
+  for(let i=-9;i<=9;i++)for(let j=-9;j<=0;j++)if(i*i+j*j<=81)cfill(x,"#fff0b8",34+i,74+j,1,1)}
+ mtn(x,MT1,M.m1);mtn(x,MT2,M.m2);
+ const ccol=M.cst;
+ cfill(x,ccol,44,74,72,16);for(let px=44;px<116;px+=4)cfill(x,ccol,px,72,2,2);
+ for(const tx of[50,100]){cfill(x,ccol,tx,58,10,32);for(let px=tx;px<tx+10;px+=3)cfill(x,ccol,px,56,2,2);roof(x,ccol,tx+5,44,13)}
+ cfill(x,ccol,70,46,20,44);roof(x,ccol,80,28,19);cfill(x,ccol,80,20,1,9);
+ const wave=Math.floor(t/12)%2;cfill(x,"#9a1f1f",81,20,5,2);cfill(x,"#9a1f1f",81+wave,22,5,1);cfill(x,"#9a1f1f",55,36,4,2);cfill(x,ccol,55,36,1,8);cfill(x,"#9a1f1f",105,36,4,2);cfill(x,ccol,105,36,1,8);
+ WINS.forEach(([a,b],i)=>{x.globalAlpha=.6+.4*Math.abs(Math.sin(t/(25+i*3)+i));cfill(x,M.win,a,b,1,2)});x.globalAlpha=1;
+ x.fillStyle=M.hill;for(let px=0;px<CW;px++){const top=Math.round(86+Math.pow((px-80)/50,2)*8);x.fillRect(px,Math.min(top,100),1,CH)}
+ HOUSES.forEach(([hx,hw],i)=>{const hy=88+(i%3);cfill(x,ccol,hx,hy,hw,8);roof(x,ccol,hx+hw/2,hy-5,6);if(i%2){x.globalAlpha=.8;cfill(x,M.win,hx+2,hy+3,1,1);x.globalAlpha=1}});
+ cfill(x,M.riv,0,102,CW,18);
+ x.fillStyle=shade(M.riv,.25);for(let i=0;i<14;i++){const ry=104+(i*5)%15,rx=((i*37+t*.3*(i%2?1:-1))%(CW+20)+CW+20)%(CW+20)-10;x.fillRect(Math.round(rx),ry,6+(i%3)*3,1)}
+ x.globalAlpha=.5;WINS.slice(0,6).forEach(([a],i)=>{cfill(x,M.win,a,104+(i%3)*3+Math.floor(t/20+i)%2,1,2)});x.globalAlpha=1;
+ if(M.fire&&t%3===0)[[55,44],[105,44],[80,28],[30,86],[130,86],[60,72],[95,72],[44,88]].forEach(([fx,fy])=>{for(let k=0;k<2;k++)CS.parts.push({x:fx+(Math.random()-.5)*6,y:fy,vx:(Math.random()-.5)*.2,vy:-.3-Math.random()*.4,life:24,max:24,col:["#ffe080","#ff9a30","#e04010"][k+Math.floor(Math.random()*2)],sz:2,fire:1})});
+ if(M.fire&&t%7===0)CS.parts.push({x:40+Math.random()*80,y:50,vx:.1,vy:-.25,life:120,max:120,col:"#3a2a2a",sz:4,smoke:1});
+ if(M.emb&&Math.random()<.18*M.emb)CS.parts.push({x:30+Math.random()*100,y:92,vx:(Math.random()-.5)*.2,vy:-.25-Math.random()*.35,life:140,max:140,col:Math.random()<.5?"#ffb040":"#ff6a20",sz:1,emb:1});
+ if(M.snow&&Math.random()<.6)CS.parts.push({x:Math.random()*CW,y:-2,vx:(Math.random()-.5)*.2,vy:.3+Math.random()*.3,life:400,max:400,col:"#ffffff",sz:1});
+ if(M.birds)for(let i=0;i<3;i++){const bx=((t*.3+i*40)%(CW+20))-10,by=34+i*7+Math.sin(t/20+i)*2,f=Math.floor(t/8+i)%2;cfill(x,"#2a3050",bx,by,1,1);cfill(x,"#2a3050",bx-1-f,by-1+f,1,1);cfill(x,"#2a3050",bx+1+f,by-1+f,1,1)}
+ for(let i=CS.parts.length-1;i>=0;i--){const p=CS.parts[i];p.x+=p.vx+(p.emb?Math.sin((t+i)/15)*.15:0);p.y+=p.vy;p.life--;if(p.life<=0||p.y>CH){CS.parts.splice(i,1);continue}
+  x.globalAlpha=p.smoke?.35*(p.life/p.max):Math.min(1,p.life/p.max*1.4);cfill(x,p.col,Math.round(p.x),Math.round(p.y),p.sz,p.sz)}
+ x.globalAlpha=1;
+}
+function castleHTML(){return `<div class="cwrap"><canvas id="castle" width="${CW}" height="${CH}"></canvas>`}
+function setCastle(m){if(CS.mode!==m){CS.mode=m;CS.parts=[]}}
+
+/* =========================================================
+   MAIN LOOP
+   ========================================================= */
+const pctx=$("portrait").getContext("2d");let PCHAR=null;
+function loop(){
+ drawScene();
+ const cc=document.getElementById("castle");if(cc)drawCastle(cc.getContext("2d"));
+ drawPortrait(pctx,PCHAR,{talk:SC.talk&&(SC.t%10<5),blink:((SC.t)%200)<6});
+ requestAnimationFrame(loop)}
+
+/* =========================================================
+   STATE + STORY
+   ========================================================= */
+let S,LAST={};
+function fresh(){return{day:1,gold:60,food:60,men:20,favor:50,f:{},chron:[],queue:[],qi:0}}
+const has=f=>!!S.f[f],set=(f,v=1)=>S.f[f]=v,note=t=>S.chron.push(`Day ${S.day}: ${t}`);
+function fx(o){for(const k of["gold","food","men","favor"])if(o[k]){S[k]+=o[k];LAST[k]=(LAST[k]||0)+o[k];floatStat(k,o[k])}S.favor=Math.min(100,S.favor);for(const k of["gold","food","men"])S[k]=Math.max(-99,S[k])}
+const can=c=>!c.cost||Object.entries(c.cost).every(([k,v])=>S[k]>=v);
+
+const E=[
+/* ---- DAY 1 ---- */
+{day:1,who:"aldric",text:"My lord. Your father is three days in the crypt, and the throne of Emberfall is yours now.\n\nMind our gold, our grain, our soldiers... and the favor of the people. Lose any one of them and the city will fall. Baron Vex watches from across the river.",
+ choices:[{t:"\"Then let them in, Aldric.\"",go:()=>"\"Your father would be proud.\" He bows and opens the doors."},
+  {t:"\"I never wanted this throne.\"",go:()=>{set("reluctant");return "\"None of the good ones do, my lord.\""}}]},
+{day:1,who:"peasant",text:"M'lord, the blight took half of Thornby's wheat. If we don't get grain from the castle stores, there'll be empty bellies by midwinter.",
+ choices:[{t:"Give them grain",cost:{food:15},go:()=>{fx({food:-15,favor:10});set("fedThornby");note("Fed Thornby through the blight.");return "Hob weeps openly. \"Thornby won't forget this, m'lord.\""}},
+  {t:"Give half",cost:{food:7},go:()=>{fx({food:-7,favor:3});return "\"Half's better than naught... I suppose.\""}},
+  {t:"Refuse. The castle must eat too.",go:()=>{fx({favor:-10});set("refusedThornby");return "His cap trembles in his hands. He leaves without a word."}}]},
+{day:1,who:"brannoc",text:"Twenty men is not a garrison, my lord, it's a drinking club. Vex has two hundred. Give me coin and I'll find sellswords.",
+ choices:[{t:"Hire 15 sellswords",cost:{gold:25},go:()=>{fx({gold:-25,men:15});return "\"Hard men, but they'll hold a wall.\""}},
+  {t:"Train villagers instead",go:()=>{fx({men:8,food:-5,favor:-4});return "Farmers with spears. They'll learn, or they'll die."}},
+  {t:"Not yet",go:()=>"Brannoc grunts. \"Don't wait too long.\""}]},
+/* ---- DAY 2 ---- */
+{day:2,who:"vexenvoy",text:"Baron Vex sends condolences on your father's death. And a reminder: the Emberfall ford was promised to him, years ago. He asks a tribute of 30 gold to... forget the matter.",
+ choices:[{t:"Pay the tribute",cost:{gold:30},go:()=>{fx({gold:-30});set("paidVex");note("Paid tribute to Baron Vex.");return "Sir Gerrit smiles. \"A wise young lord.\" Somehow, it sounds like a threat."}},
+  {t:"\"Tell your Baron to come take it.\"",go:()=>{set("defiedVex");fx({favor:6});note("Defied Baron Vex.");return "The hall cheers. Gerrit does not. \"He will.\""}},
+  {t:"Stall him with a feast",cost:{food:10},go:()=>{fx({food:-10});set("stalledVex");return "Gerrit eats your venison and leaves undecided. Time bought, at least."}}]},
+{day:2,who:"elinor",text:"Lord Harwin of the Eastern Marches has written. He wants Maren for his son. A marriage would bind his spears to ours... but she does not know the boy.",
+ choices:[{t:"Accept the match",go:()=>{set("marenBetrothed");note("Betrothed Maren to Harwin's son.");return "Elinor nods slowly. \"I'll tell her. She won't thank you.\""}},
+  {t:"\"Let Maren decide.\"",go:()=>{set("marenChoice");fx({favor:2});return "Elinor's face softens. \"That's why I married you.\""}},
+  {t:"Refuse the match",go:()=>{set("refusedHarwin");return "\"Harwin's pride won't like it. But I'm glad.\""}}]},
+{day:2,who:"merchant",text:"My lord! The Guild can lend you 50 gold today. A trifle, repaid with modest interest on the seventh day. Say, 80?",
+ choices:[{t:"Take the loan",go:()=>{fx({gold:50});set("loan");note("Borrowed from the Merchant Guild.");return "\"Splendid! I'll return on the seventh day.\" He's already counting."}},
+  {t:"Decline",go:()=>"\"A pity. The offer won't come twice.\""}]},
+/* ---- DAY 3 ---- */
+{day:3,who:"morwen",text:"Don't call your guards, little lord. I came through the fen to make you an offer.\n\nI can see what's coming. Fire on the river. I can turn it aside... for a price I'll name later.",
+ choices:[{t:"Accept her bargain",go:()=>{set("witchPact");note("Made a pact with Morwen.");return "She laughs. \"Later always comes, little lord.\" And then she is simply gone."}},
+  {t:"Have her seized",go:()=>{set("witchEnemy");fx({favor:4});return "Your guards grab only a cloak full of moths."}},
+  {t:"Ask what she sees",go:()=>{set("witchWarned");return "\"Vex's banners on the ninth day. Count your men, little lord. Count them twice.\""}}]},
+{day:3,who:"cuthbert",text:"The abbey roof leaks onto the altar, my lord. Your father always promised to mend it. The faithful notice such things.",
+ choices:[{t:"Donate 20 gold",cost:{gold:20},go:()=>{fx({gold:-20,favor:8});set("church");note("Mended the abbey roof.");return "\"Heaven sees your generosity. So does the city.\""}},
+  {t:"\"Heaven can fix its own roof.\"",go:()=>{fx({favor:-8});set("churchAngry");return "Cuthbert makes a sign against ill luck. Twice."}}]},
+{day:3,who:"brannoc",text:"Caught a boy stealing bread from the kitchens. Old law says a flogging in the square, my lord.",
+ choices:[{t:"Spare him. Put him to work.",go:()=>{fx({favor:5});set("boyPage");return "The boy's name is Pip. He scrubs pots like his life depends on it."}},
+  {t:"Follow the law",go:()=>{fx({favor:-6,men:1});set("harsh");return "The hall is very quiet. Nobody steals again."}},
+  {t:"Make him a squire",go:()=>{fx({food:-2});set("pipSquire");return "\"A thief as a squire?\" Brannoc shakes his head. Pip grins."}}]},
+/* ---- DAY 4 ---- */
+{day:4,who:"whisper",text:"You have a traitor in your hall, my lord. I can tell you who. My price is 25 gold, and a seat at your table when this is over.",
+ choices:[{t:"Pay The Whisper",cost:{gold:25},go:()=>{fx({gold:-25});set("spy");note("Hired The Whisper.");return "\"Wise. I'll bring you a name in two days.\""}},
+  {t:"Throw him out",go:()=>"\"Then keep your eyes on your cup, my lord.\""}]},
+{day:4,who:"tobin",text:"Father, let me ride with Brannoc's patrols! I'm old enough. You were riding at my age, everyone says so.",
+ choices:[{t:"Let him ride",go:()=>{set("tobinRides");fx({men:2});return "He whoops and runs for the stables. Elinor glares at you from across the hall."}},
+  {t:"\"You'll study with Aldric.\"",go:()=>{set("tobinStudy");return "He sulks for an hour. Aldric says he has a gift for numbers."}}]},
+{day:4,who:"maren",req:()=>has("marenBetrothed"),text:"You promised me to a stranger for a few spears. Did you even ask what I wanted?",
+ choices:[{t:"\"It was for Emberfall.\"",go:()=>{set("marenBitter");return "\"Then Emberfall can love you. I won't.\""}},
+  {t:"Break the betrothal",go:()=>{delete S.f.marenBetrothed;set("refusedHarwin");set("marenLoves");fx({favor:3});return "She throws her arms around you. Somewhere in the east, Harwin is insulted."}}]},
+{day:4,who:"maren",req:()=>has("marenChoice"),text:"I met Harwin's son, Edric. He reads poetry and is terrible at it. Father... I think I like him.",
+ choices:[{t:"Give your blessing",go:()=>{set("marenBetrothed");set("marenLoves");fx({favor:4});note("Maren chose Edric of the Marches.");return "She kisses your cheek. Elinor is beaming."}},
+  {t:"\"Take your time.\"",go:()=>"\"I will. But not too much.\""}]},
+/* ---- DAY 5 ---- */
+{day:5,who:"widow",text:"The coughing sickness, m'lord. It's in Thornby. Three dead, and Brother Cuthbert's prayers aren't working.",
+ choices:[{t:"Quarantine the village",cost:{food:10},go:()=>{fx({food:-10,favor:-3});set("plagueContained");return "Harsh, but the sickness stays in Thornby."}},
+  {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{set("plagueContained");set("witchHealed");fx({favor:5});note("Morwen cured the sickness.");return "The witch comes. The coughing stops. Cuthbert is furious."}},
+  {t:"Pray and wait",go:()=>{set("plague");fx({favor:-8,men:-6});note("Sickness spread to the castle.");return "It spreads. Six of your men are buried within the week."}}]},
+{day:5,who:"aldric",text:"Refugees, my lord. Forty of them, fleeing Vex's lands. He's been burning his own villages to pay for his army.",
+ choices:[{t:"Take them in",cost:{food:10},go:()=>{fx({food:-10,men:6,favor:4});set("refugees");return "Among them are six men who know how to fight, and who hate Vex."}},
+  {t:"Turn them away",go:()=>{fx({favor:-5});return "They walk on into the cold."}}]},
+/* ---- DAY 6 ---- */
+{day:6,who:"vexenvoy",req:()=>has("paidVex"),text:"The Baron thanks you for your gift. He finds he needs another. Sixty gold this time.",
+ choices:[{t:"Pay again",cost:{gold:60},go:()=>{fx({gold:-60});set("paidVex2");return "\"The Baron's love for you grows, my lord.\""}},
+  {t:"\"No more.\"",go:()=>{set("defiedVex");return "\"Then he'll come for the ford. And the rest.\""}}]},
+{day:6,who:"vexenvoy",req:()=>!has("paidVex"),text:"Last chance, young lord. Kneel to Baron Vex as your liege, and Emberfall keeps its roofs.",
+ choices:[{t:"Kneel",go:()=>{set("knelt");fx({favor:-20});note("Knelt to Baron Vex.");return "Your knee touches the stone. Your people will remember this."}},
+  {t:"Refuse",go:()=>{set("defiedVex");return "Gerrit leaves. Brannoc begins sharpening blades."}}]},
+{day:6,who:"whisper",req:()=>has("spy"),text:"Your traitor is Captain Brannoc. He's been taking Vex's silver since your father's funeral. He'll open the postern gate when the Baron comes.",
+ choices:[{t:"Arrest Brannoc",go:()=>{set("brannocJailed");fx({men:-4});note("Unmasked Brannoc as a traitor.");return "Brannoc doesn't deny it. \"Vex pays better than a dead man's son.\""}},
+  {t:"Feed him false plans",go:()=>{set("brannocTrap");note("Set a trap for Brannoc.");return "The Whisper smiles. \"Oh, I like you.\""}},
+  {t:"\"I don't believe you.\"",go:()=>"\"Believe it on the ninth day, then.\""}]},
+/* ---- DAY 7 ---- */
+{day:7,who:"merchant",req:()=>has("loan"),text:"The seventh day, my lord! Eighty gold, as agreed.",
+ choices:[{t:"Repay 80 gold",cost:{gold:80},go:()=>{fx({gold:-80});delete S.f.loan;return "\"A pleasure, as always.\""}},
+  {t:"Default",go:()=>{set("guildEnemy");fx({favor:-6,food:-10});note("Defaulted on the Guild.");return "The Guild seizes grain wagons on the road. Prices in Emberfall double."}}]},
+{day:7,who:"eastlord",req:()=>has("marenBetrothed"),text:"Our houses are one now, Emberfall. When Vex comes, my riders will come too. Forty lances.",
+ choices:[{t:"\"Emberfall is grateful.\"",go:()=>{set("harwinAlly");fx({favor:3});note("Lord Harwin pledged his lances.");return "He clasps your arm. \"Family is family.\""}}]},
+{day:7,who:"eastlord",req:()=>has("refusedHarwin"),text:"You refused my son. The Marches will remember the insult.",
+ choices:[{t:"Offer gold as apology",cost:{gold:20},go:()=>{fx({gold:-20});return "\"Gold mends pride, if not friendship.\""}},
+  {t:"\"So be it.\"",go:()=>{set("harwinEnemy");return "He rides out without a backward look."}}]},
+{day:7,who:"herald",text:"Hear the word of King Osmund! The crown is aware of strife between Emberfall and Vex. The King will favor whichever lord keeps the King's peace... or wins.",
+ choices:[{t:"Send the King a gift",cost:{gold:15},go:()=>{fx({gold:-15});set("kingFavor");return "\"His Majesty will hear of Emberfall's loyalty.\""}},
+  {t:"Ask the King for aid",go:()=>"\"The King's armies are in the north. You stand alone.\""}]},
+/* ---- DAY 8 ---- */
+{day:8,who:"morwen",req:()=>has("witchPact"),text:"Later has come, little lord. My price: when the fire comes, you'll let me burn Baron Vex myself. And afterwards, the fen is mine. No priests. No laws.",
+ choices:[{t:"Honor the pact",go:()=>{set("witchFire");note("Honored the witch's pact.");return "\"Good. The river will run red on the ninth day... with his blood, not yours.\""}},
+  {t:"Break it",go:()=>{set("witchCurse");fx({food:-15,favor:-5});note("Broke the witch's pact.");return "Your granary rots overnight. Her laughter echoes in the walls."}}]},
+{day:8,who:"tobin",req:()=>has("tobinRides"),text:"Father! We ambushed Vex's scouts at the mill! I... I've never seen a real fight before.",
+ choices:[{t:"Hold him",go:()=>{set("tobinHardened");return "He shakes. Then he stops shaking. He's not a boy anymore."}},
+  {t:"\"You did well.\"",go:()=>{set("tobinProud");fx({men:3});return "The men cheer him. He looks back at you for a long time."}}]},
+{day:8,who:"tobin",req:()=>has("tobinStudy"),text:"Father, I went through the old ledgers with Aldric. There's a tunnel under the east wall. Grandfather used it for smuggling!",
+ choices:[{t:"Use it to raid Vex's supplies",go:()=>{set("tunnelRaid");fx({food:15});note("Raided Vex's camp via the tunnel.");return "Your men return with three wagons of Vex's grain."}},
+  {t:"Keep it as an escape route",go:()=>{set("tunnel");return "If the walls fall, your family can live."}}]},
+{day:8,who:"elinor",text:"Whatever happens tomorrow... I want you to know. You were a better lord than your father. Kinder.",
+ choices:[{t:"\"Take the children and leave.\"",go:()=>{set("familySafe");return "\"I'll stay until the last moment. Then I'll go.\""}},
+  {t:"\"We stand together.\"",go:()=>{set("familyStays");fx({favor:5});return "She takes your hand. It doesn't tremble."}}]},
+/* ---- DAY 9 ---- */
+{day:9,who:"aldric",text:"My lord... Vex's banners on the river. He's come. Every soul in Emberfall is looking at you now.",
+ choices:[{t:"Fortify the walls",go:()=>{set("plan_wall");return "Stones stacked, oil boiled. Let him come."}},
+  {t:"Sally out and attack",go:()=>{set("plan_attack");return "\"For Emberfall!\" The gates open."}},
+  {t:"Parley with Vex",go:()=>{set("plan_parley");return "You ride out under a white banner."}},
+  {t:"Flee through the tunnel",req:()=>has("tunnel"),go:()=>{set("plan_flee");return "In the dark, you lead your family away from Emberfall."}}]},
+];
+const R=[
+ {who:"widow",text:"Wolves took my goats, m'lord. Will you send hunters?",choices:[
+  {t:"Send hunters",cost:{men:2},go:()=>{fx({favor:4});return "The pelts hang in the square by nightfall."}},{t:"\"Buy a dog.\"",go:()=>{fx({favor:-2});return "She mutters something unrepeatable."}}]},
+ {who:"merchant",text:"A shipment of fine southern wine, my lord. For the lord's table. 10 gold.",choices:[
+  {t:"Buy it",cost:{gold:10},go:()=>{fx({gold:-10,favor:2});return "The feast is merrier."}},{t:"Pass",go:()=>"\"Your loss.\""}]},
+ {who:"peasant",text:"The bridge at Thornby is rotting. Wagons can't cross to market.",choices:[
+  {t:"Repair it",cost:{gold:12},go:()=>{fx({gold:-12,food:8});return "Trade flows again."}},{t:"Later",go:()=>{fx({favor:-2});return "Hob nods, unconvinced."}}]},
+ {who:"cuthbert",text:"The Feast of Embers approaches, my lord. The people would love a festival.",choices:[
+  {t:"Hold a festival",cost:{food:8},go:()=>{fx({food:-8,favor:7});return "Lanterns fill the square. There is dancing until dawn."}},{t:"No",go:()=>"\"A quiet feast, then.\""}]},
+ {who:"brannoc",text:"Two of the guards were drunk on watch. What punishment?",choices:[
+  {t:"Extra night watches",go:()=>{fx({favor:-1});return "Nobody drinks on watch again."}},{t:"Dock their pay",go:()=>{fx({gold:3});return "Grumbles, but they understand."}}]},
+];
+
+/* =========================================================
+   ENGINE
+   ========================================================= */
+function buildStats(){$("stats").innerHTML=[["gold","Gold"],["food","Grain"],["men","Army"],["favor","Favor"]].map(([k,l])=>`<div class="stat" id="s-${k}"><img class="px" src="${ICONURL[k]}"><div><b>0</b><small>${l.toUpperCase()}</small></div></div>`).join("")}
+function render(){for(const k of["gold","food","men","favor"])$("s-"+k).querySelector("b").textContent=S[k];$("daylbl").textContent=`DAY ${S.day} OF 9`}
+function floatStat(k,v){const el=$("s-"+k);const f=document.createElement("span");f.className="float";f.textContent=(v>0?"+":"")+v;f.style.color=v>0?"#9ef08a":"#ff7a6a";
+ el.appendChild(f);setTimeout(()=>f.remove(),1400);el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
+function buildDay(){S.queue=E.map((e,i)=>i).filter(i=>E[i].day===S.day);if(S.day<9)S.queue.splice(1,0,"r"+Math.floor(Math.random()*R.length));S.qi=0}
+function current(){const q=S.queue[S.qi];return typeof q==="string"?R[+q.slice(1)]:E[q]}
+function next(){
+ while(S.qi<S.queue.length){const e=current();if(!e.req||e.req())break;S.qi++}
+ if(S.qi>=S.queue.length)return endDay();
+ const e=current();save();render();
+ PCHAR=null;$("who").textContent="";$("role").textContent="";$("choices").innerHTML="";
+ const t=$("txt");t.className="wait";t.textContent="The great doors creak open...";
+ SC.enter(e.who,()=>present(e));
+}
+function present(e){
+ const c=C[e.who];PCHAR=c;$("who").textContent=c.n;$("role").textContent=c.r;$("txt").className="";
+ typeText(e.text,c.voice,()=>{
+  const ch=$("choices");ch.innerHTML="";
+  e.choices.filter(o=>!o.req||o.req()).forEach((o,i)=>{const b=document.createElement("button");b.className="ch";b.style.animationDelay=i*70+"ms";
+   b.innerHTML=o.t+(o.cost?`<span class="cost">${Object.entries(o.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}">−${v}</span>`).join("")}${can(o)?"":"<span>(not enough)</span>"}</span>`:"");
+   b.disabled=!can(o);b.onclick=()=>choose(e,o);ch.appendChild(b)})});
+}
+function choose(e,o){
+ SFX.click();$("choices").innerHTML="";LAST={};const reply=o.go();render();react();
+ typeText(reply,C[e.who].voice,()=>{const b=document.createElement("button");b.className="ch go";b.textContent="Continue";
+  b.onclick=()=>{SFX.click();$("choices").innerHTML="";if(fail())return;S.qi++;PCHAR=null;$("txt").className="wait";$("txt").textContent="";$("who").textContent="";$("role").textContent="";SC.exit(next)};
+  $("choices").appendChild(b)});
+}
+function react(){
+ const L=LAST,w=SC.walker;let emo="dots";const px=w?w.x:112;
+ const burst=(col,n,up)=>{for(let i=0;i<n;i++)part({x:px+(Math.random()-.5)*10,y:84,vx:(Math.random()-.5)*1.2,vy:up?-.6-Math.random():-1.4-Math.random(),grav:up?0:.06,life:50,max:50,col,sz:Math.random()<.4?2:1})};
+ if((L.favor||0)>=4){emo="heart";SFX.heart();burst("#ff7a8a",14,1)}
+ else if((L.favor||0)<=-5){emo="anger";SFX.bad();SC.shake=3;burst("#5a5060",10,1)}
+ else if((L.men||0)<0){emo="skull";SFX.bad();SC.shake=4}
+ else if(L.gold){emo="coin";SFX.coin();burst("#f2c14e",16,0)}
+ else if(L.food||L.men){emo="bang";SFX.good()}
+ SC.emote={type:emo,t:0};
+}
+let TY=null;
+function typeText(str,voice,done){
+ if(TY)clearTimeout(TY.to);const el=$("txt");el.textContent="";let i=0;SC.talk=true;TY={str,done};
+ if(FAST)return finishType();
+ const step=()=>{if(!TY||TY.str!==str)return;i++;el.textContent=str.slice(0,i);const ch=str[i-1];
+  if(i%2===0&&/\w/.test(ch))SFX.blip(voice);
+  if(i>=str.length)return finishType();
+  TY.to=setTimeout(step,/[.!?]/.test(ch)&&str[i]===" "?160:/[,;:]/.test(ch)?70:17)};
+ step()}
+function finishType(){if(!TY)return;clearTimeout(TY.to);$("txt").textContent=TY.str;SC.talk=false;const d=TY.done;TY=null;d&&d()}
+$("dialog").addEventListener("click",e=>{if(!e.target.closest("button"))finishType()});
+
+function endDay(){
+ if(S.day>=9)return siege();
+ const tax=Math.round(S.favor/6)+(has("guildEnemy")?0:4),eat=Math.ceil(S.men/8)+3,harvest=(has("fedThornby")?8:5)-(has("witchCurse")?3:0);
+ LAST={};fx({gold:tax,food:harvest-eat});render();
+ setPhase("night");Music.play("night");SFX.toll();setCastle("night");
+ overlay(`${castleHTML()}</div><div class="ovb"><h3>Night falls on Emberfall</h3>
+  <div class="sumrow"><span><img class="px" src="${ICONURL.gold}">Taxes</span><b>+${tax}</b></div>
+  <div class="sumrow"><span><img class="px" src="${ICONURL.food}">Harvest</span><b>+${harvest}</b></div>
+  <div class="sumrow"><span><img class="px" src="${ICONURL.food}">The hall eats</span><b>−${eat}</b></div>
+  <p class="dim">${S.food<12?"The granary is nearly empty, my lord.":S.favor<20?"There is muttering in the taverns tonight.":"The city sleeps."}</p>
+  <button class="pb" id="dawnBtn">Sleep until dawn</button></div>`);
+ $("dawnBtn").onclick=()=>{SFX.click();closeOverlay();if(fail())return;S.day++;setPhase(S.day>=9?"dusk":"day");Music.play(S.day>=9?"battle":"hall");dayCard(()=>{buildDay();next()})};
+}
+function dayCard(cb){render();const c=$("card");c.querySelector("b").textContent="DAY "+S.day;c.querySelector("span").textContent=S.day>=9?"THE BANNERS COME":"OF NINE";c.style.display="flex";
+ setTimeout(()=>{c.style.display="none";cb()},FAST?0:1500)}
+function fail(){if(S.food<0)return ending("famine");if(S.favor<=0)return ending("revolt");if(S.gold<-20)return ending("debt");return false}
+function battle(){
+ if(has("plan_flee"))return"exile";if(has("knelt"))return"vassal";
+ if(has("plan_parley")){if(has("kingFavor")&&S.favor>=50)return"peace";if(has("paidVex2"))return"vassal"}
+ let p=S.men+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
+ if(has("harwinEnemy"))p-=10;if(has("brannocTrap"))p+=30;else if(!has("brannocJailed"))p-=35;
+ if(has("witchFire"))return p>30?"witchQueen":"witchFall";
+ if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")?"lastStandSafe":"fallen"}
+function siege(){
+ const k=battle(),calm=["exile","vassal","peace"].includes(k);
+ setCastle(calm?"night":"burn");Music.play(calm?"night":"battle");if(!calm)SFX.war();
+ const plan=has("plan_flee")?"Torches gutter in the tunnel as Emberfall grows small behind you.":has("plan_parley")?"You ride out beneath a white banner to meet the Baron.":has("plan_attack")?"The gates swing wide. You lead the charge into the river.":"Arrows rain from the walls of Emberfall.";
+ const twist=has("brannocTrap")?"The postern gate opens... onto a wall of your spears. Brannoc's treachery becomes Vex's trap.":(!has("brannocJailed")&&!calm)?"Behind you, a postern gate swings open that should have been barred.":has("witchFire")?"Green fire crawls up out of the fen.":"";
+ overlay(`${castleHTML()}</div><div class="ovb siege"><h3>The Ninth Day</h3><p style="animation-delay:.3s">Baron Vex's host crosses the ford at dusk.</p>
+  <p style="animation-delay:1.3s">${plan}</p>${twist?`<p style="animation-delay:2.3s">${twist}</p>`:""}
+  <button class="pb" style="opacity:0;animation:appear 1s ${FAST?0:3}s forwards" id="fateBtn">Face your fate</button></div>`);
+ $("fateBtn").onclick=()=>{SFX.click();ending(k)};
+}
+const ENDINGS={
+ famine:["The Hungry Winter","The granaries ran empty. By midwinter your people ate the seed grain, then the horses. In spring, Emberfall was a city of ghosts."],
+ revolt:["The Pitchfork Crown","Your people had enough. They broke down the doors of the hall. Hob the Miller rules Emberfall now, and he is not kind."],
+ debt:["Owned by the Guild","The Merchant Guild bought your debts and then your castle. You still sit on the throne, but Osric Fairweather tells you when to stand."],
+ exile:["The Lord in Exile","You escaped through grandfather's tunnel with your family. Emberfall burned behind you. Somewhere far away, you raise your children in peace, and in shame."],
+ vassal:["The Kneeling Lord","You kept your castle and lost your name. Emberfall flies Vex's banner now, and your son will grow up bowing."],
+ peace:["The King's Peace","King Osmund's herald arrived at the parley. Vex was ordered to stand down. Emberfall will be remembered as the house that won without blood."],
+ crowned:["Lord of the River","Vex's army broke on your walls. King Osmund granted you the Baron's lands. The lord who never wanted a throne now holds two."],
+ victory:["The Ford Holds","Vex fell on the riverbank. Emberfall stands free. In the hall that night, they sing your name."],
+ pyrrhic:["A Bitter Victory","You held, barely. Half your soldiers lie in the mud by the ford. Emberfall is free, and quiet, and grieving."],
+ fallen:["The Fall of Emberfall","The gates broke. Vex found you on your father's throne. The chronicles forget your name."],
+ lastStandSafe:["The Last Stand","You fell at the gate, sword in hand. Elinor and the children reached the Marches safely. Maren tells her children of you."],
+ witchQueen:["The Witch's Fire","Green fire swallowed Vex's army whole. Emberfall is safe. But the fen grows closer every year, and Morwen sits at your table now."],
+ witchFall:["Fire Without End","Morwen's fire did not stop at Vex's army. It took the ford, the city, the abbey. You won, and there is nothing left to rule."],
+};
+const GOOD=["peace","crowned","victory"],BAD=["revolt","fallen","witchFall","debt"];
+function gotEndings(){try{return JSON.parse(localStorage.getItem("ef_end")||"[]")}catch(e){return[]}}
+function ending(k){
+ const[t,d]=ENDINGS[k];const got=gotEndings();if(!got.includes(k))got.push(k);
+ try{localStorage.setItem("ef_end",JSON.stringify(got));localStorage.removeItem("ef_save")}catch(e){}
+ setCastle(k==="famine"?"snow":GOOD.includes(k)?"dawn":BAD.includes(k)?"burn":"night");
+ Music.play(GOOD.includes(k)?"hall":"night");GOOD.includes(k)?SFX.fanfare():SFX.doom();
+ overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— AN ENDING —</div><h3>${t}</h3><p>${d}</p>
+  <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
+  <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="title()">Title Screen</button></div>`);
+ return true}
+function overlay(h){const o=$("overlay");o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
+function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
+function modal(h){const m=$("modal");m.innerHTML=`<div class="box">${h}</div>`;m.style.display="flex"}
+function closeModal(){$("modal").style.display="none"}
+function openChron(){SFX.page();modal(`<h3>The Chronicle of Emberfall</h3><ul>${(S&&S.chron||[]).map(c=>`<li>${c}</li>`).join("")||"<li>Nothing yet written.</li>"}</ul><button class="pb" onclick="closeModal()">Close</button>`)}
+function savePrefs(){try{localStorage.setItem("ef_prefs",JSON.stringify({m:AU.musicOn,s:AU.sfxOn}))}catch(e){}}
+function openSettings(){SFX.click();modal(`<h3>Settings</h3>
+ <button class="pb alt" onclick="AU.musicOn=!AU.musicOn;if(AU.mg)AU.mg.gain.value=AU.musicOn?.5:0;savePrefs();openSettings()">Music: ${AU.musicOn?"On":"Off"}</button>
+ <button class="pb alt" onclick="AU.sfxOn=!AU.sfxOn;if(AU.sg)AU.sg.gain.value=AU.sfxOn?.6:0;savePrefs();openSettings()">Sound: ${AU.sfxOn?"On":"Off"}</button>
+ <button class="pb alt" onclick="closeModal();title()">Save &amp; Quit to Title</button>
+ <button class="pb" onclick="closeModal()">Back</button>`)}
+function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? Undiscovered</div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
+function save(){try{localStorage.setItem("ef_save",JSON.stringify(S))}catch(e){}}
+function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();setPhase("day");SC.walker=null;Music.play("hall");dayCard(()=>{buildDay();next()})}
+function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save"))}catch(e){}if(!s)return newGame();S=s;closeOverlay();setPhase(S.day>=9?"dusk":"day");SC.walker=null;Music.play(S.day>=9?"battle":"hall");render();next()}
+function title(){
+ if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;
+ let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save")}catch(e){}
+ setCastle("title");Music.play("night");
+ overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
+  <p class="dim">The throne is yours. So is everything that follows.</p>
+  ${hasSave?'<button class="pb" onclick="cont()">Continue Reign</button>':""}<button class="pb ${hasSave?"alt":""}" onclick="newGame()">New Reign</button>
+  <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
+  <button class="pb alt" onclick="openSettings()">Settings</button></div>`)}
+
+buildStats();S=fresh();render();setPhase("day");title();loop();
+</script>
+</body>
+</html>

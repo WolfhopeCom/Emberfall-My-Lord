@@ -1,0 +1,31 @@
+{
+  "name": "emberfall-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Native iOS and Android wrapper (Capacitor) for Emberfall: My Lord. The game itself is ../index.html.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "python3 build_app.py",
+    "setup": "python3 build_app.py --setup",
+    "assets": "capacitor-assets generate --assetPath resources --iconBackgroundColor \"#120B16\" --iconBackgroundColorDark \"#120B16\" --splashBackgroundColor \"#120B16\" --splashBackgroundColorDark \"#120B16\"",
+    "render": "node scripts/render_resources.js",
+    "sync": "cap sync",
+    "ios": "python3 build_app.py && cap open ios",
+    "android": "python3 build_app.py && cap open android",
+    "doctor": "cap doctor"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
+    "@capacitor/splash-screen": "^7.0.0",
+    "@capacitor/status-bar": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^7.0.0",
+    "playwright": "^1.47.0"
+  }
+}
