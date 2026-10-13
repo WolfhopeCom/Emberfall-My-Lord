@@ -2164,7 +2164,7 @@ const RIOT={who:"peasant",text:"M'lord! There's a mob at the gate with torches a
    Spring (March to May) is free. In the iPhone / Android app the unlock goes through the App Store /
    Google Play (plugin @capgo/native-purchases, no outside server). In a browser it is a demo unlock. */
 const IAP_ID="emberfall_full_unlock",STORE={price:"$1.99",native:false},FREE_MONTHS=5;
-let PRO=false;try{PRO=localStorage.getItem("ef_pro")==="1"}catch(e){}
+let PRO=!!window.EF_TESTER;try{PRO=PRO||localStorage.getItem("ef_pro")==="1"}catch(e){}
 function setPro(){PRO=true;try{localStorage.setItem("ef_pro","1")}catch(e){}}
 function nativeStore(){try{const Cap=window.Capacitor;return Cap&&Cap.isNativePlatform&&Cap.isNativePlatform()&&Cap.Plugins&&Cap.Plugins.NativePurchases||null}catch(e){return null}}
 const ownsUnlock=list=>(list||[]).some(x=>x&&x.productIdentifier===IAP_ID&&(x.purchaseState==null||/^(purchased|1)$/i.test(String(x.purchaseState))));

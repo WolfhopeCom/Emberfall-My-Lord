@@ -5,6 +5,7 @@
   python3 build_app.py --setup         first time: also `npx cap add ios/android` for missing platforms + app icons
   python3 build_app.py --icons         (re)generate app icons and splash screens from resources/
   python3 build_app.py --no-sync       build and copy only
+  python3 build_app.py --tester        a test build with the whole game unlocked (never upload this one)
   python3 build_app.py --set-version 1.2.0 [--build 7]
                                        set the store version (and build number) for iOS, Android and package.json
 
@@ -29,9 +30,13 @@ def have_capacitor():
     return (APP / "node_modules" / "@capacitor" / "cli").is_dir()
 
 
-def build_web():
+def build_web(tester=False):
     WWW.mkdir(exist_ok=True)
-    shutil.copy2(ROOT / "index.html", WWW / "index.html")
+    html = (ROOT / "index.html").read_text()
+    if tester:
+        html = html.replace("<script>", "<script>window.EF_TESTER=true;</script>\n<script>", 1)
+        print("TESTER BUILD: the whole game is unlocked. Run plain `python3 build_app.py` before uploading to the App Store.")
+    (WWW / "index.html").write_text(html)
     if (WWW / "fonts").exists():
         shutil.rmtree(WWW / "fonts")
     shutil.copytree(ROOT / "fonts", WWW / "fonts")
@@ -220,6 +225,7 @@ def main():
     ap.add_argument("--setup", action="store_true", help="add missing native platforms and generate icons")
     ap.add_argument("--icons", action="store_true", help="regenerate icons and splash screens")
     ap.add_argument("--no-sync", action="store_true", help="skip `npx cap sync`")
+    ap.add_argument("--tester", action="store_true", help="unlock the whole game for testing on your own phone")
     ap.add_argument("--set-version", metavar="X.Y.Z")
     ap.add_argument("--build", type=int, help="build number (default: current + 1)")
     a = ap.parse_args()
@@ -228,7 +234,7 @@ def main():
         set_version(a.set_version, a.build)
         return
 
-    build_web()
+    build_web(a.tester)
     if a.setup:
         add_platforms()
     patch_ios()
