@@ -6,7 +6,8 @@
 | Subtitle (30) | Rule the throne. Choose a fate. |
 | Bundle ID | com.wolfhope.emberfall |
 | Category | Games → Role Playing (secondary: Games → Simulation) |
-| Price | Free to start (business model still to decide) |
+| Price | Free download; spring (March–May) is free |
+| In-App Purchase | Non-Consumable · Product ID `emberfall_full_unlock` · Reference name "Full Year Unlock" · **$1.99** (Tier 2) |
 | Privacy Policy URL | https://wolfhopecom.github.io/emberfall/privacy.html |
 | Support URL | https://wolfhopecom.github.io/emberfall/support.html |
 | Marketing URL | https://wolfhopecom.github.io/emberfall/ |
@@ -43,3 +44,14 @@ The throne of Emberfall awaits.
 
 ## Review notes
 No account or login. The game is fully offline. Tap New Reign, then pick an answer for each visitor. A full year (March to February) takes about an hour.
+
+## In-App Purchase setup (App Store Connect)
+1. App → **Monetization → In-App Purchases → +** → **Non-Consumable**.
+2. Reference name: `Full Year Unlock` · Product ID: `emberfall_full_unlock` (must match exactly).
+3. Price: **$1.99**. Availability: all countries.
+4. Display name: `The Full Year` · Description: `Unlock June to February: the Vex battle, the harvest, the King's war, winter and all 19 endings.`
+5. Review screenshot: the paywall at the end of May ("Vex's banners are coming"). Review notes: "Play March to May (about 20 minutes), sleep at the end of May, and the unlock screen appears. Settings (⚙) also has Unlock and Restore purchase."
+6. Attach the IAP to the version on the version page before submitting.
+
+## Review notes (add to the IAP note above)
+Spring (months 1–3) is free. The unlock is a one-time non-consumable; Restore purchase is in Settings and on the unlock screen. No account, no server: StoreKit only.

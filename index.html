@@ -121,6 +121,7 @@ img.px{image-rendering:pixelated}
 .evc .ch{width:100%;margin-top:8px}.evc.done{opacity:.85}
 .siege p{opacity:0;animation:appear 1s forwards}
 @keyframes appear{to{opacity:1}}
+#toast{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translate(-50%,20px);background:#1a1220;color:#f4e2c0;border:2px solid #000;box-shadow:inset 0 0 0 1px #c9a46a;padding:10px 14px;font-size:16px;z-index:40;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}#toast.show{opacity:1;transform:translate(-50%,0)}
 #card{font-family:var(--pixel);position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(5,3,8,.85);color:var(--gold);pointer-events:none}
 #card b{font-size:54px;text-shadow:4px 4px 0 #3a1408;animation:pop .6s}
 #pips{display:flex;gap:4px;margin-top:16px}#pips i{width:14px;height:14px;border:2px solid #000;display:block}#pips i.now{outline:2px solid #fff4dc;transform:scale(1.25)}#pips i.past{opacity:.35}
@@ -1045,6 +1046,9 @@ const BUILD={
  chapel:{n:"Chapel",cost:25,d:"+2 favor every month"},
  barracks:{n:"Barracks",cost:30,d:"+8 soldiers now"},
  walls:{n:"Stone Walls",cost:45,d:"A far stronger defense when Vex comes"},
+ towers:{n:"Watchtowers",cost:50,d:"Earlier warnings: a stronger defense all winter",from:6},
+ infirmary:{n:"Infirmary",cost:40,d:"+1 favor every month, and fewer deaths from fever",from:6},
+ greathall:{n:"Great Hall",cost:70,d:"Impress the lords: more votes at the Midwinter Council",from:6},
 };
 
 /* =========================================================
@@ -1291,7 +1295,7 @@ const SCENES=[
    {t:"Hildra",go:()=>{set("hildraSteward");return "\"Numbers are just stones you can't drop on your foot,\" she says. (Buildings cost 10 less.)"}},
    {t:"Teach Elinor",go:()=>{S.bond.elinor++;fx({favor:3});return "Within a week she's found three mistakes Aldric made in 1302."}}]},
  {id:"councilEve",m:[11],room:"war",who:"aldric",when:()=>has("corvinFight"),text:"Aldric spreads a list of the lords coming to the council. \"Eleven votes, my lord. Some are yours, some are Corvin's, most are still for sale.\"",
-  choices:[{t:"Count your friends",go:()=>{const v=councilScore();return v>=7?"\"By my count, you have the votes. Barely. Don't do anything foolish before February.\"":"\"By my count, you don't have the votes yet. Win the people, win the lords, or find something on Corvin.\""}}]},
+  choices:[{t:"Count your friends",go:()=>{const v=councilScore();return v>=8?"\"By my count, you have the votes. Barely. Don't do anything foolish before February.\"":"\"By my count, you don't have the votes yet. Win the people, win the lords, or find something on Corvin.\""}}]},
  {id:"marenBirthday",m:[9,10],room:"family",who:"elinor",when:()=>!has("marenWed")&&!has("marenGone"),text:"Elinor catches you on the stairs. \"It's Maren's birthday tomorrow. You did remember?\"",
   choices:[{t:"A grey mare from the Marches",cost:{gold:30},go:()=>{fx({gold:-30});S.bond.maren+=2;return "Maren screams so loudly the guards come running. She rides the mare around the courtyard until dark."}},
    {t:"A book of poems",cost:{gold:8},go:()=>{fx({gold:-8});S.bond.maren++;return "She reads it in the window seat all day, and reads the worst ones aloud at supper."}},
@@ -1309,7 +1313,7 @@ function ledgerRows(){ensureState();const b=S.b,se=SEASON(S.month),T=TAX[S.tax],
  const fox=has("foxBlockade")?5:0,lands=has("vexLands")?(has("landsHarsh")?16:10):0,tithe=has("vassal")&&!has("freed")?Math.round(tax*.3):0,wood=wi&&!has("firewood")?4:0;
  const wages=Math.ceil(S.men/10)*2;
  const crops={spring:4,summer:7,autumn:30,winter:0}[se]+(has("fedThornby")?(au?12:3):has("halfThornby")?(au?5:1):0)-(has("refusedThornby")&&au?6:0)+(b.granary?5:0)-(has("witchCurse")?3:0);
- const eat=Math.ceil(S.men/6)+4+(wi?2:0),mood=(b.chapel?2:0)+T.fav-(has("landsHarsh")?1:0);
+ const eat=Math.ceil(S.men/6)+4+(wi?2:0),mood=(b.chapel?2:0)+(b.infirmary?1:0)+T.fav-(has("landsHarsh")?1:0)-(S.favor>80?4:S.favor>60?2:0)-(S.month>=6?1:0);
  return{tax,lands,tithe,wood,wages,crops,eat,mood,fox,gold:tax+lands-tithe-wood-wages-fox,food:crops-eat}}
 function endMonth(){
  ensureState();
@@ -1346,7 +1350,7 @@ function showNight(){
    ${left.length?`<p class="must">Before you sleep: ${leftRooms.map(r=>ROOMNAME[r]).join(", ")}.</p>`:""}<button class="pb" id="nextBtn" ${left.length?"disabled":""}>Sleep until ${MONTHS[S.month]}</button>`;
  overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${councilHTML()}${body}</div>`);
  const cv=$("castle");cv.classList.add("map");cv.onclick=mapTap;
- $("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id]))return;SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month===BATTLE_MONTH;
+ $("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id]))return;if(S.month>=FREE_MONTHS&&!PRO)return paywall(()=>{showNight();setTimeout(()=>$("nextBtn").click(),FAST?0:300)});SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month===BATTLE_MONTH;
   setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>missionReport(()=>{buildMonth();next()}))};
 }
 /* walking into a room: the lord comes through the door, then each matter plays out as dialogue */
@@ -1415,7 +1419,7 @@ function panelHTML(view){const N=S.night,mis=S.mission;
    list.map(([id,M])=>`<div class="bld col"><div><b>${M.n}</b><small>${M.d}</small><small class="gain">If it goes well: ${REWARD[id]||"a good report"}</small></div><div class="btns sq">${[[5,"A few scouts"],[10,"A company"],[20,"A war party"]].map(([n,l])=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""}><b>${l}</b><span>${n} soldiers</span><em class="${oddsClass(chance(id,n))}">${S.men<n+5?"Not enough soldiers":oddsWord(chance(id,n))}</em></button>`).join("")}</div></div>`).join("")}
    <p class="dim">You have ${S.men} soldiers at home. Whoever rides out is gone until next month's report, and not everyone may come back. ${agentFree("general")?"":"Your General is away, so missions are riskier."}</p>`}
  if(view==="mason")return `<h3>The Mason's Yard</h3><p class="dim">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
-   Object.entries(BUILD).map(([k,o])=>{const cost=Math.max(5,(k==="walls"?o.cost-(has("masonWalls")?10:0)-(has("quarry")?10:0)-(has("refugeeMasons")?10:0):o.cost)-(has("freeStone")?15:0)-(has("hildraSteward")?10:0));
+   Object.entries(BUILD).filter(([k,o])=>!o.from||S.month>=o.from||S.b[k]).map(([k,o])=>{const cost=Math.max(5,(k==="walls"?o.cost-(has("masonWalls")?10:0)-(has("quarry")?10:0)-(has("refugeeMasons")?10:0):o.cost)-(has("freeStone")?15:0)-(has("hildraSteward")?10:0));
     return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built · ${o.d}</small></div></div>`:
     `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" alt="" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("")}
 function panel(view){const keep=$("modal").style.display==="flex"&&$("modal").querySelector(".box")?$("modal").querySelector(".box").scrollTop:0;
@@ -1453,13 +1457,13 @@ function monthCard(cb){render();const c=$("card"),se=SEASON(S.month);c.querySele
  c.style.display="flex";setTimeout(()=>{c.style.display="none";cb()},FAST?0:1700)}
 /* ---------------- Chapter Two engine: after the battle, and the Midwinter Council ---------------- */
 const BATTLE_MONTH=5;
-function strength(){return S.men+(S.b.walls&&!has("wallsCracked")?20:S.b.walls?8:0)+(has("harwinAlly")?20:0)+(has("intel")?10:0)+(has("tobinKnight")?8:0)+(has("vexMenSworn")?5:0)}
+function strength(){return S.men+(S.b.towers?10:0)+(S.b.walls&&!has("wallsCracked")?20:S.b.walls?8:0)+(has("harwinAlly")?20:0)+(has("intel")?10:0)+(has("tobinKnight")?8:0)+(has("vexMenSworn")?5:0)}
 function rebel(){
  if(strength()+(has("harwinAlly")?15:0)>=50){delete S.f.vassal;set("freed");fx({favor:12});
   if(has("tobinHostage")){delete S.f.tobinHostage;S.bond.tobin+=2}
   note("Emberfall rose and threw off Baron Vex.");return "The abbey bells ring and the city rises. Gerrit is marched to the river in his nightshirt. Emberfall is free!"+(has("tobinKnight")||S.bond.tobin>=2?" And Tobin is home.":"")}
  set("rebelCrushed");fx({men:-15,favor:-10});note("The uprising against Vex was crushed.");return "Vex was ready. The uprising is crushed in a single bloody night."}
-function councilScore(){return Math.round(S.favor/10)+(has("harwinAlly")?2:0)+(has("kingChampion")?3:has("kingFavor")?1:0)+(has("lordsFeasted")?2:0)+(has("lordsVisited")?1:0)+(has("corvinSecret")?4:0)+(has("corvinCaught")?1:0)+(has("debtPaid")?1:0)+(has("vexDead")?1:0)+(has("tobinKnight")?1:0)
+function councilScore(){return Math.round(S.favor/10)+(S.b.greathall?2:0)+(has("harwinAlly")?2:0)+(has("kingChampion")?3:has("kingFavor")?1:0)+(has("lordsFeasted")?2:0)+(has("lordsVisited")?1:0)+(has("corvinSecret")?4:0)+(has("corvinCaught")?1:0)+(has("debtPaid")?1:0)+(has("vexDead")?1:0)+(has("tobinKnight")?1:0)
  -(has("kingAngry")||has("kingEnemy")?2:0)-(has("tookBribe")?2:0)-(has("churchAngry")?1:0)-(has("corvinPeek")?1:0)}
 const OUTCOMES={
  victory:["The Ford Holds","Vex fell on the riverbank. Emberfall stands free. In the hall that night, they sing your name.","dawn"],
@@ -1491,13 +1495,13 @@ function finalEnding(){
  if(has("rebelCrushed"))return"chained";
  if(has("vassal")&&!has("freed"))return"vassalForever";
  if(has("witchThrone"))return"fenThrone";
- if(has("corvinFight")&&councilScore()<7)return"usurped";
+ if(has("corvinFight")&&councilScore()<8)return"usurped";
  if(has("corvinPact"))return"pricePeace";
  if(has("freed"))return"brokenChain";
- if(has("vexLands")&&S.favor>=50)return"twoBanks";
+ if(has("vexLands")&&S.favor>=55)return"twoBanks";
  if(has("kingChampion")&&S.favor>=45)return"kingsHand";
  if(has("marenWed")&&has("harwinAlly")&&S.favor>=45)return"twoHouses";
- if(S.favor>=70)return"emberLord";
+ if(S.favor>=80)return"emberLord";
  if(S.men>=45&&S.favor<45)return"ironYear";
  return"longYear"}
 function finale(){
@@ -1506,7 +1510,7 @@ function finale(){
  const lines=["The snow breaks. Eleven lords ride through your gate for the Midwinter Council."];
  if(has("corvinFight")){lines.push("Lord Corvin rises and unrolls his will. \"The old lord's true heir,\" he says, \"stands before you.\"");
   if(has("corvinSecret"))lines.push("Then you lay the proof on the table: the will is a forgery. The hall erupts.");
-  lines.push(v>=7?"The vote is called. One by one, the lords stand for you.":"The vote is called. One by one, too many lords stand for Corvin.")}
+  lines.push(v>=8?"The vote is called. One by one, the lords stand for you.":"The vote is called. One by one, too many lords stand for Corvin.")}
  else if(has("vassal")&&!has("freed"))lines.push("Sir Gerrit sits at the head of the table. The lords look at him, not at you.");
  else lines.push("They eat your bread, drink your wine and argue about the King. Then, one by one, they raise their cups to you.");
  overlay(`${castleHTML()}</div><div class="ovb siege"><h3>The Midwinter Council</h3>${lines.map((l,i)=>`<p style="animation-delay:${.3+i*1.1}s">${l}</p>`).join("")}
@@ -1536,6 +1540,43 @@ const RIOT={who:"peasant",text:"M'lord! There's a mob at the gate with torches a
  choices:[{t:"Send the General to break it up",agent:"general",go:()=>{send("general");fx({men:-2,favor:-6});S.unrest=0;note("Soldiers broke up a riot at the gate.");return "Shields, clubs and screaming. The square is empty by dusk. Nobody will forget it."}},
   {t:"Open the granary to them",cost:{food:15},go:()=>{fx({food:-15,favor:8});S.unrest=0;return "Bread, not blood. The torches go out one by one."}},
   {t:"Lower the taxes and face them yourself",go:()=>{S.tax="low";fx({favor:5});S.unrest=0;note("Faced a mob at the gate and lowered taxes.");return "You walk out alone. You listen. When you promise lower taxes, someone starts cheering."}}]};
+/* ---------------- The one-time "full year" purchase ($1.99) ----------------
+   Spring (March to May) is free. In the iPhone / Android app the unlock goes through the App Store /
+   Google Play (plugin @capgo/native-purchases, no outside server). In a browser it is a demo unlock. */
+const IAP_ID="emberfall_full_unlock",STORE={price:"$1.99",native:false},FREE_MONTHS=3;
+let PRO=false;try{PRO=localStorage.getItem("ef_pro")==="1"}catch(e){}
+function setPro(){PRO=true;try{localStorage.setItem("ef_pro","1")}catch(e){}}
+function nativeStore(){try{const Cap=window.Capacitor;return Cap&&Cap.isNativePlatform&&Cap.isNativePlatform()&&Cap.Plugins&&Cap.Plugins.NativePurchases||null}catch(e){return null}}
+const ownsUnlock=list=>(list||[]).some(x=>x&&x.productIdentifier===IAP_ID&&(x.purchaseState==null||/^(purchased|1)$/i.test(String(x.purchaseState))));
+async function storeCheck(){const np=nativeStore();if(!np)return false;
+ try{const {purchases}=await np.getPurchases({productType:"inapp"});if(ownsUnlock(purchases)){setPro();return true}}catch(e){}return false}
+async function storeInit(){const np=nativeStore();if(!np)return;STORE.native=true;
+ try{const {products}=await np.getProducts({productIdentifiers:[IAP_ID],productType:"inapp"});const pr=products&&(products.find(x=>x.identifier===IAP_ID||x.productIdentifier===IAP_ID)||products[0]);if(pr&&pr.priceString)STORE.price=pr.priceString}catch(e){}
+ storeCheck()}
+function toast(t){let el=$("toast");if(!el){el=document.createElement("div");el.id="toast";$("app").appendChild(el)}el.textContent=t;el.className="show";clearTimeout(el._t);el._t=setTimeout(()=>el.className="",2600)}
+async function unlockFull(after){const np=nativeStore();
+ if(!np){setPro();SFX.fanfare();toast("Demo unlock: the full year is open. In the app this is the App Store purchase.");after&&after();return}
+ toast("Opening the App Store…");
+ try{const t=await np.purchaseProduct({productIdentifier:IAP_ID,productType:"inapp",quantity:1,autoAcknowledgePurchases:true});
+  if(t&&(t.transactionId||t.productIdentifier===IAP_ID)||await storeCheck()){setPro();SFX.fanfare();toast("Thank you, my lord! The full year is yours.");after&&after()}}
+ catch(e){const m=String(e&&(e.message||e.code)||e);if(await storeCheck()){toast("The full year is unlocked.");after&&after();return}
+  toast(/cancel/i.test(m)?"No problem. Nothing was charged.":"The purchase didn't go through. Please try again later.")}}
+async function restoreFull(after){const np=nativeStore();
+ if(!np){toast(PRO?"Your purchase is already active.":"In the app this checks the App Store for your purchase.");return}
+ toast("Checking your purchases…");try{await np.restorePurchases()}catch(e){}
+ const own=await storeCheck();toast(own||PRO?"Purchase restored! The full year is unlocked.":"No purchase found for this Apple ID.");if(own)after&&after()}
+function paywall(after){
+ setCastle("map");SFX.toll();
+ overlay(`${castleHTML()}</div><div class="ovb"><div class="dim">— THE END OF SPRING —</div><h3>Vex's banners are coming</h3>
+  <p>Spring is over. Scouts report Baron Vex's army on the march, Brannoc is sharpening his blades, and Emberfall's first summer is about to begin.</p>
+  <p>Unlock the full year to play on: the July battle, the harvest, a rival for your throne, the King's war, winter, the Midwinter Council, and all 19 endings.</p>
+  <button class="pb" id="buyBtn">Unlock the full year · ${STORE.price}</button>
+  <p class="dim" style="font-size:14px">One purchase, yours forever. No ads, no subscriptions.</p>
+  <button class="pb alt" id="restoreBtn">Restore purchase</button><button class="pb alt" id="laterBtn">Not now</button></div>`);
+ $("buyBtn").onclick=()=>{SFX.click();unlockFull(after)};
+ $("restoreBtn").onclick=()=>{SFX.click();restoreFull(after)};
+ $("laterBtn").onclick=()=>{SFX.click();save();showTitle()};
+}
 function fail(){if(S.food<0)return ending("famine");if(S.favor<=0)return ending("revolt");if(S.gold<-20)return ending("debt");return false}
 function battle(){
  if(has("plan_flee"))return"exile";if(has("knelt"))return"vassal";
@@ -1545,7 +1586,7 @@ function battle(){
  const brGone=has("brannocJailed")||has("brannocExiled");
  if(has("brannocTrap"))p+=30;else if(has("brannocAway")&&!brGone)p-=10;else if(!brGone)p-=(has("trustBrannoc")?45:35);
  if(has("witchFire"))return p>30?"witchQueen":"witchFall";
- if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")||has("witchCharm")?"lastStandSafe":"fallen"}
+ if(p>=85)return has("kingFavor")?"crowned":"victory";if(p>=50)return"pyrrhic";return has("familySafe")||has("witchCharm")?"lastStandSafe":"fallen"}
 function siege(){
  const k=battle(),calm=["exile","vassal","peace"].includes(k);
  setCastle(calm?"night":"burn");Music.play(calm?"night":"battle");if(!calm)SFX.war();
@@ -1597,22 +1638,26 @@ function savePrefs(){try{localStorage.setItem("ef_prefs",JSON.stringify({m:AU.mu
 function openSettings(){SFX.click();modal(`<h3>Settings</h3>
  <button class="pb alt" onclick="AU.musicOn=!AU.musicOn;if(AU.mg)AU.mg.gain.value=AU.musicOn?.5:0;savePrefs();openSettings()">Music: ${AU.musicOn?"On":"Off"}</button>
  <button class="pb alt" onclick="AU.sfxOn=!AU.sfxOn;if(AU.sg)AU.sg.gain.value=AU.sfxOn?.6:0;savePrefs();openSettings()">Sound: ${AU.sfxOn?"On":"Off"}</button>
+ ${PRO?'<p class="dim">The full year is unlocked. Thank you!</p>':`<button class="pb" onclick="closeModal();unlockFull()">Unlock the full year · ${STORE.price}</button>`}
+ <button class="pb alt" onclick="restoreFull()">Restore purchase</button>
  <button class="pb alt" onclick="closeModal();showTitle()">Save &amp; Quit to Title</button>
  <button class="pb" onclick="closeModal()">Back</button>`)}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? Undiscovered</div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
 function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();SC.room=null;SC.cast=[];setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
-function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();closeOverlay();SC.room=null;SC.cast=[];if(S.night&&S.night.reqDone){CS.season=SEASON(S.month);setPhase("night",CS.season);Music.play("night");render();return showNight()}const war=S.month===BATTLE_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
+function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();if(S.month>FREE_MONTHS&&!PRO){return paywall(()=>cont())}closeOverlay();SC.room=null;SC.cast=[];if(S.night&&S.night.reqDone){CS.season=SEASON(S.month);setPhase("night",CS.season);Music.play("night");render();return showNight()}const war=S.month===BATTLE_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
 function showTitle(){
  if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;SC.room=null;SC.cast=[];
  let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save2")}catch(e){}
  setCastle("title");Music.play("night");
  overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
   <p class="dim">The throne is yours. So is everything that follows.</p>
+  ${PRO?"":`<p class="dim" style="font-size:14px;margin-top:-4px">Spring is free. Unlock the full year for ${STORE.price}.</p>`}
   ${hasSave?'<button class="pb" onclick="cont()">Continue Reign</button>':""}<button class="pb ${hasSave?"alt":""}" onclick="newGame()">New Reign</button>
   <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
   <button class="pb alt" onclick="openSettings()">Settings</button></div>`)}
 
+storeInit().then(()=>{if(document.querySelector(".logo"))showTitle()});
 buildStats();S=fresh();render();setPhase("day","spring");showTitle();loop();
 </script>
 </body>
