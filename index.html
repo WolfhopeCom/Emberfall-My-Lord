@@ -93,6 +93,9 @@ img.px{image-rendering:pixelated}
 .room small{color:#c8b498;font-size:15px;line-height:1.25}
 .room em{position:absolute;top:6px;right:8px;font-style:normal;color:#9ef08a;font-weight:800}
 .room em.bang{color:#fff4dc;background:#a8322a;border:2px solid #000;width:22px;height:22px;display:flex;align-items:center;justify-content:center;animation:bob 1s infinite alternate}
+.room.story{box-shadow:inset 0 0 0 2px #f2c14e,0 4px 0 #000}.room em.bang.gold{background:#f2c14e;color:#2a1810}.must{color:#f2c14e!important;font-weight:700}
+.evc.story{box-shadow:inset 0 0 0 2px #f2c14e}.evc .sh{display:flex;align-items:center;gap:10px;margin-bottom:8px}.evc .sh canvas{width:48px;height:48px;background:#2a1d2e;border:2px solid #000}.evc .sh b{font-family:var(--display);color:var(--blood);font-size:18px}.evc p{white-space:pre-line}
+.pb:disabled{opacity:.45}
 .room.done{box-shadow:inset 0 0 0 2px #3e8a34,0 4px 0 #000}.room.ev{box-shadow:inset 0 0 0 2px #e0705a,0 4px 0 #000}
 @keyframes bob{to{transform:translateY(-3px)}}
 .ovb h3.sm{font-size:19px;margin:14px 0 6px}
@@ -631,6 +634,10 @@ const E=[
 {m:4,who:"vexenvoy",req:()=>!has("paidVex"),text:"Last chance, young lord. Kneel to Baron Vex as your liege, and Emberfall keeps its roofs.",
  choices:[{t:"Kneel",go:()=>{set("knelt");fx({favor:-20});note("Knelt to Baron Vex.");return "Your knee touches the stone. Your people will remember this."}},
   {t:"Refuse",go:()=>{set("defiedVex");return "Gerrit leaves. Brannoc begins sharpening blades."}}]},
+{m:4,who:"aldric",req:()=>has("letterClue")&&!has("spy"),text:"My lord, I matched your father's letter against the guard rosters. Only one man has held the postern keys since his death. Captain Brannoc.",
+ choices:[{t:"Arrest Brannoc",go:()=>{set("brannocJailed");fx({men:-4});note("Unmasked Brannoc with your father's letter.");return "Brannoc doesn't deny it. \"Vex pays better than a dead man's son.\""}},
+  {t:"Feed him false plans",go:()=>{set("brannocTrap");note("Set a trap for Brannoc.");return "Aldric's mouth twitches. It might be a smile."}},
+  {t:"\"Brannoc is loyal.\"",go:()=>"Aldric bows. \"As you say, my lord.\""}]},
 {m:4,who:"whisper",req:()=>has("spy"),text:"Your traitor is Captain Brannoc. He's been taking Vex's silver since your father's funeral. He'll open the postern gate when the Baron comes.",
  choices:[{t:"Arrest Brannoc",go:()=>{set("brannocJailed");fx({men:-4});note("Unmasked Brannoc as a traitor.");return "Brannoc doesn't deny it. \"Vex pays better than a dead man's son.\""}},
   {t:"Feed him false plans",go:()=>{set("brannocTrap");note("Set a trap for Brannoc.");return "The Whisper smiles. \"Oh, I like you.\""}},
@@ -810,6 +817,24 @@ const NIGHT_EVENTS=[
  {room:"family",text:"Elinor can't sleep. \"I dreamed of fire on the river,\" she says. \"Promise me you have a plan.\"",
   choices:[{t:"Tell her everything",go:()=>{S.bond.elinor++;fx({favor:2});return "She listens, then fixes two of your mistakes."}},{t:"\"Go back to sleep, love.\"",go:()=>"She doesn't."}]},
 ];
+/* story scenes at night: one per month, must be seen before sleeping */
+const STORY_NIGHTS={
+ 1:{room:"family",who:"elinor",text:"Elinor is waiting in your chambers with a sealed letter. \"It was in your father's desk. His hand, the night before he died.\"\n\nIt reads: \"Trust Aldric. Pay Vex nothing. And watch the man who keeps the postern keys. He smiles too much when Vex is named.\"",
+  choices:[{t:"Read it aloud to the court",go:()=>{fx({favor:4});set("letterRead");note("Read your father's last letter to the court.");return "The hall goes silent. Whoever keeps those keys now knows you are watching."}},
+   {t:"Keep it secret and investigate",go:()=>{set("letterClue");note("Kept your father's letter secret.");return "You lock it in your desk. Aldric can match the hand against the guard rosters."}},
+   {t:"Burn it. The dead shouldn't rule.",go:()=>{set("letterBurned");return "The wax hisses in the fire. Elinor says nothing, which says a great deal."}}]},
+ 2:{room:"war",who:"brannoc",text:"Brannoc and Aldric are shouting over the map table.\n\nBrannoc: \"Vex has two hundred men! Pay him, smile, and buy a year.\"\nAldric: \"Your father never paid that man a copper. Nor should you.\"",
+  choices:[{t:"Side with Brannoc",go:()=>{set("trustBrannoc");return "Brannoc grins and claps your shoulder. Aldric leaves without a word."}},
+   {t:"Side with Aldric",go:()=>{set("aldricTrusted");fx({favor:2});return "Aldric bows deeply. Brannoc's jaw tightens."}},
+   {t:"Send Brannoc to hold the river fort",go:()=>{set("brannocAway");fx({men:-6});note("Sent Brannoc and six men to the river fort.");return "\"The fort? As you command.\" He takes six men and doesn't look back."}}]},
+ 3:{room:"mason",who:"mason",text:"Hildra is covered in dust. \"My lord, we broke into a tunnel under the east wall, digging the new footings. It runs all the way to the river. Smugglers, I'd guess. Your grandfather's day.\"",
+  choices:[{t:"Seal it with stone",go:()=>{set("tunnelSealed");note("Sealed the smugglers' tunnel.");return "\"No one comes in that way now, my lord. No one goes out, either.\""}},
+   {t:"Keep it open, and secret",go:()=>{set("tunnel");note("Kept the smugglers' tunnel open in secret.");return "Hildra taps her nose. \"A back door is a fine thing to have.\""}}]},
+ 4:{room:"treasury",who:"aldric",text:"Aldric sets a heavy chest on the table. \"Left at the gate at dusk. Vex's seal.\"\n\nInside: 60 gold, and a note. \"For your knee, young lord.\"",
+  choices:[{t:"Keep the gold",go:()=>{fx({gold:60,favor:-10});set("tookBribe");note("Kept Baron Vex's gold.");return "The servants talk. By morning the whole city knows Vex's gold is in your vault."}},
+   {t:"Give it to the people",go:()=>{fx({gold:10,favor:9});set("mockedVex");note("Gave Vex's gold to the city.");return "Vex's own coin buys bread in Thornby. They're singing rude songs about him in the taverns."}},
+   {t:"Send it back across the river",go:()=>{fx({favor:3});return "Aldric seals the chest himself. \"Your father would have laughed.\""}}]},
+};
 const HAMMER=bmp(["....kk..","...kssk.","..kssk..",".kbks...","kbk.....","bk......","........"],{k:"#2a1810",s:"#c8cdd6",b:"#8a5a2a"});
 const HAMMERURL=HAMMER.toDataURL();
 function ensureState(){S.tax=S.tax||"normal";S.bond=S.bond||{elinor:0,maren:0,tobin:0};S.night=S.night||{};S.done=S.done||[];S.b=S.b||{};S.usedR=S.usedR||[]}
@@ -826,14 +851,14 @@ function endMonth(){
  if(S.month>=LAST_MONTH)return siege();
  const L=ledgerRows();LAST={};fx({gold:L.gold,food:L.food,favor:L.mood});render();
  S.lastLedger=L;S.night={};S.usedN=S.usedN||[];
- {const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>!S.usedN.includes(i));if(pool.length){const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.ev=i}}
+ {const sr=STORY_NIGHTS[S.month]&&STORY_NIGHTS[S.month].room;const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>!S.usedN.includes(i)&&NIGHT_EVENTS[i].room!==sr);if(pool.length){const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.ev=i}}
  const se=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();setCastle(se==="winter"?"snow":se);
  showNight("hub");
 }
 function resBar(){return `<div class="resbar">${["gold","food","men","favor"].map(k=>`<div><img class="px" src="${ICONURL[k]}" alt="">${S[k]}</div>`).join("")}</div>`}
 function money(v){return (v>=0?"+":"−")+Math.abs(v)}
 function showNight(view){
- const N=S.night,mis=S.mission,keep=view===S.nightView?$("overlay").scrollTop:0;S.nightView=view;
+ const N=S.night,ST=STORY_NIGHTS[S.month],storyLeft=ST&&!N.storyDone,mis=S.mission,keep=view===S.nightView?$("overlay").scrollTop:0;S.nightView=view;
  let body="";
  if(view==="hub"){
   const tiles=[
@@ -842,9 +867,9 @@ function showNight(view){
    ["mason",HAMMERURL,"Mason's Yard",N.built?`Building the ${BUILD[N.built].n}.`:"Hildra is ready to build.",!!N.built],
    ["family",ICONURL.favor,"Family Quarters",N.visited?`You spent the evening with ${C[N.visited].n.replace("Lady ","")}.`:"Your family is still awake.",!!N.visited]];
   body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. Visit any room you like, or go straight to bed.</p>
-   <div class="rooms">${tiles.map(([id,ic,n,st,done])=>{const evHere=N.ev!=null&&NIGHT_EVENTS[N.ev].room===id&&!N.evDone;return `<button class="room${done?" done":""}${evHere?" ev":""}" onclick="SFX.click();showNight('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${evHere?'<em class="bang">!</em>':done?'<em>✓</em>':""}</span><small>${evHere?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
+   <div class="rooms">${tiles.map(([id,ic,n,st,done])=>{const stHere=storyLeft&&ST.room===id,evHere=!stHere&&N.ev!=null&&NIGHT_EVENTS[N.ev].room===id&&!N.evDone;return `<button class="room${done?" done":""}${stHere?" story":evHere?" ev":""}" onclick="SFX.click();showNight('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${stHere?'<em class="bang gold">!</em>':evHere?'<em class="bang">!</em>':done?'<em>✓</em>':""}</span><small>${stHere?"<b class='must'>A matter that can't wait.</b>":evHere?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
    <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20?"There is muttering in the taverns.":S.month===4?"Scouts say Vex's army is on the march.":"Emberfall sleeps."}</p>
-   <button class="pb" id="nextBtn">Sleep until ${MONTHS[S.month]}</button>`;
+   ${storyLeft?`<p class="must">You are needed in the ${({family:"Family Quarters",war:"War Room",mason:"Mason's Yard",treasury:"Treasury"})[ST.room]} before you sleep.</p>`:""}<button class="pb" id="nextBtn" ${storyLeft?"disabled":""}>Sleep until ${MONTHS[S.month]}</button>`;
  }
  if(view==="treasury"){const L=S.lastLedger,P=ledgerRows();
   const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}" alt="">${l}</span><b>${money(v)}</b></div>`;
@@ -874,15 +899,18 @@ function showNight(view){
    ${N.visited?`<div class="famtxt"><p>${N.famLine}</p><p class="dim">${N.famEff}</p></div>`:
    `<div class="fam">${["elinor","maren","tobin"].map(k=>`<button class="famb" onclick="visit('${k}')"><canvas id="fp-${k}" width="32" height="32"></canvas><b>${C[k].n.replace("Lady ","")}</b></button>`).join("")}</div>`}`;
  }
+ if(view!=="hub"&&ST&&ST.room===view){body=body.replace('</p>','</p>'+(N.storyDone?`<div class="evc story done"><p>${N.storyDone}</p></div>`:`<div class="evc story"><div class="sh"><canvas id="sp" width="32" height="32"></canvas><b>${C[ST.who].n}</b></div><p>${ST.text}</p>${ST.choices.map((c,i)=>`<button class="ch" onclick="storyChoice(${i})">${c.t}</button>`).join("")}</div>`))}
  if(view!=="hub"){const ev=N.ev!=null&&NIGHT_EVENTS[N.ev];if(ev&&ev.room===view)body=body.replace('</p>','</p>'+(N.evDone?`<div class="evc done"><p>${N.evDone}</p></div>`:`<div class="evc"><p>${ev.text}</p>${ev.choices.map((c,i)=>`<button class="ch" onclick="nightChoice(${i})" ${can(c)?"":"disabled"}>${c.t}</button>`).join("")}</div>`))}
  const back=view==="hub"?"":`<button class="pb alt" onclick="SFX.click();showNight('hub')">Back to the castle</button>`;
  overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${body}${back}</div>`);
  $("overlay").scrollTop=keep;
+ if($("sp"))drawPortrait($("sp").getContext("2d"),C[ST.who],{});
  if(view==="family"&&!N.visited)["elinor","maren","tobin"].forEach(k=>drawPortrait($("fp-"+k).getContext("2d"),C[k],{}));
- if(view==="hub")$("nextBtn").onclick=()=>{SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
+ if(view==="hub")$("nextBtn").onclick=()=>{if(STORY_NIGHTS[S.month]&&!S.night.storyDone)return;SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
   setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>missionReport(()=>{buildMonth();next()}))};
 }
 function nightChoice(i){const N=S.night,c=NIGHT_EVENTS[N.ev].choices[i];if(N.evDone||!can(c))return;SFX.click();LAST={};N.evDone=c.go();render();save();showNight(S.nightView)}
+function storyChoice(i){const N=S.night,ST=STORY_NIGHTS[S.month];if(N.storyDone)return;SFX.click();LAST={};N.storyDone=ST.choices[i].go();render();save();if(fail())return;showNight(S.nightView)}
 function setTax(k){SFX.click();S.tax=k;save();showNight("treasury")}
 function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();showNight("war")}
 function missionReport(cb){
@@ -913,14 +941,15 @@ function battle(){
  if(has("plan_flee"))return"exile";if(has("knelt"))return"vassal";
  if(has("plan_parley")){if(has("kingFavor")&&S.favor>=50)return"peace";if(has("paidVex2"))return"vassal"}
  let p=S.men+(S.b.walls?20:0)+(has("intel")?15:0)+(has("vexRaided")?10:0)+((S.bond&&S.bond.tobin>=3)?8:0)+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
- if(has("harwinEnemy"))p-=10;if(has("brannocTrap"))p+=30;else if(!has("brannocJailed"))p-=35;
+ if(has("harwinEnemy"))p-=10;if(has("tunnelSealed"))p+=10;if(has("tookBribe")&&!has("plan_parley"))p-=15;if(has("mockedVex"))p+=5;
+ if(has("brannocTrap"))p+=30;else if(has("brannocAway")&&!has("brannocJailed"))p-=10;else if(!has("brannocJailed"))p-=(has("trustBrannoc")?45:35);
  if(has("witchFire"))return p>30?"witchQueen":"witchFall";
  if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")?"lastStandSafe":"fallen"}
 function siege(){
  const k=battle(),calm=["exile","vassal","peace"].includes(k);
  setCastle(calm?"night":"burn");Music.play(calm?"night":"battle");if(!calm)SFX.war();
  const plan=has("plan_flee")?"Torches gutter in the tunnel as Emberfall grows small behind you.":has("plan_parley")?"You ride out beneath a white banner to meet the Baron.":has("plan_attack")?"The gates swing wide. You lead the charge into the river.":(S.b.walls?"Arrows rain from Hildra's new stone walls.":"Arrows rain from the old walls of Emberfall.");
- const twist=has("intel")&&!has("brannocTrap")&&has("brannocJailed")?"Your scouts' map pays off: you hit Vex's weak flank first.":has("brannocTrap")?"The postern gate opens... onto a wall of your spears. Brannoc's treachery becomes Vex's trap.":(!has("brannocJailed")&&!calm)?"Behind you, a postern gate swings open that should have been barred.":has("witchFire")?"Green fire crawls up out of the fen.":"";
+ const twist=has("brannocAway")&&!has("brannocJailed")&&!has("brannocTrap")?"Far downriver, the fort you gave Brannoc opens its gates to Vex. At least the castle's postern stays barred.":has("intel")&&!has("brannocTrap")&&has("brannocJailed")?"Your scouts' map pays off: you hit Vex's weak flank first.":has("brannocTrap")?"The postern gate opens... onto a wall of your spears. Brannoc's treachery becomes Vex's trap.":(!has("brannocJailed")&&!calm)?"Behind you, a postern gate swings open that should have been barred.":has("witchFire")?"Green fire crawls up out of the fen.":"";
  overlay(`${castleHTML()}</div><div class="ovb siege"><h3>High Summer</h3><p style="animation-delay:.3s">Baron Vex's host crosses the ford at dusk.</p>
   <p style="animation-delay:1.3s">${plan}</p>${twist?`<p style="animation-delay:2.3s">${twist}</p>`:""}
   <button class="pb" style="opacity:0;animation:appear 1s ${FAST?0:3}s forwards" id="fateBtn">Face your fate</button></div>`);
