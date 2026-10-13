@@ -13,7 +13,7 @@
 | Marketing URL | https://wolfhopecom.github.io/emberfall/ |
 | Data collection | Data Not Collected |
 | Age rating | Expect 9+ (Infrequent/Mild Cartoon or Fantasy Violence: battles and deaths are described in text, never shown) |
-| Screenshots | `screenshots/` (1206×2622, iPhone 6.9") |
+| Screenshots | `screenshots/` (2622×1206 landscape, iPhone 6.9") |
 
 ## Promotional text (170)
 The throne of Emberfall is yours. A full year of seasons, sixteen voices at your door, nineteen endings. Will your city stand when the Baron's banners reach the river?

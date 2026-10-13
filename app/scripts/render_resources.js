@@ -46,9 +46,11 @@ function crest(x, sky){
   const splash = await png(2732, 2732, 'x.fillStyle="#120B16";x.fillRect(0,0,w,h);x.translate(1110,1066);x.scale(16,16);crest(x,0)');
   fs.writeFileSync(path.join(RES, 'splash.png'), splash); fs.writeFileSync(path.join(RES, 'splash-dark.png'), splash);
 
-  // App Store screenshots: 1206x2622 (iPhone 6.9")
-  const s = await b.newPage({ viewport: { width: 402, height: 874 }, deviceScaleFactor: 3 });
+  // App Store screenshots: 2622x1206 (iPhone 6.9", landscape)
+  const s = await b.newPage({ viewport: { width: 874, height: 402 }, deviceScaleFactor: 3 });
   await s.goto('file://' + path.join(ROOT, 'index.html'));
+  await s.evaluate(() => { localStorage.clear(); localStorage.setItem('ef_tips', JSON.stringify(['start','night','war','treasury','mason','agents','report'])); localStorage.setItem('ef_pro', '1'); });
+  await s.reload();
   await s.evaluate(() => document.fonts.ready); await s.waitForTimeout(2500);
   await s.screenshot({ path: path.join(SHOTS, '01-title.png') });
   await s.evaluate(() => { Math.random = (() => { let q = 3; return () => (q = q * 16807 % 2147483647) / 2147483647 })(); newGame(); });

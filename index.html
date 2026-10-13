@@ -133,6 +133,40 @@ img.px{image-rendering:pixelated}
 #card span{color:#f4e2c0;font-size:16px;letter-spacing:4px;margin-top:6px}
 @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}}
 @keyframes fade{from{opacity:0}}
+/* ---------- Landscape: the stage on the left, the dialog on the right, the top bar on one line ---------- */
+@media (orientation:landscape) and (min-aspect-ratio:5/4){
+ #app{max-width:none;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);grid-template-rows:auto minmax(0,1fr)}
+ #hud{grid-column:1/-1;display:flex;align-items:center;gap:20px;padding:calc(env(safe-area-inset-top) + 5px) max(14px,env(safe-area-inset-right)) 5px max(14px,env(safe-area-inset-left))}
+ #stats{flex:1;justify-content:flex-start;gap:clamp(14px,3vw,34px)}
+ .stat{min-width:0}.stat img{width:22px;height:22px}.stat b{font-size:20px}
+ #hudrow{margin-top:0;gap:14px}
+ #daylbl{font-size:13px}#daylbl small{font-size:10px}
+ #scene{grid-column:1;grid-row:2;align-self:center;justify-self:center;width:min(calc(100% - env(safe-area-inset-left) - 8px),calc((100dvh - 62px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 1.6));height:auto;margin-left:env(safe-area-inset-left)}
+ #dialog{grid-column:2;grid-row:2;min-height:0;margin:8px max(8px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) 0;padding:10px 12px}
+ #pbox{width:64px;height:64px}#portrait{width:58px;height:58px}
+ #who{font-size:18px}#role{font-size:14px}
+ #txt{font-size:17.5px;line-height:1.32;margin:8px 2px 6px;min-height:0}
+ .ch{font-size:16px;padding:8px 10px 8px 26px}.ch .cost{font-size:12px}
+ #choices{gap:7px}
+ #overlay{flex-direction:row;overflow:hidden}
+ .cwrap{flex:1.45 1 0;min-width:0;height:100%;display:flex;align-items:center;justify-content:center;padding-left:env(safe-area-inset-left);background:#05030a}
+ #castle{width:min(100%,calc(100dvh * 4 / 3));height:auto}
+ .ovb{flex:1 1 0;min-width:0;height:100%;overflow-y:auto;justify-content:flex-start;padding:16px max(18px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 16px) 18px}
+ .ovb h3{font-size:22px}.ovb p{font-size:16.5px}
+ .logo{top:5%}.logo h1{font-size:min(7vw,58px)}
+ .pb{min-width:200px;font-size:15px;padding:9px 14px}
+ .rooms{gap:8px}.room{min-height:78px;padding:8px}.room small{font-size:13.5px}
+ #card b{font-size:46px}
+ .bigtext #txt{font-size:20px}.bigtext .ch{font-size:18px}
+}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+ #app{grid-template-columns:minmax(0,1.25fr) minmax(290px,1fr)}
+ #pbox{width:48px;height:48px}#portrait{width:42px;height:42px}
+ #who{font-size:16px}#role{font-size:13px;margin-top:0}
+ #txt{font-size:16px;line-height:1.28;margin:6px 1px 5px}
+ .ch{font-size:15px;padding:6px 8px 6px 24px;box-shadow:0 3px 0 var(--ink)}.ch .cost{margin-top:1px}
+ #choices{gap:6px}#dialog{padding:8px 10px;margin-top:6px}
+}
 </style>
 </head>
 <body>

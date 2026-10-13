@@ -105,8 +105,8 @@ def patch_ios():
     data = plistlib.loads(plist.read_bytes())
     before = dict(data)
     data["CFBundleDisplayName"] = APP_NAME
-    # The game is laid out for portrait on iPhone; every orientation on iPad (required for iPad multitasking).
-    data["UISupportedInterfaceOrientations"] = ["UIInterfaceOrientationPortrait"]
+    # Emberfall is a landscape game on iPhone; every orientation on iPad (required for iPad multitasking).
+    data["UISupportedInterfaceOrientations"] = ["UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationLandscapeLeft"]
     data["UISupportedInterfaceOrientations~ipad"] = [
         "UIInterfaceOrientationPortrait",
         "UIInterfaceOrientationPortraitUpsideDown",
