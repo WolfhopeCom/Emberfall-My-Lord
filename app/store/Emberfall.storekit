@@ -1,0 +1,40 @@
+{
+  "identifier" : "6A1E3C52",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "6739000001",
+      "localizations" : [
+        {
+          "description" : "Unlock Chapter Two and the full year of Emberfall: My Lord.",
+          "displayName" : "The Full Year",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "emberfall_full_unlock",
+      "referenceName" : "Full Year Unlock",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6739000000",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

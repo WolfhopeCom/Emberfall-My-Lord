@@ -97,8 +97,37 @@ def patch_podfile():
             print("set the App target's iOS Deployment Target to 15.0")
 
 
+STOREKIT_REF = '<StoreKitConfigurationFileReference\n         identifier = "../../Emberfall.storekit">\n      </StoreKitConfigurationFileReference>'
+
+
+def patch_storekit():
+    """Local StoreKit testing: lets the $1.99 unlock work on a phone run from Xcode before the
+    in-app purchase exists in App Store Connect. Only affects runs started from Xcode (no real charge)."""
+    src = APP / "store" / "Emberfall.storekit"
+    if not src.exists() or not (IOS / "App").is_dir():
+        return
+    dst = IOS / "App" / "Emberfall.storekit"
+    if not dst.exists() or dst.read_bytes() != src.read_bytes():
+        shutil.copy2(src, dst)
+        print("copied store/Emberfall.storekit -> ios/App/")
+    scheme = IOS / "App" / "App.xcodeproj" / "xcshareddata" / "xcschemes" / "App.xcscheme"
+    if not scheme.exists():
+        print("NOTE: to test the unlock from Xcode, choose Product > Scheme > Edit Scheme > Run > Options > StoreKit Configuration: Emberfall.storekit")
+        return
+    x = scheme.read_text()
+    if "StoreKitConfigurationFileReference" in x:
+        return
+    m = re.search(r"(<LaunchAction\b[^>]*>)", x)
+    if not m:
+        return
+    x = x[:m.end()] + "\n      " + STOREKIT_REF + x[m.end():]
+    scheme.write_text(x)
+    print("Xcode scheme: StoreKit testing on (Emberfall.storekit)")
+
+
 def patch_ios():
     patch_podfile()
+    patch_storekit()
     plist = IOS / "App" / "App" / "Info.plist"
     if not plist.exists():
         return

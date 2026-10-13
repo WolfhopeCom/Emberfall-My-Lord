@@ -13,7 +13,7 @@ A pixel-art medieval story game. Your father is dead and the throne of **Emberfa
 - **Your council of agents:** the General (Brannoc, Sergeant Wynn or Sir Tobin), the Spy (The Whisper, once hired) and the Witch (Morwen, if you've dealt with her). Some requests can be handled by sending one of them instead of spending gold; a sent agent is away until next month, and missions go worse without your General (`AGENTS`, `send()`).
 - **The Fox:** a chained storyline. Have the bread thief flogged in May and he returns as a bandit chief in August, blockades the salt road in October and walks into your hall in December.
 - **Hidden unrest:** low favor or heavy taxes month after month brings a mob to the gate (`S.unrest`, `RIOT`).
-- **$1.99 full-year unlock:** spring (March–May) is free; the unlock screen appears at the end of May. Uses `@capgo/native-purchases` (product `emberfall_full_unlock`), like TypeMonkey; in a browser it's a demo unlock. Restore purchase is in Settings.
+- **$1.99 full-year unlock:** Chapter One (March to the July battle) is free; the unlock screen appears after the battle. Uses `@capgo/native-purchases` (product `emberfall_full_unlock`), like TypeMonkey; in a browser it's a demo unlock. Restore purchase is in Settings.
 - **Harder late game:** favor drifts down when it's high and after July; the battle and the council need more preparation; three late buildings (Watchtowers, Infirmary, Great Hall).
 - **Comfort:** first-time tips (night, Treasury, War Room, agents, reports), tap any resource for its monthly breakdown, text speed and larger text, vibration (`@capacitor/haptics`), a confirm before New Reign overwrites a save.
 - **Endings:** "Your reign in numbers" and memorable moments on every ending; hints for locked endings.

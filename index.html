@@ -1328,7 +1328,7 @@ const can=c=>(!c.agent||agentFree(c.agent))&&(!c.cost||Object.entries(c.cost).ev
 /* ---------------------------------------------------------
    THE STORY. Each event: m (month 1 = March), who, text, req (optional), choices.
    choice: {t, cost (optional), req (optional), go: () => reply text}
-   Chapter One: March to July (the Vex battle). Autumn and winter come next.
+   Chapter One: March to July (the Vex battle). Chapter Two, autumn and winter, comes next.
    --------------------------------------------------------- */
 const E=[
 /* ---- MARCH ---- */
@@ -1625,6 +1625,32 @@ const R=[
   {t:"Pay for a new wheel",cost:{gold:12},go:()=>{fx({gold:-12,food:6});return "The mill turns again by the end of the week."}},{t:"\"Grind by hand.\"",go:()=>{fx({favor:-3,food:-4});return "Sore arms and short tempers all winter."}}]},
  {s:"winter",who:"cuthbert",req:()=>!has("witchRealm"),text:"The poor are freezing in the lower town, my lord. The abbey can take them in, if the castle sends firewood.",choices:[
   {t:"Send firewood",cost:{gold:8},go:()=>{fx({gold:-8,favor:6});return "The abbey floor is covered in sleeping families, warm for the first time in weeks."}},{t:"\"We need it ourselves.\"",go:()=>{fx({favor:-4});return "Cuthbert opens the abbey anyway, and burns the pews."}}]},
+ {s:"spring",who:"mason",text:"The thaw has cracked the east wall, my lord. I can mend it now, or wait for summer when stone is cheaper.",choices:[
+  {t:"Mend it now",cost:{gold:10},go:()=>{fx({gold:-10,favor:2});return "\"Done before the rains. You'll thank me.\""}},{t:"Wait for summer",go:()=>{if(roll(.5)){fx({gold:-4,favor:-3});return "The April rain brings down a whole section onto the cobbler's shed. Hildra says nothing, very loudly."}return "It holds. Hildra sniffs, as if the wall has let her down."}}]},
+ {s:"spring",who:"tobin",req:()=>famHere("tobin"),text:"Father, I found a hawk chick under the east tower. Its wing is broken. Can I keep it? I'll feed it myself, I swear!",choices:[
+  {t:"\"Keep it. It's your hawk.\"",go:()=>{S.bond.tobin++;note("Tobin raised a hawk.");return "He names it Thunder. It's mostly feathers and fury, and it follows him everywhere by midsummer."}},{t:"\"Give it to the falconer.\"",go:()=>{fx({favor:1});return "The falconer is delighted. Tobin is not."}}]},
+ {s:"spring",who:"peasant",text:"Thornby wants to hold a spring fair, m'lord. We'd need a charter from the castle, and a little bread for the poor.",choices:[
+  {t:"Grant the charter",cost:{food:4},go:()=>{fx({food:-4,gold:6,favor:3});return "Ribbons, pies, a greased pig and three fistfights. Everyone agrees it was the best fair in years."}},{t:"Not this year",go:()=>{fx({favor:-2});return "\"Next year, then,\" Hob says, to his hat."}}]},
+ {s:"summer",who:"maren",req:()=>famHere("maren"),text:"Father, a painter from the south wants to paint my portrait. For the suitors, he says. It's 15 gold, but it would be beautiful.",choices:[
+  {t:"Pay the painter",cost:{gold:15},go:()=>{S.bond.maren++;fx({gold:-15,favor:1});return "The painting is too flattering by half. Maren hangs it in the hall where every visitor has to walk past it."}},{t:"\"A sketch will do.\"",go:()=>"She rolls her eyes so hard you can almost hear it."}]},
+ {s:"summer",who:"cuthbert",text:"Hail flattened the abbey's barley, my lord. The brothers will go hungry until harvest.",choices:[
+  {t:"Send them grain",cost:{food:8},go:()=>{fx({food:-8,favor:4});return "The abbey bells ring an extra hour in your honor."}},{t:"\"Pray harder.\"",go:()=>{fx({favor:-3});set("churchAngry");return "Brother Cuthbert's sermon on Sunday is about the camel and the eye of the needle. Everyone knows who it's about."}}]},
+ {s:"summer",who:"merchant",text:"A travelling menagerie wants to perform in the square, my lord. A real bear! They'll pay the crown 6 gold.",choices:[
+  {t:"Let them perform",go:()=>{if(roll(.25)){fx({gold:2,favor:-3});return "The bear gets loose and eats the mayor's prize cabbages. It's very funny for everyone except the mayor."}fx({gold:6,favor:3});return "Children follow the bear around for days. So do several adults."}},{t:"No bears",go:()=>"\"Your loss, my lord. It dances.\""}]},
+ {s:"autumn",who:"peasant",text:"The harvest's ripe, m'lord, but there aren't enough hands to bring it in before the rain. Can your soldiers help?",choices:[
+  {t:"Send the soldiers",go:()=>{fx({food:12,favor:3});return "Soldiers with scythes. The sheaves are in before the first drop falls."}},{t:"\"Soldiers aren't farmhands.\"",go:()=>{fx({food:4,favor:-2});return "Half the barley rots in the fields."}}]},
+ {s:"autumn",who:"elinor",req:()=>famHere("tobin"),text:"A scholar from the Royal College is passing through. He'd stay the winter and teach Tobin his letters, for 12 gold.",choices:[
+  {t:"Hire him",cost:{gold:12},go:()=>{S.bond.tobin++;S.bond.elinor++;fx({gold:-12});return "Tobin complains bitterly, then starts reading everything in the library. Elinor is smug about it."}},{t:"\"He can learn swordplay instead.\"",go:()=>"Elinor gives you a long look and says nothing at all."}]},
+ {s:"winter",who:"cuthbert",text:"The poor of Thornby are freezing, my lord. Open the great hall to them on the coldest nights?",choices:[
+  {t:"Open the hall",cost:{food:6},go:()=>{fx({food:-6,favor:6});return "Straw on the floor, soup in the pot, and forty people singing around your fire."}},{t:"\"The hall is for guests.\"",go:()=>{fx({favor:-4});return "Two old men are found frozen behind the tannery. People remember."}}]},
+ {s:"winter",who:"aldric",text:"My lord, I've found a hole in the ledgers. A clerk has been skimming. Nine gold, at least.",choices:[
+  {t:"Dismiss him",go:()=>{fx({gold:5});return "He leaves in disgrace, and leaves most of the money behind."}},{t:"Send the Whisper to dig deeper",agent:"spy",go:()=>{send("spy");fx({gold:14});return "The clerk had a partner in the Guild. Between them, they give back fourteen gold, quite quickly."}},{t:"Forgive him",go:()=>{fx({favor:1});return "He weeps and promises. Aldric watches him like a hawk."}}]},
+ {s:"any",who:"widow",text:"My boy wants to join your guard, m'lord. He's fifteen and strong as an ox, and he eats like one too.",choices:[
+  {t:"Take him on",go:()=>{fx({men:1,favor:2});return "He trips over his own spear on the first day. By the end of the month he's the best archer in the barracks."}},{t:"\"He's too young.\"",go:()=>"Agna looks relieved, though she'd never say so."}]},
+ {s:"any",who:"merchant",text:"Clipped coins are going around the market, my lord. I know who's doing it. For a small fee, I'll tell you.",choices:[
+  {t:"Pay 5 gold",cost:{gold:5},go:()=>{fx({gold:7});return "It's a tanner with a pair of shears. He coughs up twelve gold to stay out of the dungeon."}},{t:"\"Find him yourself.\"",go:()=>{fx({gold:-4});return "The bad coins keep going around, and your taxes come in light."}}]},
+ {s:"any",who:"aldric",text:"Forgive me, my lord. The castle cats have wandered off, and the rats have found the granary.",choices:[
+  {t:"Hire a rat-catcher",cost:{gold:4},go:()=>{fx({gold:-4});return "He arrives with three terriers and a sack. The sack is full by sundown."}},{t:"\"They'll come back.\"",go:()=>{fx({food:-8});return "The cats come back eventually. So does the bill: eight sacks of grain, gone."}}]}
 ];
 /* things Hildra can build at the end of a month */
 const BUILD={
@@ -1648,7 +1674,7 @@ function floatStat(k,v){const el=$("s-"+k);const f=document.createElement("span"
 function buildMonth(){
  S.queue=E.map((e,i)=>i).filter(i=>E[i].m===S.month);
  if(S.month!==BATTLE_MONTH&&S.month!==12){const se=SEASON(S.month);const pool=R.map((r,i)=>i).filter(i=>(R[i].s===se||R[i].s==="any")&&!S.usedR.includes(i));
-  for(let k=0;k<(S.month===3||S.month>=8?1:2)&&pool.length;k++){const j=pool.splice(Math.floor(Math.random()*pool.length),1)[0];S.usedR.push(j);S.queue.splice(1+k*2,0,"r"+j)}}
+  for(let k=0;k<(S.month<=4?3:2)&&pool.length;k++){const j=pool.splice(Math.floor(Math.random()*pool.length),1)[0];if(R[j].req&&!R[j].req()){k--;continue}S.usedR.push(j);S.queue.splice(Math.min(S.queue.length,1+k*2),0,"r"+j)}}
  {const isAg=q=>typeof q==="number"&&WHO_AGENT[E[q].who];S.queue=[...S.queue.filter(isAg),...S.queue.filter(q=>!isAg(q))]}
  if((S.unrest||0)>=2&&S.month!==BATTLE_MONTH)S.queue.unshift("riot");
  S.qi=0}
@@ -2080,7 +2106,8 @@ function aftermath(k){
  overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE BATTLE IS DECIDED —</div><h3>${t}</h3><p>${d}</p>
   <p style="color:#f2c14e">But a year has twelve months. The harvest is coming, and so is the winter.</p>
   <button class="pb" id="onBtn">Onward to August</button></div>`);
- $("onBtn").onclick=()=>{SFX.click();closeOverlay();S.month=6;S.night={};setPhase("day",SEASON(6));Music.play(dayTrack());save();monthCard(()=>missionReport(()=>{buildMonth();next()}))};
+ const goOn=()=>{closeOverlay();setPhase("day",SEASON(6));Music.play(dayTrack());save();monthCard(()=>missionReport(()=>{buildMonth();next()}))};
+ $("onBtn").onclick=()=>{SFX.click();S.month=6;S.night={};save();if(!PRO)return paywall(goOn);goOn()};
 }
 function finalEnding(){
  if(has("rebelCrushed"))return"chained";
@@ -2136,7 +2163,7 @@ const RIOT={who:"peasant",text:"M'lord! There's a mob at the gate with torches a
 /* ---------------- The one-time "full year" purchase ($1.99) ----------------
    Spring (March to May) is free. In the iPhone / Android app the unlock goes through the App Store /
    Google Play (plugin @capgo/native-purchases, no outside server). In a browser it is a demo unlock. */
-const IAP_ID="emberfall_full_unlock",STORE={price:"$1.99",native:false},FREE_MONTHS=3;
+const IAP_ID="emberfall_full_unlock",STORE={price:"$1.99",native:false},FREE_MONTHS=5;
 let PRO=false;try{PRO=localStorage.getItem("ef_pro")==="1"}catch(e){}
 function setPro(){PRO=true;try{localStorage.setItem("ef_pro","1")}catch(e){}}
 function nativeStore(){try{const Cap=window.Capacitor;return Cap&&Cap.isNativePlatform&&Cap.isNativePlatform()&&Cap.Plugins&&Cap.Plugins.NativePurchases||null}catch(e){return null}}
@@ -2159,10 +2186,10 @@ async function restoreFull(after){const np=nativeStore();
  toast("Checking your purchases…");try{await np.restorePurchases()}catch(e){}
  const own=await storeCheck();toast(own||PRO?"Purchase restored! The full year is unlocked.":"No purchase found for this Apple ID.");if(own)after&&after()}
 function paywall(after){
- setCastle("map");SFX.toll();
- overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE END OF SPRING —</div><h3>Vex's banners are coming</h3>
-  <p>Spring is over. Scouts report Baron Vex's army on the march, Brannoc is sharpening his blades, and Emberfall's first summer is about to begin.</p>
-  <p>Unlock the full year to play on: the July battle, the harvest, a rival for your throne, the King's war, winter, the Midwinter Council, and all 19 endings.</p>
+ setCastle("dawn");SFX.toll();
+ overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE END OF CHAPTER ONE —</div><h3>The summer is over</h3>
+  <p>The battle at the ford is decided, and Emberfall will remember it. But your first year is only half done. The harvest is coming, a rival will claim your throne, and the great lords ride in for the Midwinter Council.</p>
+  <p>Unlock Chapter Two to finish your reign: autumn and winter, Lord Corvin's claim, the King's war, the Midwinter Council, and all 19 endings.</p>
   <button class="pb" id="buyBtn">Unlock the full year · ${STORE.price}</button>
   <p class="dim" style="font-size:14px">One purchase, yours forever. No ads, no subscriptions.</p>
   <button class="pb alt" id="restoreBtn">Restore purchase</button><button class="pb alt" id="laterBtn">Not now</button></div>`);

@@ -6,7 +6,7 @@
 | Subtitle (30) | Rule the throne. Choose a fate. |
 | Bundle ID | com.wolfhope.emberfall |
 | Category | Games → Role Playing (secondary: Games → Simulation) |
-| Price | Free download; spring (March–May) is free |
+| Price | Free download; Chapter One (March to the July battle) is free |
 | In-App Purchase | Non-Consumable · Product ID `emberfall_full_unlock` · Reference name "Full Year Unlock" · **$1.99** (Tier 2) |
 | Privacy Policy URL | https://wolfhopecom.github.io/emberfall/privacy.html |
 | Support URL | https://wolfhopecom.github.io/emberfall/support.html |
@@ -50,8 +50,12 @@ No account or login. The game is fully offline. Tap New Reign, then pick an answ
 2. Reference name: `Full Year Unlock` · Product ID: `emberfall_full_unlock` (must match exactly).
 3. Price: **$1.99**. Availability: all countries.
 4. Display name: `The Full Year` · Description: `Unlock June to February: the Vex battle, the harvest, the King's war, winter and all 19 endings.`
-5. Review screenshot: the paywall at the end of May ("Vex's banners are coming"). Review notes: "Play March to May (about 20 minutes), sleep at the end of May, and the unlock screen appears. Settings (⚙) also has Unlock and Restore purchase."
+5. Review screenshot: the unlock screen at the end of Chapter One ("The summer is over"). Review notes: "Play March to July (about 40 minutes) through the battle for Emberfall; after the battle, press Onward to August and the unlock screen appears. Restore Purchase is in Settings and on the unlock screen."
 6. Attach the IAP to the version on the version page before submitting.
 
 ## Review notes (add to the IAP note above)
 Spring (months 1–3) is free. The unlock is a one-time non-consumable; Restore purchase is in Settings and on the unlock screen. No account, no server: StoreKit only.
+
+
+## Testing the unlock before the in-app purchase exists
+`build_app.py` copies `store/Emberfall.storekit` into the iOS project and turns on StoreKit testing in the Xcode scheme. Runs started from Xcode then use a local test store: the $1.99 unlock works and nothing is charged. TestFlight and App Store builds ignore this file and use the real product `emberfall_full_unlock`, which must be created in App Store Connect (non-consumable, $1.99) before submitting.
