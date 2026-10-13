@@ -65,7 +65,7 @@ function crest(x, sky){
   await s.evaluate(() => { S.month = 5; S.f.plan_wall = 1; S.men = 40; });
   await s.evaluate(() => siege()); await s.waitForTimeout(3800);
   await s.screenshot({ path: path.join(SHOTS, '05-siege.png') });
-  await s.evaluate(() => ending('crowned')); await s.waitForTimeout(2500);
+  await s.evaluate(() => ending('twoBanks')); await s.waitForTimeout(2500);
   await s.screenshot({ path: path.join(SHOTS, '06-ending.png') });
   await b.close();
   console.log('resources and screenshots written');

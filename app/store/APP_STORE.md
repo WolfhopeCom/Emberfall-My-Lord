@@ -15,16 +15,16 @@
 | Screenshots | `screenshots/` (1206×2622, iPhone 6.9") |
 
 ## Promotional text (170)
-The throne of Emberfall is yours. A year of seasons, fourteen voices at your door, thirteen endings. Will your city stand when the Baron's banners reach the river?
+The throne of Emberfall is yours. A full year of seasons, sixteen voices at your door, nineteen endings. Will your city stand when the Baron's banners reach the river?
 
 ## Description
 Your father is dead, and the throne of Emberfall is yours.
 
 Month after month, petitioners walk the red carpet to your throne. A miller begging grain for a starving village. Your wife, with a marriage offer for your daughter. A hedge-witch from the fen with a bargain she won't name. A smiling envoy from Baron Vex, who wants your city.
 
-Every answer costs something. Keep your gold, grain, army and the favor of your people alive through spring planting and summer heat, and raise granaries, markets and walls with your master mason, because in high summer, Vex's banners appear on the river.
+Every answer costs something. Keep your gold, grain, army and the favor of your people alive through spring planting and summer heat, and raise granaries, markets and walls with your master mason, because in high summer, Vex's banners appear on the river. Survive him, and the year isn't over: a cousin with a forged will, the King's war, a hard winter, and a council of lords who will decide if you keep your throne.
 
-• A hand-crafted story with 13 endings: victory, exile, ruin, a crown, and stranger fates
+• A hand-crafted story with 19 endings across a full year: victory, exile, rebellion, a stolen crown, and stranger fates
 • Choices that come back: alliances, betrayals, curses and secrets carry across the months
 • A living calendar: spring rain, summer sun, autumn leaves and winter snow, plus buildings to raise
 • 14 characters with animated pixel-art portraits and their own voices
@@ -42,4 +42,4 @@ kingdom,medieval,choices,story,throne,king,lord,pixel,narrative,castle,ruler,fan
 The throne of Emberfall awaits.
 
 ## Review notes
-No account or login. The game is fully offline. Tap New Reign, then pick an answer for each visitor. Chapter One (March to July) takes about 30 minutes.
+No account or login. The game is fully offline. Tap New Reign, then pick an answer for each visitor. A full year (March to February) takes about an hour.
