@@ -1256,7 +1256,7 @@ function ending(k){
  overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— AN ENDING —</div><h3>${t}</h3><p>${d}</p>
   ${CONTINUES.includes(k)?`<p style="color:#f2c14e">Chapter One is complete. Your reign continues into autumn and winter in the next update.</p>`:""}
   <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
-  <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="title()">Title Screen</button></div>`);
+  <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="showTitle()">Title Screen</button></div>`);
  return true}
 function overlay(h){const o=$("overlay");o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
@@ -1267,13 +1267,13 @@ function savePrefs(){try{localStorage.setItem("ef_prefs",JSON.stringify({m:AU.mu
 function openSettings(){SFX.click();modal(`<h3>Settings</h3>
  <button class="pb alt" onclick="AU.musicOn=!AU.musicOn;if(AU.mg)AU.mg.gain.value=AU.musicOn?.5:0;savePrefs();openSettings()">Music: ${AU.musicOn?"On":"Off"}</button>
  <button class="pb alt" onclick="AU.sfxOn=!AU.sfxOn;if(AU.sg)AU.sg.gain.value=AU.sfxOn?.6:0;savePrefs();openSettings()">Sound: ${AU.sfxOn?"On":"Off"}</button>
- <button class="pb alt" onclick="closeModal();title()">Save &amp; Quit to Title</button>
+ <button class="pb alt" onclick="closeModal();showTitle()">Save &amp; Quit to Title</button>
  <button class="pb" onclick="closeModal()">Back</button>`)}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? Undiscovered</div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
 function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();SC.room=null;SC.cast=[];setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
 function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();closeOverlay();SC.room=null;SC.cast=[];if(S.night&&S.night.reqDone){CS.season=SEASON(S.month);setPhase("night",CS.season);Music.play("night");render();return showNight()}const war=S.month>=LAST_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
-function title(){
+function showTitle(){
  if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;SC.room=null;SC.cast=[];
  let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save2")}catch(e){}
  setCastle("title");Music.play("night");
@@ -1283,7 +1283,7 @@ function title(){
   <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
   <button class="pb alt" onclick="openSettings()">Settings</button></div>`)}
 
-buildStats();S=fresh();render();setPhase("day","spring");title();loop();
+buildStats();S=fresh();render();setPhase("day","spring");showTitle();loop();
 </script>
 </body>
 </html>
