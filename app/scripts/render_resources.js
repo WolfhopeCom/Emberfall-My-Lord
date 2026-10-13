@@ -69,6 +69,29 @@ function crest(x, sky){
   await s.screenshot({ path: path.join(SHOTS, '05-siege.png') });
   await s.evaluate(() => ending('twoBanks')); await s.waitForTimeout(2500);
   await s.screenshot({ path: path.join(SHOTS, '06-ending.png') });
+
+  // App icon: the title scene (castle at dusk, embers, moon) with the crest's crown on top, drawn by the game itself
+  const ip = await b.newPage();
+  await ip.goto('file://' + path.join(ROOT, 'index.html') + '?fast');
+  const iconUrl = await ip.evaluate((js) => { eval(js);
+ const src=document.createElement('canvas');src.width=160;src.height=120;const sx=src.getContext('2d');
+ CS.mode='title';CS.parts=[];CS.t=0;for(let i=0;i<260;i++)drawCastle(sx);
+ const ic=document.createElement('canvas');ic.width=128;ic.height=128;const x=ic.getContext('2d');x.imageSmoothingEnabled=false;
+ x.fillStyle='#140c26';x.fillRect(0,0,128,10);x.drawImage(src,14,0,128,120,0,8,128,120);
+ // warm glow behind the crown
+ const r=x.createRadialGradient(64,36,2,64,36,58);r.addColorStop(0,'rgba(255,170,70,.55)');r.addColorStop(1,'rgba(255,120,40,0)');x.globalCompositeOperation='lighter';x.fillStyle=r;x.fillRect(0,0,128,90);x.globalCompositeOperation='source-over';
+ // crest at 2x, centered, with a dark outline for contrast
+ const c=document.createElement('canvas');c.width=32;c.height=32;crest(c.getContext('2d'),0);
+ const sh=document.createElement('canvas');sh.width=32;sh.height=32;const shx=sh.getContext('2d');shx.drawImage(c,0,0);shx.globalCompositeOperation='source-in';shx.fillStyle='#1a0a08';shx.fillRect(0,0,32,32);
+ for(const [dx,dy] of [[-2,0],[2,0],[0,-2],[0,2],[2,2],[-2,2],[2,-2],[-2,-2]])x.drawImage(sh,16+dx,-2+dy,96,96);
+ x.drawImage(c,16,-2,96,96);
+ // soft vignette
+ const v=x.createRadialGradient(64,64,40,64,64,92);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.45)');x.fillStyle=v;x.fillRect(0,0,128,128);
+ const big=document.createElement('canvas');big.width=1024;big.height=1024;const bx=big.getContext('2d');bx.imageSmoothingEnabled=false;bx.drawImage(ic,0,0,1024,1024);
+ return big.toDataURL('image/png'); }, ICON_JS);
+  const iconBuf = Buffer.from(iconUrl.split(',')[1], 'base64');
+  fs.writeFileSync(path.join(RES, 'icon.png'), iconBuf); fs.writeFileSync(path.join(RES, 'icon-only.png'), iconBuf);
+  await ip.close();
   await b.close();
   console.log('resources and screenshots written');
 })();

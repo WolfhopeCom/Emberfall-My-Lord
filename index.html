@@ -133,21 +133,27 @@ img.px{image-rendering:pixelated}
 #card span{color:#f4e2c0;font-size:16px;letter-spacing:4px;margin-top:6px}
 @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}}
 @keyframes fade{from{opacity:0}}
-/* ---------- Landscape: the stage on the left, the dialog on the right, the top bar on one line ---------- */
+/* ---------- Landscape: the hall fills the screen, a text box runs along the bottom with the choices on its right ---------- */
+#sceneWide{display:none}
 @media (orientation:landscape) and (min-aspect-ratio:5/4){
- #app{max-width:none;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);grid-template-rows:auto minmax(0,1fr)}
- #hud{grid-column:1/-1;display:flex;align-items:center;gap:20px;padding:calc(env(safe-area-inset-top) + 5px) max(14px,env(safe-area-inset-right)) 5px max(14px,env(safe-area-inset-left))}
+ #app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 37%}
+ #hud{grid-row:1;grid-column:1;display:flex;align-items:center;gap:20px;padding:calc(env(safe-area-inset-top) + 5px) max(14px,env(safe-area-inset-right)) 5px max(14px,env(safe-area-inset-left))}
  #stats{flex:1;justify-content:flex-start;gap:clamp(14px,3vw,34px)}
  .stat{min-width:0}.stat img{width:22px;height:22px}.stat b{font-size:20px}
  #hudrow{margin-top:0;gap:14px}
  #daylbl{font-size:13px}#daylbl small{font-size:10px}
- #scene{grid-column:1;grid-row:2;align-self:center;justify-self:center;width:min(calc(100% - env(safe-area-inset-left) - 8px),calc((100dvh - 62px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) * 1.6));height:auto;margin-left:env(safe-area-inset-left)}
- #dialog{grid-column:2;grid-row:2;min-height:0;margin:8px max(8px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) 0;padding:10px 12px}
- #pbox{width:64px;height:64px}#portrait{width:58px;height:58px}
- #who{font-size:18px}#role{font-size:14px}
- #txt{font-size:17.5px;line-height:1.32;margin:8px 2px 6px;min-height:0}
- .ch{font-size:16px;padding:8px 10px 8px 26px}.ch .cost{font-size:12px}
- #choices{gap:7px}
+ #scene{display:none}
+ #sceneWide{display:block;grid-row:2;grid-column:1;align-self:start;width:100%;height:calc(100% + 30px);z-index:1}
+ #dialog{grid-row:3;grid-column:1;z-index:2;min-height:0;overflow:hidden;margin:0 max(12px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 8px) max(12px,env(safe-area-inset-left));
+  padding:10px 14px;display:grid;grid-template-columns:auto minmax(0,1.35fr) minmax(230px,1fr);grid-template-rows:auto minmax(0,1fr);column-gap:12px;opacity:.97}
+ #dialog .head{display:contents}
+ #pbox{grid-column:1;grid-row:1/3;align-self:start}
+ #dialog .head>div:last-child{grid-column:2;grid-row:1;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+ #pbox{width:50px;height:50px}#portrait{width:44px;height:44px}
+ #who{font-size:17px}#role{font-size:13.5px;margin-top:0}
+ #txt{grid-column:2;grid-row:2;font-size:17px;line-height:1.32;margin:6px 0 0;min-height:0;overflow-y:auto}
+ #choices{grid-column:3;grid-row:1/3;min-height:0;overflow-y:auto;justify-content:center;gap:7px;padding:2px 2px 6px;border-left:2px dashed rgba(42,24,16,.25);padding-left:14px}
+ .ch{font-size:15.5px;padding:7px 10px 7px 26px;line-height:1.2;box-shadow:0 3px 0 var(--ink)}.ch .cost{font-size:12px;margin-top:1px}
  #overlay{flex-direction:row;overflow:hidden}
  .cwrap{flex:1.45 1 0;min-width:0;height:100%;display:flex;align-items:center;justify-content:center;padding-left:env(safe-area-inset-left);background:#05030a}
  #castle{width:min(100%,calc(100dvh * 4 / 3));height:auto}
@@ -157,15 +163,18 @@ img.px{image-rendering:pixelated}
  .pb{min-width:200px;font-size:15px;padding:9px 14px}
  .rooms{gap:8px}.room{min-height:78px;padding:8px}.room small{font-size:13.5px}
  #card b{font-size:46px}
- .bigtext #txt{font-size:20px}.bigtext .ch{font-size:18px}
+ #tip .box,#modal .box{max-width:min(660px,92vw);max-height:92%;padding:14px 20px}
+ #tip h3{margin-bottom:6px}#tip p{font-size:15.5px;line-height:1.4;margin:4px 0}#tip .pb{margin-top:8px}
+ .bigtext #txt{font-size:19.5px}.bigtext .ch{font-size:17.5px}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
- #app{grid-template-columns:minmax(0,1.25fr) minmax(290px,1fr)}
- #pbox{width:48px;height:48px}#portrait{width:42px;height:42px}
- #who{font-size:16px}#role{font-size:13px;margin-top:0}
- #txt{font-size:16px;line-height:1.28;margin:6px 1px 5px}
- .ch{font-size:15px;padding:6px 8px 6px 24px;box-shadow:0 3px 0 var(--ink)}.ch .cost{margin-top:1px}
- #choices{gap:6px}#dialog{padding:8px 10px;margin-top:6px}
+ #app{grid-template-rows:auto minmax(0,1fr) 41%}
+ #sceneWide{height:calc(100% + 24px)}
+ #dialog{padding:8px 12px;grid-template-columns:auto minmax(0,1.3fr) minmax(205px,1fr)}
+ #pbox{width:42px;height:42px}#portrait{width:36px;height:36px}
+ #who{font-size:15.5px}#role{font-size:12.5px}
+ #txt{font-size:15.5px;line-height:1.28;margin-top:4px}
+ .ch{font-size:14.5px;padding:6px 8px 6px 24px}#choices{gap:6px}
 }
 </style>
 </head>
@@ -176,6 +185,7 @@ img.px{image-rendering:pixelated}
   <div id="hudrow"><div id="daylbl">EMBERFALL</div><div><button class="hb" onclick="openChron()">Chronicle</button><button class="hb" onclick="openSettings()">⚙</button></div></div>
  </div>
  <canvas id="scene" width="192" height="120"></canvas>
+ <canvas id="sceneWide" width="192" height="120"></canvas>
  <div id="dialog">
   <div class="head"><div id="pbox"><canvas id="portrait" width="32" height="32"></canvas></div><div><div id="who"></div><div id="role"></div></div></div>
   <div id="txt"></div>
@@ -640,7 +650,7 @@ function drawScene(){
  for(const[tx,ty]of SC.room?ROOMS[SC.room].lights:TORCH){const fl=.15+Math.sin(SC.t/7+tx)*.025+Math.random()*.02;const r=x.createRadialGradient(tx+1,ty-3,1,tx+1,ty-3,30);
   r.addColorStop(0,`rgba(255,150,60,${night?fl*1.8:fl})`);r.addColorStop(1,"rgba(255,150,60,0)");x.fillStyle=r;x.fillRect(tx-30,ty-33,62,62)}
  x.globalCompositeOperation="source-over";
- x.drawImage(VIG,0,0);
+ if(!WIDE.on)x.drawImage(VIG,0,0);
  if(SC.fade>0){x.fillStyle=`rgba(0,0,0,${SC.fade})`;x.fillRect(0,0,W,H);SC.fade=Math.max(0,SC.fade-(FAST?1:.05))}
  x.restore();
  if(w){const spd=FAST?10:1.7;
@@ -771,8 +781,54 @@ function mapTap(e){const cv=e.currentTarget,r=cv.getBoundingClientRect(),px=(e.c
    MAIN LOOP
    ========================================================= */
 const pctx=$("portrait").getContext("2d");let PCHAR=null;
+const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4)");
+/* ---------------- Wide stage for landscape: the hall is extended to fill the screen ---------------- */
+const WIDE={on:false,LW:W,E:0,cache:null,key:"",vig:null,torches:[]};
+const wcv=$("sceneWide"),wctx=wcv.getContext("2d");
+function coreBG(){if(!SC.room)return SC.BG;const id=SC.room;return SC.RBG&&SC.RBG[id+(id==="mason"?SC.season:"")]}
+function hexAt(c,px,py){const d=c.getContext("2d").getImageData(px,py,1,1).data;return "#"+[d[0],d[1],d[2]].map(v=>v.toString(16).padStart(2,"0")).join("")}
+function buildWide(){const LW=WIDE.LW,E=WIDE.E,R=E+W,c=document.createElement("canvas");c.width=LW;c.height=H;const x=c.getContext("2d");const base=coreBG();WIDE.torches=[];
+ if(!base)return c;
+ if(SC.room==="mason"){ // outdoors: mirror the yard outwards
+  x.save();x.beginPath();x.rect(0,0,E,H);x.clip();x.translate(2*E,0);x.scale(-1,1);x.drawImage(base,E,0);x.restore();
+  x.save();x.beginPath();x.rect(R,0,LW-R,H);x.clip();x.translate(2*R,0);x.scale(-1,1);x.drawImage(base,E,0);x.restore();return c}
+ const wall=hexAt(base,2,62),floor=hexAt(base,3,100),mold=hexAt(base,2,83);seed=29;
+ const pal=[wall,shade(wall,-.07),shade(wall,.06),shade(wall,-.03)];
+ x.fillStyle=shade(wall,-.38);x.fillRect(0,0,LW,86);
+ for(let row=0;row<15;row++){const y=row*6,off=row%2?6:0;for(let bx=-off-12*Math.ceil(E/12+1);bx<W+E+12;bx+=12){x.fillStyle=pal[Math.floor(rnd()*4)];x.fillRect(E+bx+1,y+1,10,4);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(E+bx+1,y+1,10,1)}}
+ const gr=x.createLinearGradient(0,0,0,70);gr.addColorStop(0,"rgba(0,0,0,.5)");gr.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gr;x.fillRect(0,0,LW,70);
+ x.fillStyle=mold;x.fillRect(0,82,LW,4);x.fillStyle=shade(mold,.15);x.fillRect(0,82,LW,1);x.fillStyle="#1a1418";x.fillRect(0,85,LW,1);
+ const rows=[86,91,97,104,112,121],fa=floor,fb=shade(floor,-.09),fe=shade(floor,-.32);
+ for(let i=0;i<rows.length-1;i++){const y=rows[i],hh=rows[i+1]-y,tw=12+i*3,off=i%2?tw/2:0;
+  for(let k=-Math.ceil(E/tw)-2;;k++){const fx=-off+k*tw;if(fx>W+E)break;x.fillStyle=(k+i)%2?fa:fb;x.fillRect(E+fx,y,tw,hh);x.fillStyle=fe;x.fillRect(E+fx,y,1,hh);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(E+fx+1,y,tw-1,1)}
+  x.fillStyle=fe;x.fillRect(0,y,LW,1)}
+ const pillar=px=>{cfill(x,shade(wall,-.25),px,0,10,84);cfill(x,shade(wall,.18),px,0,2,84);cfill(x,shade(wall,-.5),px+8,0,2,84);cfill(x,shade(mold,.1),px-2,0,14,4);cfill(x,shade(mold,.1),px-2,78,14,6);cfill(x,shade(mold,-.3),px-2,83,14,1)};
+ if(!SC.room){ // the throne dais carries on to the right
+  x.fillStyle="#5c5068";x.fillRect(R,84,LW-R,5);x.fillStyle="#6e627a";x.fillRect(R,84,LW-R,1);x.fillStyle="#463c50";x.fillRect(R,89,LW-R,15);x.fillStyle="#3a3044";x.fillRect(R,96,LW-R,1);x.fillStyle="#2a2130";x.fillRect(R,104,LW-R,1)}
+ if(E>=16){pillar(E-14);pillar(R+4)}
+ if(E>=48){banner(x,E-40,4,12,30);banner(x,R+30,4,12,30);WIDE.torches.push([E-26,50],[R+20,50])}
+ if(E>=86){pillar(E-72);pillar(R+62);WIDE.torches.push([E-56,50],[R+50,50])}
+ return c}
+function drawWide(){
+ const cw=wcv.clientWidth,ch=wcv.clientHeight;if(!cw||!ch)return;
+ const LW=Math.max(W,Math.min(420,Math.round(H*cw/ch/2)*2));
+ if(wcv.width!==LW){wcv.width=LW;WIDE.LW=LW;WIDE.E=(LW-W)>>1;WIDE.key="";WIDE.vig=null}
+ const key=[LW,SC.room||"throne",SC.phase,SC.season,!!coreBG()].join("|");if(key!==WIDE.key){WIDE.cache=buildWide();WIDE.key=key}
+ const x=wctx,E=WIDE.E,R=E+W;x.drawImage(WIDE.cache,0,0);
+ const gf=greenFire();
+ for(const[tx,ty]of SC.room==="mason"?[]:WIDE.torches){x.fillStyle="#3a3030";x.fillRect(tx,ty,2,5);x.fillStyle="#5a4a3a";x.fillRect(tx-1,ty-1,4,2);const f=Math.floor(SC.t/4+tx)%3;
+  x.fillStyle=gf?"#30c040":"#f08020";x.fillRect(tx-1,ty-5-f%2,4,5);x.fillStyle=gf?"#a0f080":"#ffd060";x.fillRect(tx,ty-4-f,2,4);x.fillStyle="#fff4c0";x.fillRect(tx,ty-2,1,2)}
+ x.drawImage(cv,E,0);
+ const tint=SC.room?"rgba(8,12,40,.2)":SC.phase==="night"?"rgba(8,12,40,.5)":SC.phase==="dusk"?"rgba(90,20,10,.16)":null;
+ if(tint){x.fillStyle=tint;x.fillRect(0,0,E,H);x.fillRect(R,0,LW-R,H)}
+ x.globalCompositeOperation="lighter";
+ for(const[tx,ty]of SC.room==="mason"?[]:WIDE.torches){const fl=.15+Math.sin(SC.t/7+tx)*.025;const r=x.createRadialGradient(tx+1,ty-3,1,tx+1,ty-3,26);r.addColorStop(0,`rgba(255,150,60,${SC.room||SC.phase==="night"?fl*1.6:fl})`);r.addColorStop(1,"rgba(255,150,60,0)");x.fillStyle=r;x.fillRect(tx-26,ty-29,54,54)}
+ x.globalCompositeOperation="source-over";
+ if(!WIDE.vig){const v=document.createElement("canvas");v.width=LW;v.height=H;const vx=v.getContext("2d");const r=vx.createRadialGradient(LW/2,H*.55,H*.4,LW/2,H*.55,LW*.62);r.addColorStop(0,"rgba(0,0,0,0)");r.addColorStop(1,"rgba(0,0,0,.6)");vx.fillStyle=r;vx.fillRect(0,0,LW,H);WIDE.vig=v}
+ x.drawImage(WIDE.vig,0,0);
+ if(SC.fade>0){x.fillStyle=`rgba(0,0,0,${SC.fade})`;x.fillRect(0,0,E,H);x.fillRect(R,0,LW-R,H)}}
 function loop(){
- drawScene();
+ WIDE.on=LANDSCAPE.matches;drawScene();if(WIDE.on)drawWide();
  const cc=document.getElementById("castle");if(cc)(CS.mode==="map"?drawMap:drawCastle)(cc.getContext("2d"));
  drawPortrait(pctx,PCHAR,{talk:SC.talk&&(SC.t%10<5),blink:((SC.t)%200)<6});
  requestAnimationFrame(loop)}
@@ -1150,6 +1206,7 @@ function react(){
 }
 let TY=null;
 function typeText(str,voice,done){
+ if(LANDSCAPE.matches)str=str.replace(/\n\n+/g,"\n");
  if(TY)clearTimeout(TY.to);const el=$("txt");el.textContent="";let i=0;SC.talk=true;TY={str,done};
  if(FAST||PREF.speed==="instant")return finishType();const SP=SPEEDS[PREF.speed]||1;
  const step=()=>{if(!TY||TY.str!==str)return;i++;el.textContent=str.slice(0,i);const ch=str[i-1];
