@@ -420,7 +420,7 @@ const C={
  tobin:{kid:1,n:"Tobin",r:"Your son",skin:"#f0cba6",hair:"#3a2618",robe:"#9a2a2a",blush:1,mood:"neutral",voice:300},
  brannoc:{n:"Captain Brannoc",r:"Master of your guard",skin:"#b07a52",hair:"#2a1a10",robe:"#5c6470",acc:"helm",beard:1,scar:1,tabard:"#8a1f2a",mood:"stern",voice:115},
  cuthbert:{robeLong:1,n:"Brother Cuthbert",r:"Abbot of Emberfall",skin:"#efc9a2",hair:"#7a5a3a",robe:"#d8d0bf",trim:"#7a5a2a",acc:"tonsure",mood:"kind",voice:200},
- morwen:{staff:"#5cf25c",n:"Morwen",r:"The hedge-witch of the fen",skin:"#cfd8c4",hair:"#1a1a26",robe:"#4a2a62",acc:"hood",long:1,dress:1,eyes:"#5cf25c",lips:"#4a1a4a",mood:"sly",voice:250},
+ morwen:{staff:"#5cf25c",n:"Morwen",r:"The Ferrywoman of the Ember",skin:"#cfd8c4",hair:"#1a1a26",robe:"#4a2a62",acc:"hood",long:1,dress:1,eyes:"#5cf25c",lips:"#4a1a4a",mood:"sly",voice:250},
  vexenvoy:{n:"Sir Gerrit",r:"Envoy of Baron Vex",skin:"#d9b391",hair:"#111111",robe:"#1d1d22",trim:"#9a1f1f",acc:"helm",plume:"#9a1f1f",mood:"sly",voice:140},
  merchant:{robeLong:1,n:"Osric Fairweather",r:"Merchant of the Guild",skin:"#c8925e",hair:"#4a2a12",robe:"#a07a1a",trim:"#6a2a8a",acc:"hat",beard:1,mood:"sly",voice:235},
  whisper:{n:"The Whisper",r:"A stranger in grey",skin:"#c9b49e",hair:"#333333",robe:"#4a4a52",acc:"hood",mask:1,mood:"stern",voice:210,eyes:"#9ab0c8"},
@@ -438,6 +438,7 @@ const C={
  rhun:{n:"Lord Rhun",r:"Lord of the Hills, your father's friend",skin:"#d8b090",hair:"#e0e0e0",robe:"#3a4a2a",trim:"#a08050",beard:1,wrinkles:1,cape:"#2a2018",mood:"stern",voice:120},
  anselm:{n:"Bishop Anselm",r:"Bishop of Saint Ember",skin:"#f0d0b0",hair:"#9a9a9a",robe:"#5a2a6a",trim:"#e0c060",acc:"tonsure",robeLong:1,wrinkles:1,mood:"sly",voice:180},
  garrick:{n:"Lord Garrick",r:"Lord of the North Road",skin:"#c89070",hair:"#4a3a2a",robe:"#4a4a3a",trim:"#8a8a8a",beard:1,cape:"#2a2a24",mood:"stern",voice:125},
+ aldous:{n:"Sir Aldous",r:"Corvin's champion",skin:"#d8b898",hair:"#3a3a2a",robe:"#3a4a3a",trim:"#6a8a5a",acc:"helm",plume:"#5a8a4a",tabard:"#4a5a3a",beard:1,cape:"#2a3a2a",mood:"stern",voice:105},
  ulric:{n:"Master Ulric",r:"Apothecary of Greymarch",skin:"#e0c0a0",hair:"#8a7a6a",robe:"#5a6a4a",trim:"#2a3a2a",balding:1,robeLong:1,mood:"sad",voice:260},
  lord:{skin:"#ecc49c",hair:"#5a3418",robe:"#6a1f2a",trim:"#e0b040",crown:1,cape:"#4a1220"},
  guard:{spear:1,skin:"#d8a880",hair:"#3a2a1a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",trim:"#3a3030"},
@@ -1455,7 +1456,7 @@ const E=[
   {t:"\"Take your time.\"",go:()=>"\"I will. But not too much.\""}]},
 {m:4,who:"widow",text:"The summer fever, m'lord. It's in Thornby. Three dead, and Brother Cuthbert's prayers aren't working.",
  choices:[{t:"Quarantine the village",cost:{food:10},go:()=>{fx({food:-10,favor:-3});set("plagueContained");return "Harsh, but the fever stays in Thornby."}},
-  {t:"Send for Morwen",agent:"witch",go:()=>{send("witch");set("plagueContained");set("witchHealed");fx({favor:5});note("Morwen cured the summer fever.");return "The witch comes. The coughing stops. Cuthbert is furious."}},
+  {t:"Send for Morwen",agent:"witch",go:()=>{send("witch");set("plagueContained");set("witchHealed");fx({favor:5});note("Morwen cured the summer fever.");return "Morwen comes. The coughing stops. Cuthbert is furious."}},
   {t:"Pray and wait",go:()=>{set("plague");fx({favor:-8,men:-6});note("The fever spread to the castle.");return "It spreads. Six of your soldiers are buried within the week."}}]},
 {m:4,who:"aldric",text:"Refugees, my lord. Forty of them, fleeing Vex's lands. He's been burning his own villages to pay for his army.",
  choices:[{t:"Take them in",cost:{food:10},go:()=>{fx({food:-10,men:6,favor:4});set("refugees");return "Among them are six who know how to fight, and who hate Vex."}},
@@ -1487,8 +1488,8 @@ const E=[
  choices:[{t:"Send the King a gift",cost:{gold:15},go:()=>{fx({gold:-15});set("kingFavor");return "\"His Majesty will hear of Emberfall's loyalty.\""}},
   {t:"Ask the King for aid",go:()=>"\"The King's armies are in the north. You stand alone.\""}]},
 {m:5,who:"morwen",req:()=>has("witchPact")&&!has("knelt"),text:"Later has come, little lord. My price: when the fire comes, you'll let me burn Baron Vex myself. And afterwards, the fen is mine. No priests. No laws.",
- choices:[{t:"Honor the pact",go:()=>{set("witchFire");note("Honored the witch's pact.");return "\"Good. The river will run red... with his blood, not yours.\""}},
-  {t:"Break it",go:()=>{set("witchCurse");fx({food:-15,favor:-5});note("Broke the witch's pact.");return "Your granary rots overnight. Her laughter echoes in the walls."}}]},
+ choices:[{t:"Honor the pact",go:()=>{set("witchFire");note("Honored Morwen's pact.");return "\"Good. The river will run red... with his blood, not yours.\""}},
+  {t:"Break it",go:()=>{set("witchCurse");fx({food:-15,favor:-5});note("Broke Morwen's pact.");return "Your granary rots overnight. Her laughter echoes in the walls."}}]},
 {m:5,who:"tobin",req:()=>has("tobinRides")&&!has("knelt"),text:"Father! We ambushed Vex's scouts at the mill! I... I've never seen a real fight before.",
  choices:[{t:"Hold him",go:()=>{set("tobinHardened");return "He shakes. Then he stops shaking. He's not a boy anymore."}},
   {t:"\"You did well.\"",go:()=>{set("tobinProud");fx({men:3});return "The men cheer him. He looks back at you for a long time."}}]},
@@ -1550,7 +1551,7 @@ const E=[
 {m:7,who:"vexenvoy",req:()=>has("vassal"),text:"\"The Baron would like your son at his court, my lord. As a ward. To learn proper manners.\" Gerrit doesn't bother pretending it isn't a hostage.",
  choices:[{t:"Send Tobin",go:()=>{set("tobinHostage");S.bond.tobin=0;fx({favor:-5});note("Sent Tobin to Vex's court as a hostage.");return "Tobin doesn't cry until he's out of sight of the gate. Elinor doesn't stop."}},
   {t:"Refuse",go:()=>{set("rebelSeed");set("vexAngry");return "Gerrit's smile goes thin. \"The Baron will hear of this.\""}}]},
-{m:7,who:"cuthbert",req:()=>has("morwenCourt"),text:"\"My lord, the witch is teaching children in the market to talk to crows. The abbey or the fen. You cannot keep both.\"",
+{m:7,who:"cuthbert",req:()=>has("morwenCourt"),text:"\"My lord, the ferrywoman is teaching children in the market to talk to crows. The abbey or the fen. You cannot keep both.\"",
  choices:[{t:"Choose the abbey",go:()=>{delete S.f.morwenCourt;set("morwenBanished");set("witchCurse");fx({favor:4});note("Sent Morwen away at the abbey's demand.");return "Morwen leaves at dawn. The crows follow her. So does a curse on your granary."}},
   {t:"Choose the fen",go:()=>{set("witchRealm");set("churchAngry");fx({favor:-6});note("Sided with Morwen against the abbey.");return "Cuthbert takes off his abbot's ring and leaves it on your throne."}},
   {t:"\"Learn to live with each other.\"",go:()=>{fx({favor:-2});return "Neither of them speaks to you for a week."}}]},
@@ -1582,10 +1583,10 @@ const E=[
  choices:[{t:"\"We rise in December.\"",go:()=>{set("rebellion");note("Planned an uprising against Vex.");return "Aldric bows. His hands are shaking, and he's smiling."}},
   {t:"\"Not yet.\"",go:()=>"\"As you say, my lord.\" He looks older than yesterday."}]},
 /* ---- DECEMBER ---- */
-{m:10,who:"aldric",req:()=>has("vexRevenge")&&!has("vexDead")&&!has("vexTruce"),text:"My lord! Vex's banners on the ice! He's crossing the frozen river with everything he has left!",
- choices:[{t:"Hold the walls",go:()=>{if(strength()>=45){set("vexDead");fx({favor:8});note("Vex died on the frozen river.");return "The ice cracks under his heavy horse. Baron Vex goes into the black water and doesn't come up. It's over."}
-   fx({men:-10,gold:-20,favor:-8});set("vexRaided2");note("Vex burned Thornby before retreating.");return "You hold the castle, but Vex burns Thornby before the ice turns him back."}},
-  {t:"Pay him to turn back",cost:{gold:40},go:()=>{fx({gold:-40,favor:-6});set("vexTruce");return "He takes the gold and goes. Your soldiers won't meet your eyes."}}]},
+{m:9,who:"whisper",req:()=>has("spy")&&!!winterFoes(),text:"\"Corvin is buying sellswords in Greymarch, my lord. Wagons of pitch. Sledges. He isn't planning to wait for any council.\"",
+ choices:[{t:"\"Find out when, and where.\"",go:()=>{set("winterIntel");return "\"The Longest Night,\" the Whisper says, three days later. \"Across the ice, at the ford. They'll bring their oil wagons onto the river.\""}},
+  {t:"\"Corvin wouldn't dare.\"",go:()=>"\"Corvin,\" says the Whisper, \"dares everything that might work.\""}]},
+
 {m:10,who:"eastlord",req:()=>has("rebellion")&&has("harwinAlly"),text:"Harwin's lances at your gate, steam rising from the horses. \"It's December, my friend. Is Emberfall still with us?\"",
  choices:[{t:"Raise the banner",go:()=>rebel()},{t:"Call it off",go:()=>{delete S.f.rebellion;fx({favor:-6});return "Harwin turns his horse without a word."}}]},
 {m:10,who:"aldric",req:()=>has("rebellion")&&!has("harwinAlly"),text:"\"The guild masters are armed, the abbey bells are ready. Say the word, my lord.\"",
@@ -1882,6 +1883,10 @@ const MISSIONS={
 };
 /* one surprise per night, in one room (marked "!"). Each happens once per reign. */
 const NIGHT_EVENTS=[
+ {room:"war",when:()=>S.month>=7&&S.month<=10,text:"A company of northern sellswords, frost in their beards, wants winter quarters. \"Fifteen spears till spring, my lord. Twenty-five gold, and all the soup we can eat.\"",
+  choices:[{t:"Hire them (25 gold)",cost:{gold:25},go:()=>{fx({gold:-25,men:15});return "Fifteen hard men take over the warmest corner of the barracks. Wynn doesn't like them. He likes having them."}},{t:"Send them on",go:()=>"\"Greymarch is hiring,\" their captain says on his way out. \"Just so you know.\""}]},
+ {room:"war",when:()=>S.month>=7&&S.month<=10,text:"Wynn wants to drill the town militia through the winter: bakers, coopers and tanners with spears. \"They won't be soldiers, my lord. But they'll stand on a wall.\"",
+  choices:[{t:"Drill them (8 grain to feed them)",cost:{food:8},go:()=>{fx({food:-8,men:8,favor:-1});return "Eight more spears on the wall, and some very sore tradesmen."}},{t:"\"Let them work.\"",go:()=>"\"Aye, my lord.\""}]},
  {room:"war",when:()=>S.month>BATTLE_MONTH&&has("corvinClaim"),text:"A Greymarch courier is caught leaving the castle at midnight with a letter for Lord Pell. It's in Corvin's hand.",
   choices:[{t:"Read it, reseal it, send it on",go:()=>{set("pellWon");return "Corvin promises Pell a forest he doesn't own. You write to Pell the next morning and mention that forest. Pell is not amused with Corvin."}},{t:"Burn it",go:()=>{set("pellBought");return "Corvin simply sends another, by a road you don't watch."}}]},
  {room:"treasury",when:()=>S.month>BATTLE_MONTH,text:"Aldric has found that the harvest tithe from three villages never reached the treasury. The reeve says the soldiers took it 'for the war'. The war ended in July.",
@@ -1995,7 +2000,7 @@ const SCENES=[
    {t:"Make him rest",go:()=>{S.bond.tobin=0;delete S.f.tobinRides;set("tobinStudy");return "He'll heal, but he'll sit out the summer with Aldric's ledgers."}}]},
  {id:"elinorFever",m:[4],room:"family",who:"elinor",when:()=>has("plague"),text:"The summer fever has crossed the castle walls. Elinor is burning hot and doesn't know your face.",
   choices:[{t:"Bring the city physician",cost:{gold:15},go:()=>{fx({gold:-15});return "Three long nights. On the fourth morning she asks for bread. She'll live."}},
-   {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{S.bond.elinor++;return "The witch sits by the bed until dawn. The fever breaks. Elinor remembers green eyes and nothing else."}},
+   {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{S.bond.elinor++;return "Morwen sits by the bed until dawn. The fever breaks. Elinor remembers green eyes and nothing else."}},
    {t:"Sit with her and pray",go:()=>{fx({favor:2});S.bond.elinor++;return "You don't leave her side. She lives, but she'll be weak all summer."}}]},
  {id:"refugeeLand",m:[4],room:"mason",who:"aldric",when:()=>has("refugees"),text:"The refugees' leader, a broad farmer named Garrow, asks for land outside the walls. \"We'll farm it, and we'll fight for it.\"",
   choices:[{t:"Grant them land",go:()=>{fx({men:4,food:-4});return "New houses rise along the river road. Four of Garrow's sons join the garrison."}},
@@ -2024,12 +2029,12 @@ const SCENES=[
   choices:[{t:"Accuse the cook",go:()=>{fx({favor:-4});return "The cook weeps that she's served this family for twenty years. Everyone ate her food. Wynn lets her go at dawn, and the kitchen stops speaking to you."}},
    {t:"Accuse the cupbearer",go:()=>{fx({favor:-3});return "\"I drank it, my lord! Why would I drink it?\" Nobody has an answer. You let him go."}},
    {t:"Search the valet",go:()=>{addClue("cupbearer");set("corvinValet");note("Corvin's valet was caught with the poison.");return "Sewn into his sleeve: a twist of paper, still green with powder. He won't say a word. He doesn't need to. He's Corvin's man."}}]},
- {id:"coup",m:[10],room:"war",who:"wynn",when:()=>has("corvinGuardIn"),text:"Wynn bursts in, sword drawn. \"My lord! Corvin's honor guard is moving on the gatehouse. Forty men, in the dark, quiet as cats. If they take the gate, they take the castle!\"",
-  choices:[{t:"Lead the guard yourself",go:()=>{if(S.men>=28||has("tobinKnight")||S.bond.tobin>=3){set("coupFoiled");set("corvinCaught");fx({men:-3,favor:6});note("Foiled Corvin's attempt to seize the gate.");return "Steel on the stairs, torches on the wall. By dawn Corvin's men are disarmed in the courtyard, and every lord in the river country will hear about it."}fx({men:-8,favor:-6,gold:-15});set("coupWon");note("Corvin's men held the gatehouse for a night.");return "There are too many of them. They hold the gatehouse until dawn, then march out laughing. \"A misunderstanding,\" Corvin says. The lords hear that you can't hold your own gate."}},
-   {t:"Bar the inner doors and wait for day",go:()=>{fx({favor:-3});return "They take the gatehouse, eat your bread, and march out at dawn. \"Just stretching our legs, cousin.\" Everyone knows what really happened. Nobody can prove it."}}]},
  {id:"ulricNight",m:[10,11],room:"treasury",who:"ulric",when:()=>has("ulricSafe"),text:"Master Ulric hasn't slept since he came. \"He'll find me, my lord. Corvin always finds people. Promise me I'll live to speak at the council.\"",
   choices:[{t:"Put two guards on him",go:()=>"Ulric finally sleeps. The guards don't."},
    {t:"Pay to smuggle his family out of Greymarch (10 gold)",cost:{gold:10},go:()=>{fx({gold:-10});S.f.ulricBrave=1;return "\"My daughters... safe?\" He cries. When the council comes, he'll stand up and speak. You're sure of it."}}]},
+ {id:"icebreak",m:[9],room:"mason",who:"mason",when:()=>!!winterFoes()&&!has("icebreak"),text:"Hildra is watching the river. \"It'll freeze by Midwinter, my lord. Then anyone can walk across it to your walls. Unless... give me 12 gold for iron picks and a crew. When they're on the ice, we break it under them.\"",
+  choices:[{t:"\"Do it.\" (12 gold)",cost:{gold:12},go:()=>{fx({gold:-12});set("icebreak");note("Hildra readied crews to break the river ice.");return "Her crews mark lines on the ice every morning, and hide the picks in the reeds. \"Let them come,\" she says."}},
+   {t:"\"Who would attack in winter?\"",go:()=>"\"Somebody who's tired of waiting,\" says Hildra."}]},
  {id:"rats",m:[7,8],room:"treasury",who:"aldric",text:"Aldric holds up a gnawed sack. \"Rats in the grain stores, my lord. The harvest brought them in their hundreds.\"",
   choices:[{t:"Bring in the castle cats",cost:{gold:3},go:()=>{fx({gold:-3});return "Twelve cats, one very proud hound, and a quiet granary."}},
    {t:"Move the grain to the towers",go:()=>{fx({food:-4});return "A week of hauling sacks up stairs. Some spill. Most are saved."}},
@@ -2082,6 +2087,7 @@ function ledgerRows(){ensureState();const b=S.b,se=SEASON(S.month),T=TAX[S.tax],
  return{tax,lands,tithe,wood,wages,crops,eat,mood,fox,gold:tax+lands-tithe-wood-wages-fox,food:crops-eat}}
 function endMonth(){
  ensureState();
+ if(S.month===10&&winterFoes()){winterAfter=()=>endMonth();return winterSiege(()=>{})}
  if(S.month===BATTLE_MONTH)return siege();
  if(S.month===12){const L=ledgerRows();LAST={};fx({gold:L.gold,food:L.food,favor:L.mood});render();save();if(fail())return;return finale()}
  const L=ledgerRows();LAST={};fx({gold:L.gold,food:L.food,favor:L.mood});render();
@@ -2241,7 +2247,7 @@ const OUTCOMES={
  pyrrhic:["A Bitter Victory","You held, barely. Half your soldiers lie in the mud by the ford, and Vex limped home alive.","night"],
  peace:["The King's Peace","King Osmund's herald arrived at the parley. Vex was ordered to stand down, humiliated in front of his own army.","dawn"],
  vassal:["The Kneeling Lord","You kept your castle and lost your name. Emberfall flies Vex's banner now.","night"],
- witchQueen:["The Witch's Fire","Green fire swallowed Vex's army whole. Emberfall is safe. And Morwen is walking up the hill to your gate.","night"],
+ witchQueen:["The River's Fire","Green fire swallowed Vex's army whole. Emberfall is safe. And Morwen is walking up the hill to your gate.","night"],
 };
 function aftermath(k){
  const[t,d,mode]=OUTCOMES[k];set("outcome_"+k);
@@ -2275,18 +2281,19 @@ const CLUES={
  vexLetters:["Letters signed \"C.\"","Someone promised Vex the ford if he attacked you this summer."],
  cupbearer:["The poisoned cup","At your own feast, Corvin's valet poured the same poison into your wine."],
  clerk:["The forger's confession","Corvin's will was written by a paid clerk in Greymarch."],
- apothecary:["The apothecary's oath","Master Ulric sold Corvin nightshade, twice, and will swear to it."]
+ apothecary:["The apothecary's oath","Master Ulric sold Corvin nightshade, twice, and will swear to it."],
+ orders:["Corvin's battle orders","In his own hand: \"Take the boy alive. The lords must believe he fled, as his father died: quietly.\""]
 };
 function clueCount(){return (S.clues||[]).length}
 function hasClue(k){return (S.clues||[]).includes(k)}
 function addClue(k){S.clues=S.clues||[];if(S.clues.includes(k))return"";S.clues.push(k);note(`Evidence found: ${CLUES[k][0].toLowerCase()}.`);setTimeout(()=>{toast(`New evidence: ${CLUES[k][0]}`);SFX.page()},400);return""}
 /* proof strong enough to accuse a lord of murder in front of the council */
-function strongCase(){return clueCount()>=4&&(hasClue("brannoc")||hasClue("apothecary")||hasClue("cupbearer"))}
+function strongCase(){return clueCount()>=4&&(hasClue("brannoc")||hasClue("apothecary")||hasClue("cupbearer")||hasClue("orders"))}
 const LORDS=[
  {id:"harwin",n:"Lord Harwin",seat:"the Eastern Marches",st:()=>has("harwinEnemy")?-1:(has("harwinAlly")||has("marenWed")||has("harwinBound"))?1:0,
   why:s=>s>0?"Bound to you by blood and spears.":s<0?"He hasn't forgiven the insult to his son.":"Waits to see if you're worth an alliance."},
  {id:"anselm",n:"Bishop Anselm",seat:"the Abbey of Saint Ember",st:()=>(has("churchAngry")||has("witchRealm")||has("morwenCourt"))?-1:(has("church")||has("debtPaid")||has("anselmWon"))?1:0,
-  why:s=>s>0?"The abbey remembers your gifts.":s<0?"He won't vote for a lord who shelters witches or scorns the church.":"The church has not yet made up its mind."},
+  why:s=>s>0?"The abbey remembers your gifts.":s<0?"He won't vote for a lord who shelters the river cult or scorns the church.":"The church has not yet made up its mind."},
  {id:"osric",n:"Guildmaster Osric",seat:"the Merchant Guild",st:()=>has("guildEnemy")?-1:(has("guildFriend")||has("loanRepaid"))?1:0,
   why:s=>s>0?"You pay your debts. The Guild likes that.":s<0?"You defaulted on the Guild.":"The Guild votes for whoever is better for trade."},
  {id:"ysolde",n:"Lady Ysolde",seat:"Saltmere",st:()=>(has("kingAngry")||has("kingEnemy")||has("ysoldeSnubbed"))?-1:(has("sentKing")||has("kingChampion")||has("ysoldeCharmed"))?1:0,
@@ -2323,7 +2330,7 @@ function openJournal(tab){SFX.page();const m=S.month,ch2=m>BATTLE_MONTH||has("co
   m<=BATTLE_MONTH?`<section><h4>${threatText()}</h4><p class="big">Defenses: <b class="dw ${p>=95?"good":p>=70?"ok":p>=45?"meh":"bad"}">${defenseWord(p)}</b></p><p class="note">Vex brings about two hundred men across the ford in July. Everything you do before then counts.</p></section>
    <section><h4>What helps</h4>${f.good.map(t=>`<div class="lrow"><span>✦ ${t}</span></div>`).join("")||'<p class="note">Nothing yet.</p>'}</section>
    <section><h4>What hurts</h4>${f.bad.map(t=>`<div class="lrow"><span class="neg">✖ ${t}</span></div>`).join("")||'<p class="note">Nothing yet.</p>'}</section>`:
-  `<section><h4>The battle is over</h4><p class="note">${(S.chron||[]).find(c=>/battle for Emberfall/.test(c))||"Emberfall survived the summer."}</p><p class="note">${has("vexDead")?"Baron Vex is dead.":has("vassal")&&!has("freed")?"Vex's banner flies over your gate.":"Baron Vex lives, across the river."}</p></section>`}
+  (winterFoes()&&S.month>=7?`<section><h4>The winter</h4><p class="big">Winter defenses: <b class="dw ${winterPower()>=110?"good":winterPower()>=80?"ok":winterPower()>=60?"meh":"bad"}">${defenseWord(winterPower())}</b></p><p class="note">${has("winterIntel")?"The Whisper is sure of it: Corvin will cross the ice on the Longest Night.":"Rumors say Greymarch is arming. When the river freezes, anyone can walk to your walls."} Soldiers, walls, watchtowers and friends will all count.</p></section>`:"")+`<section><h4>The battle is over</h4><p class="note">${(S.chron||[]).find(c=>/battle for Emberfall/.test(c))||"Emberfall survived the summer."}</p><p class="note">${has("vexDead")?"Baron Vex is dead.":has("vassal")&&!has("freed")?"Vex's banner flies over your gate.":"Baron Vex lives, across the river."}</p></section>`}
  if(tab==="murder"){const got=S.clues||[];
   body=`<section style="grid-column:1/-1"><h4>Evidence: ${got.length} of ${Object.keys(CLUES).length}</h4><p class="note">${got.length<2?"Your father died in his sleep, they say. Not everyone believes it.":strongCase()?"You have enough to accuse a lord of murder in front of the whole council.":"You're close. Find more before Midwinter."}</p>
    <div class="clues">${Object.entries(CLUES).map(([k,[t,d]])=>got.includes(k)?`<div class="clue"><b>${t}</b><small>${d}</small></div>`:`<div class="clue lock"><b>???</b><small>Not yet found.</small></div>`).join("")}</div></section>`}
@@ -2355,7 +2362,7 @@ function btUnits(){const u=[],LW=WIDE.LW;
  for(let i=0;i<70;i++)u.push({side:"vex",x:LW*.04+Math.random()*LW*.26,y:64+Math.random()*20,ph:Math.random()*9,hp:1,v:.08+Math.random()*.06});
  for(let i=0;i<Math.min(26,6+S.men/2);i++)u.push({side:"us",wall:1,x:LW*.66+Math.random()*LW*.3,y:41,ph:Math.random()*9,hp:1});
  return u}
-function battleBegin(){BT.on=true;BT.view="field";BT.phase="eve";BT.units=btUnits();BT.shots=[];BT.fire=0;BT.green=0;BT.harwin=0;BT.t=0;SC.room=null;SC.walker=null;SC.cast=[];SC.parts=[];SC.fade=1}
+function battleBegin(){BT.champ=BT.winter?BT.champ:"vex";BT.crack=0;BT.on=true;BT.view="field";BT.phase="eve";BT.units=btUnits();BT.shots=[];BT.fire=0;BT.green=0;BT.harwin=0;BT.t=0;SC.room=null;SC.walker=null;SC.cast=[];SC.parts=[];SC.fade=1}
 function battleEnd(){BT.on=false;BT.units=[];BT.shots=[]}
 function soldier(x,u,col,shield,dir){x.save();x.translate(u.x,u.y);x.scale(1.35,1.35);x.translate(-u.x,-u.y);soldier0(x,u,col,shield,dir);x.restore()}
 function soldier0(x,u,col,shield,dir){const X=Math.round(u.x*2)/2,Y=Math.round(u.y*2)/2,bob=(Math.floor((BT.t+u.ph*10)/8)%2)*.5;
@@ -2365,28 +2372,33 @@ function soldier0(x,u,col,shield,dir){const X=Math.round(u.x*2)/2,Y=Math.round(u
  x.fillStyle="#d8b090";x.fillRect(X-.5,Y-6-bob,1.5,1.5);x.fillStyle="#8a8f9c";x.fillRect(X-1,Y-6.5-bob,2.5,1);// head, helm
  x.fillStyle=shield;x.fillRect(X+(dir>0?1:-2.5),Y-4.5-bob,1.5,2.5);
  x.fillStyle="#6a5038";x.fillRect(X+(dir>0?-1:1.5),Y-8-bob,.5,6);x.fillStyle="#c8cdd6";x.fillRect(X+(dir>0?-1:1.5),Y-8.5-bob,.5,1)}
+function E0(){return 0}
 function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx0=LW*.38,rx1=LW*.54,wx=LW*.66;
  if(BT.view==="gate")return drawGateDuel(x);
  // sky
- const sky=x.createLinearGradient(0,0,0,70);sky.addColorStop(0,night?"#0c0a1c":"#1e1430");sky.addColorStop(.65,night?"#3a1418":"#7a2a30");sky.addColorStop(1,night?"#8a3010":"#e0703a");x.fillStyle=sky;x.fillRect(0,0,LW,70);
- if(!night){x.globalAlpha=.9;x.fillStyle="#ffd890";x.beginPath();x.arc(LW*.2,62,9,0,Math.PI*2);x.fill();x.globalAlpha=1}
+ const Wn=BT.winter,sky=x.createLinearGradient(0,0,0,70);sky.addColorStop(0,Wn?"#05060f":night?"#0c0a1c":"#1e1430");sky.addColorStop(.65,Wn?"#141a30":night?"#3a1418":"#7a2a30");sky.addColorStop(1,Wn?"#3a3048":night?"#8a3010":"#e0703a");x.fillStyle=sky;x.fillRect(0,0,LW,70);
+ if(!night&&!Wn){x.globalAlpha=.9;x.fillStyle="#ffd890";x.beginPath();x.arc(LW*.2,62,9,0,Math.PI*2);x.fill();x.globalAlpha=1}
  for(let i=0;i<30;i++){x.globalAlpha=night?.6:.15;x.fillStyle="#fff";x.fillRect((i*53)%LW,(i*17)%40,.5,.5)}x.globalAlpha=1;
  // hills
- x.fillStyle=night?"#140c18":"#3a1c2a";x.beginPath();x.moveTo(0,64);for(let px=0;px<=LW;px+=8)x.lineTo(px,52+Math.sin(px/37)*5+Math.sin(px/13)*2);x.lineTo(LW,64);x.fill();
+ x.fillStyle=Wn?"#b8c0d4":night?"#140c18":"#3a1c2a";x.beginPath();x.moveTo(0,64);for(let px=0;px<=LW;px+=8)x.lineTo(px,52+Math.sin(px/37)*5+Math.sin(px/13)*2);x.lineTo(LW,64);x.fill();
  // ground
- const gr=x.createLinearGradient(0,58,0,120);gr.addColorStop(0,night?"#1c1a14":"#3a3a1e");gr.addColorStop(1,night?"#0e0c0a":"#22200e");x.fillStyle=gr;x.fillRect(0,58,LW,62);
+ const gr=x.createLinearGradient(0,58,0,120);gr.addColorStop(0,Wn?"#c8d0e0":night?"#1c1a14":"#3a3a1e");gr.addColorStop(1,Wn?"#7a8298":night?"#0e0c0a":"#22200e");x.fillStyle=gr;x.fillRect(0,58,LW,62);
  // Vex's camp: tents, fires, black banners
- for(let i=0;i<7;i++){const tx=LW*.03+i*LW*.04,ty=60+(i%2)*3;x.fillStyle="#2a2228";x.beginPath();x.moveTo(tx,ty);x.lineTo(tx+5,ty-7);x.lineTo(tx+10,ty);x.fill();x.fillStyle="#141014";x.fillRect(tx+4,ty-3,2,3);
-  if(i%2===0){x.fillStyle="#1d1d22";x.fillRect(tx+5,ty-15,.5,8);x.fillStyle="#9a1f1f";x.fillRect(tx+5.5,ty-15+Math.sin(t/9+i)*.5,4,2.5)}}
+ for(let i=0;i<7;i++){const tx=LW*.03+i*LW*.04,ty=60+(i%2)*3;x.fillStyle=Wn?"#4a5a4a":"#2a2228";x.beginPath();x.moveTo(tx,ty);x.lineTo(tx+5,ty-7);x.lineTo(tx+10,ty);x.fill();x.fillStyle="#141014";x.fillRect(tx+4,ty-3,2,3);
+  if(i%2===0){x.fillStyle="#1d1d22";x.fillRect(tx+5,ty-15,.5,8);x.fillStyle=Wn&&(!BT.foes||!BT.foes.vex||i%4)?"#5a8a4a":"#9a1f1f";x.fillRect(tx+5.5,ty-15+Math.sin(t/9+i)*.5,4,2.5)}}
  for(let i=0;i<4;i++){const fx=LW*.06+i*LW*.07;flame(x,fx,65,3,2.5,fx);if(Math.random()<.04)part({x:fx,y:60,vx:(Math.random()-.5)*.2,vy:-.3,life:40,max:40,col:"#ff9a30",glow:1,sz:.5})}
  // the river and the ford
- x.fillStyle=night?"#141c30":"#2a3a5a";x.beginPath();x.moveTo(rx0,58);x.lineTo(rx1,58);x.lineTo(rx1+14,120);x.lineTo(rx0-10,120);x.fill();
- x.fillStyle=night?"#22304a":"#4a6a9a";for(let i=0;i<16;i++){const ry=60+(i*7)%56,rxx=rx0+((i*23+t*.3)%(rx1-rx0+10));x.globalAlpha=.6;x.fillRect(rxx,ry,3,.5)}x.globalAlpha=1;
+ x.fillStyle=Wn?"#9aaccc":night?"#141c30":"#2a3a5a";x.beginPath();x.moveTo(rx0,58);x.lineTo(rx1,58);x.lineTo(rx1+14,120);x.lineTo(rx0-10,120);x.fill();
+ x.fillStyle=Wn?"#d8e4f4":night?"#22304a":"#4a6a9a";for(let i=0;i<16;i++){const ry=60+(i*7)%56,rxx=rx0+((i*23+t*.3)%(rx1-rx0+10));x.globalAlpha=.6;x.fillRect(rxx,ry,3,.5)}x.globalAlpha=1;
  x.fillStyle="#5a5660";for(let i=0;i<6;i++)x.fillRect(rx0+3+i*((rx1-rx0)/6),74+(i%2)*2,3,1.5);
  if(BT.fire>0){for(let i=0;i<12;i++){const fx=rx0+2+i*((rx1-rx0)/12)+((i*7)%3),fy=70+(i*5)%22;flame(x,fx,fy,4+((i*3)%4),2.6,fx+i);}
   if(Math.random()<.4)part({x:rx0+Math.random()*(rx1-rx0),y:64+Math.random()*24,vx:.05,vy:-.25,life:90,max:90,col:"#3a2a2a",sz:2})}
  if(BT.green>0){x.globalCompositeOperation="lighter";const g=x.createRadialGradient((rx0+rx1)/2,80,4,(rx0+rx1)/2,80,90);g.addColorStop(0,`rgba(80,255,120,${.35+.1*Math.sin(t/4)})`);g.addColorStop(1,"rgba(80,255,120,0)");x.fillStyle=g;x.fillRect(0,0,LW,H);x.globalCompositeOperation="source-over";
   for(let i=0;i<10;i++){const fx=rx0-20+i*((rx1-rx0+40)/10);x.save();flame(x,fx,88-(i%3)*6,7,3,fx);x.restore()}}
+ if(Wn){x.strokeStyle="#5a6a8a";x.lineWidth=.5;for(let i=0;i<7;i++){x.beginPath();x.moveTo(rx0+i*7,60+i*5);x.lineTo(rx0+i*7+9,66+i*6);x.lineTo(rx0+i*7+4,74+i*4);x.stroke()}
+  if(BT.crack){BT.crack++;x.fillStyle="#0a1020";for(let i=0;i<12;i++){const cx=rx0+((i*31)%(rx1-rx0)),cy=62+(i*13)%34,w=Math.min(14,BT.crack/6+4);x.fillRect(cx-w/2,cy,w,1.5+(i%3))}
+   BT.units.forEach(u=>{if(u.side==="vex"&&u.hp>0&&u.x>rx0&&u.x<rx1+4&&Math.random()<.02){u.hp=0;part({x:u.x,y:u.y,vx:0,vy:-.5,life:20,max:20,col:"#c8d8f0",sz:1,grav:.06})}})}
+  if(Math.random()<.7)part({x:Math.random()*LW-E0(),y:-2,vx:(Math.random()-.5)*.2,vy:.35+Math.random()*.25,life:340,max:340,col:"#ffffff",sz:Math.random()<.5?.5:1})}
  // Emberfall's wall, towers and gate
  const st="#4a4256",sd="#3a3446",sl="#5e566a";x.fillStyle=st;x.fillRect(wx,40,LW-wx,58);for(let y=42;y<98;y+=4){x.fillStyle=sd;x.fillRect(wx,y,LW-wx,.5)}
  for(let px=wx;px<LW;px+=5){x.fillStyle=st;x.fillRect(px,36,3,4);x.fillStyle=sl;x.fillRect(px,36,3,.5)}
@@ -2401,7 +2413,7 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
   if(u.side==="vex"&&vexGoal!==null&&u.x<vexGoal){const inR=u.x>rx0&&u.x<rx1;u.x+=u.v*(inR?.45:1);if(inR&&Math.random()<.03)part({x:u.x,y:u.y,vx:(Math.random()-.5)*.3,vy:-.4,life:16,max:16,col:"#a8c8f0",sz:.5,grav:.05})}
   if(u.side==="vex"&&BT.fire>0&&u.x>rx0&&u.x<rx1&&Math.random()<.006)u.hp=0;
   if(u.side==="vex"&&BT.green>0&&u.x>rx0-20&&Math.random()<.02)u.hp=0;
-  soldier(x,u,u.side==="vex"?"#2a2a30":"#8a1f2a",u.side==="vex"?"#9a1f1f":"#e0b040",u.side==="vex"?1:-1)});
+  const grey=Wn&&(!BT.foes||!BT.foes.vex||u.ph>3);soldier(x,u,u.side==="vex"?(grey?"#3e4a3e":"#2a2a30"):"#8a1f2a",u.side==="vex"?(grey?"#6a9a5a":"#9a1f1f"):"#e0b040",u.side==="vex"?1:-1)});
  // Harwin's riders sweep in from the right
  if(BT.harwin>0){BT.harwin+=1.2;for(let i=0;i<9;i++){const hx=LW+20-BT.harwin+i*9-(i%3)*4,hy=84+(i%3)*5;if(hx<-20)continue;x.fillStyle="#3a2a20";x.fillRect(hx-4,hy-5,8,4);x.fillRect(hx-5+((BT.t>>2)%2),hy-1,1,2);x.fillRect(hx+3-((BT.t>>2)%2),hy-1,1,2);x.fillStyle="#2a4a6a";x.fillRect(hx-1.5,hy-10,3,5);x.fillStyle="#c8cdd6";x.fillRect(hx-1,hy-12,2,2);x.fillStyle="#8a6a3a";x.fillRect(hx-9,hy-9,7,.5)}
   BT.units.forEach(u=>{if(u.side==="vex"&&u.hp>0&&u.x>LW+10-BT.harwin-10&&Math.random()<.2)u.hp=0})}
@@ -2415,22 +2427,23 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
 }
 /* the close view at the gate: you and Baron Vex */
 function drawGateDuel(x){const LW=WIDE.LW,t=++BT.t,E=WIDE.E;
- const sky=x.createLinearGradient(0,0,0,80);sky.addColorStop(0,"#0c0a1c");sky.addColorStop(1,"#6a2014");x.fillStyle=sky;x.fillRect(0,0,LW,80);
+ const sky=x.createLinearGradient(0,0,0,80);sky.addColorStop(0,"#0c0a1c");sky.addColorStop(1,BT.winter?"#2a3048":"#6a2014");x.fillStyle=sky;x.fillRect(0,0,LW,80);
  x.fillStyle="#3e3648";x.fillRect(0,20,LW,70);for(let row=0;row<12;row++){const y=20+row*6,off=row%2?6:0;for(let bx=-off;bx<LW;bx+=12){x.fillStyle=["#4a4256","#463e52","#4e465a"][(bx+row*7)%3<1?0:(bx+row)%3];x.fillRect(bx+1,y+1,10,4)}}
  for(let px=0;px<LW;px+=8){x.fillStyle="#3e3648";x.fillRect(px,15,5,5)}
  const gx=LW/2-18;x.fillStyle="#0c0810";x.fillRect(gx,44,36,46);x.beginPath();x.arc(gx+18,44,18,Math.PI,0);x.fill();x.fillStyle="#5e3c22";for(let i=0;i<36;i+=4)x.fillRect(gx+i,38+Math.abs(i-18)*.3,2,52-Math.abs(i-18)*.3);
- x.fillStyle="#2a2026";x.fillRect(0,90,LW,30);for(let px=0;px<LW;px+=14){x.fillStyle="#241c22";x.fillRect(px,90,1,30)}
+ x.fillStyle=BT.winter?"#b8c0d0":"#2a2026";x.fillRect(0,90,LW,30);for(let px=0;px<LW;px+=14){x.fillStyle="#241c22";x.fillRect(px,90,1,30)}
  for(const fx of[gx-14,gx+50]){torch(x,fx,50)}
- if(Math.random()<.3)part({x:Math.random()*LW,y:0,vx:(Math.random()-.5)*.2,vy:.4,life:200,max:200,col:"#ff9a40",glow:1,sz:.5});
+ if(BT.winter){if(Math.random()<.8)part({x:Math.random()*LW,y:-2,vx:(Math.random()-.5)*.3,vy:.4+Math.random()*.3,life:300,max:300,col:"#ffffff",sz:Math.random()<.5?.5:1})}
+ else if(Math.random()<.3)part({x:Math.random()*LW,y:0,vx:(Math.random()-.5)*.2,vy:.4,life:200,max:200,col:"#ff9a40",glow:1,sz:.5});
  const lunge=BT.duel?Math.max(0,Math.sin(t/6))*3:0;
- drawBody(x,C.vex,LW/2-11+lunge,100,1,{bob:bobOf(1),gest:BT.duel&&t%24<12});
+ drawBody(x,C[BT.champ||"vex"],LW/2-11+lunge,100,1,{bob:bobOf(1),gest:BT.duel&&t%24<12});
  drawBody(x,C.lord,LW/2+11-lunge,100,-1,{bob:bobOf(2),gest:BT.duel&&t%24>=12});
  if(BT.duel&&t%12===0){SC.shake=2;for(let k=0;k<6;k++)part({x:LW/2,y:82,vx:(Math.random()-.5)*1.2,vy:-Math.random()*1,life:14,max:14,col:"#fff4c0",glow:1,sz:.5,grav:.05})}
 }
 /* ---------------- the beats ---------------- */
 let BSCORE=0;
 function bSay(title,who,text,choices,after){
- $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:(BT.on?"The Battle of the Ford":"The Midwinter Council");PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
+ $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:(BT.on?(BT.winter?"The Longest Night":"The Battle of the Ford"):"The Midwinter Council");PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
  $("txt").className="";$("choices").innerHTML="";
  typeText(text,who?C[who].voice:150,()=>{const ch=$("choices");
   choices.filter(o=>!o.req||o.req()).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};const r=o.go();render();save();
@@ -2493,6 +2506,71 @@ function battle(){
  if(has("plan_flee"))return"exile";if(has("knelt"))return"vassal";
  if(has("plan_parley")){if(has("kingFavor")&&S.favor>=50)return"peace";return battlePower()>=70?"peace":"vassal"}
  return"pyrrhic"}
+
+/* =========================================================
+   CHAPTER TWO'S BATTLE: THE LONGEST NIGHT
+   When the river freezes, Corvin stops waiting for the council. His Greymarch host,
+   and Vex too if he still lives, cross the ice to take Emberfall by force.
+   ========================================================= */
+function vexAlive(){return !has("vexDead")&&!has("vassal")&&!has("vexTruce")&&!has("knelt")}
+function winterFoes(){if(has("winterDone")||has("vassal")&&!has("freed"))return null;
+ const cor=has("corvinFight")&&!has("corvinPact"),vex=vexAlive()&&(has("vexRevenge")||has("vexWounded")||has("vexHumbled"));
+ return cor||vex?{cor,vex}:null}
+function winterPower(){let p=S.men+(S.b.walls&&!has("wallsCracked")?25:S.b.walls?12:0)+(S.b.towers?15:0)+(has("icebreak")?20:0)+(has("harwinBound")||has("marenWed")?30:0)
+ +(has("foxPardoned")?12:0)+(has("tobinKnight")?10:has("tobinBloodied")?6:0)+(has("vexMenSworn")?8:0)+(has("arrows")?5:0)+(has("winterIntel")?12:0)-(has("vexTruce")?0:0);return p}
+function winterSiege(done){
+ const F=winterFoes();if(!F)return done();
+ BT.winter=true;BT.foes=F;battleBegin();BSCORE=winterPower();Music.play("battle");SFX.war();
+ setPhase("night",SEASON(S.month));
+ bSay("The Longest Night",null,`The longest night of the year, and the coldest. The river has frozen solid from bank to bank.\n\nAt midnight the bells ring. Torches on the ice: ${F.cor?"the grey banners of Greymarch, Corvin's own men"+(F.vex?", and beside them, the black and red of Baron Vex":""):"the black and red of Baron Vex, back for his revenge"}. ${F.cor?"Corvin is done waiting for the council.":""}`,
+  [{t:"\"They want our city on the darkest night. Show them it burns bright.\"",go:()=>{BSCORE+=S.favor>=55?14:7;return "Every window in Emberfall is lit at once. From the ice, it must look like the whole city is awake and waiting. It is."}},
+   {t:"Hot wine and bread for every soldier on the wall",cost:{food:8},go:()=>{fx({food:-8});BSCORE+=11;return "Steaming cups along the battlements. Frozen fingers come back to life on their swords."}},
+   {t:"\"Corvin wants a crown. Let's give him a grave.\"",req:()=>F.cor,go:()=>{BSCORE+=9;return "A grim laugh runs along the wall. Nobody here wants Corvin for a lord."}}],winterIce)}
+function winterIce(){BT.phase="ford";BT.volley=40;SFX.war();
+ bSay("The Ice",null,"They come in a black line across the white river: shields up, boots slipping, hundreds of them. The ice groans under their weight.",
+  [{t:"\"Break the ice!\"",req:()=>has("icebreak"),go:()=>{BT.crack=1;BSCORE+=28;SC.shake=6;SFX.doom();return "Hildra's crews swing their iron picks at the marked lines. With a sound like the sky splitting, the river opens. Whole ranks go into the black water."}},
+   {t:"\"Archers! Loose!\"",go:()=>{BT.volley=120;BSCORE+=has("arrows")?14:9;return "Arrows hiss down onto the ice. Men fall and slide. The line keeps coming."}},
+   {t:"\"Fire arrows, into their oil wagons!\"",req:()=>has("pitch")||has("winterIntel"),go:()=>{BT.fire=1;BSCORE+=18;return "A flaming arrow finds the wagons in the middle of the river. The explosion lights the whole valley. The ice beneath them softens and cracks."}},
+   {t:"\"Charge them on the ice!\"",go:()=>{const ok=winterPower()>=75;BSCORE+=ok?16:-14;fx({men:ok?-4:-9});SC.shake=4;return ok?"You lead the charge across the slippery ice. Their line, packed tight and sliding, breaks before yours does.":"The ice is as treacherous for you as for them. You fall back to the gate with fewer men than you went out with."}}],winterGate)}
+function winterGate(){BT.phase="postern";
+ if(has("corvinGuardIn"))return bSay("Inside the Walls","wynn","\"My lord! Corvin's honor guard, the forty you let sleep in the barracks! They've killed the gatekeepers and they're lifting the bar on the main gate!\"",
+  [{t:"Throw everything at the gatehouse",go:()=>{BSCORE-=8;fx({men:-5});set("winterGateHeld");return "A savage, close fight in the gate passage. The bar stays down. Corvin's forty are dead or in chains, and you know now exactly who sent them."}},
+   {t:"Sir Tobin leads the household knights",req:()=>has("tobinKnight"),go:()=>{BSCORE+=4;S.bond.tobin++;set("winterGateHeld");return "Your son, in his first real armor, at the head of a dozen knights. The honor guard never reaches the gate."}},
+   {t:"Hold the walls and pray the bar holds",go:()=>{BSCORE-=28;fx({men:-8,favor:-4});return "The bar comes up. The gate swings open. There is fighting in the streets of Emberfall until dawn."}}],winterAllies);
+ bSay("The Walls","wynn","\"Ladders! They're on the north wall!\"",
+  [{t:"Fire from the new watchtowers",req:()=>!!S.b.towers,go:()=>{BSCORE+=14;return "Hildra's watchtowers command the whole north wall. The ladders never get close."}},
+   {t:"Push the ladders off with poles",go:()=>{BSCORE+=6;fx({men:-3});return "Ice on the rungs, ice on the poles, and a lot of shouting. The ladders go over, one by one."}},
+   {t:"Pour boiling water. Let it freeze on them.",go:()=>{BSCORE+=10;return "The water turns to ice before it hits the ground. So do the men on the ladders, nearly."}}],winterAllies)}
+function winterAllies(){
+ const helps=[];
+ if(has("harwinBound")||has("marenWed"))helps.push(["The Marches Ride","Horns from the east. Harwin's riders, with Maren's husband Edric at their head, come thundering across the frozen fields.",18]);
+ if(has("foxPardoned"))helps.push(["The Fox's Men","Out of the dark forest on the far bank, a whistle, then forty more. The Fox, your pardoned bandit, hits their supply line from behind.",12]);
+ if(has("sentKing"))helps.push(["Home from the North","Through the snow, a column you know: your own soldiers, home from the King's war, a day early. They march straight into the fight.",14]);
+ if(!helps.length)return winterFinal();
+ const [t,d,v]=helps[0];BT.harwin=1;SFX.fanfare();
+ bSay(t,null,d+(helps.length>1?` And they aren't the only ones: ${helps.slice(1).map(h=>h[0].toLowerCase()).join(", ")}.`:""),[{t:"\"For Emberfall!\"",go:()=>{BSCORE+=helps.reduce((a,h)=>a+h[2],0);return "The enemy line buckles. But at the gate, their champion is still coming."}}],winterFinal)}
+function winterFinal(){BT.phase="vex";BT.view="gate";BT.duel=false;SC.fade=1;
+ const champ=BT.foes.vex?"Baron Vex himself, half-healed and furious, his black armor rimed with frost":"Corvin's champion, Sir Aldous of Greymarch, a giant in grey steel";
+ BT.champ=BT.foes.vex?"vex":"aldous";
+ bSay("At the Gate",null,`Through the snow and the smoke comes ${champ}. Behind him, safe on the far bank, a figure in a fur cloak watches: ${BT.foes.cor?"Corvin":"no one you know"}.`,
+  [{t:"Meet him at the gate",go:()=>{BT.duel=true;SFX.war();const win=Math.random()*100<Math.min(88,28+BSCORE/3+(has("tobinKnight")?8:0)-(has("lordScarred")?8:0));
+    if(win){set("winterChampSlain");BSCORE+=26;if(BT.foes.vex){set("vexDead");note("Baron Vex died at your gate on the Longest Night.")}return BT.foes.vex?"This time you know how he moves. When he swings, you're already inside his reach. Baron Vex dies on the ice-slick stones of your gate, and this time it's over.":"He's bigger. You're quicker, and you're fighting for your home. Sir Aldous goes down in the snow, and the grey banners waver."}
+    BSCORE-=12;return "His blow knocks you flat and your sword skids away across the ice. Wynn and three others drag you back behind the shields."}},
+   {t:"\"Shield wall. Hold the gate till dawn.\"",go:()=>{BSCORE+=12;return "Shields locked, frozen hands on frozen spears. They break on you again and again, and at dawn they stop coming."}},
+   {t:"Send riders to seize Corvin on the far bank",req:()=>BT.foes.cor&&(has("spy")||has("foxPardoned")),go:()=>{BSCORE+=8;if(roll(.5)){set("corvinOrders");addClue("orders");return "They don't catch Corvin: he runs. But they bring back his tent, his strongbox, and his orders for the night, in his own hand."}return "Corvin is already gone, and so is everything in his tent."}}],winterEnd)}
+function winterEnd(){
+ const s=BSCORE,F=BT.foes;let r;
+ BT.winter=false;battleEnd();delete S.f.vexRevenge;set("winterDone");
+ if(s>=110){r="won";set("winterWon");fx({favor:10});if(F.cor){set("corvinAttacked");S.lords=S.lords||{};S.lords.orla=1;if(clueCount()>=2)set("garrickTurned")}
+  note("Won the Battle of the Longest Night.");}
+ else if(s>=60){r="held";set("winterHeld");S.men=Math.max(4,Math.round(S.men*.6));fx({favor:-2});if(F.cor)set("corvinAttacked");note("Held Emberfall on the Longest Night, at a terrible price.")}
+ else {return ending("winterCoup")}
+ const T=r==="won"?["Dawn on the Ice","Dawn comes up red over a river full of broken ice. They're gone. Emberfall held, and everyone saw who came for it in the dark."]:["A Cold Dawn","You held. Barely. Half the garrison is dead or wounded, the north gate is smoke and splinters, and the people are counting graves in the snow."];
+ if(F.cor)T[1]+=" Corvin rode back to Greymarch in the night. The lords will hear exactly what he did, and he will still come to the council, smiling, as if it never happened.";
+ setCastle(r==="won"?"dawn":"snow");Music.play("night");r==="won"?SFX.fanfare():SFX.toll();save();
+ overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE LONGEST NIGHT —</div><h3>${T[0]}</h3><p>${T[1]}</p><button class="pb" id="onBtn2">To the morning</button></div>`);
+ $("onBtn2").onclick=()=>{SFX.click();closeOverlay();winterAfter()}}
+let winterAfter=()=>{};
 
 /* ---------------- The Midwinter Council: a trial in the throne room ---------------- */
 function finalEnding(){
@@ -2597,7 +2675,7 @@ function visit(k){const N=S.night;if(N.visited)return;SFX.heart();N.visited=k;sa
 const AGENTS={
  general:{role:"Marshal",known:()=>!has("tobinHostage")||true,name:()=>leader()},
  spy:{role:"Spymaster",known:()=>has("spy"),name:()=>"The Whisper"},
- witch:{role:"Fen-seer",known:()=>(has("witchPact")||has("witchWarned")||has("morwenCourt")||has("witchCourt"))&&!has("morwenBanished"),name:()=>"Morwen"},
+ witch:{role:"Ferrywoman",known:()=>(has("witchPact")||has("witchWarned")||has("morwenCourt")||has("witchCourt"))&&!has("morwenBanished"),name:()=>"Morwen"},
 };
 function agentKnown(a){return AGENTS[a].known()}
 const WHO_AGENT={whisper:"spy",morwen:"witch"};
@@ -2611,6 +2689,7 @@ function councilHTML(){const list=Object.keys(AGENTS).filter(agentKnown);
 function threatText(){const m=S.month;
  if(m<BATTLE_MONTH){const n=BATTLE_MONTH-m;return has("knelt")?"VEX HAS YOUR OATH":`VEX COMES IN ${n} MONTH${n>1?"S":""}`}
  if(m===BATTLE_MONTH)return has("knelt")?"VEX'S BANNER RISES":"VEX COMES THIS MONTH";
+ if(m<10&&!has("winterDone")&&has("winterIntel"))return `CORVIN ATTACKS IN ${10-m+0} MONTH${10-m>1?"S":""}`;
  if(m<12){const n=12-m;return `COUNCIL IN ${n} MONTH${n>1?"S":""}`+(has("corvinFight")?` · ${councilVotes().final} OF 11 LORDS`:"")}
  return "THE COUNCIL MEETS"}
 /* hidden unrest: low favor or heavy taxes, month after month, brings a mob to the gate */
@@ -2700,11 +2779,11 @@ function confirmNew(){SFX.click();modal(`<h3>Begin a new reign?</h3><p>Your save
  <button class="pb" onclick="closeModal();newGame()">Start over</button><button class="pb alt" onclick="SFX.click();closeModal()">Keep my reign</button>`)}
 const HINTS={famine:"Let the granary run dry.",revolt:"Let the people's favor fall to nothing.",debt:"Sink deep into debt.",
  exile:"Keep a secret way out of the castle, and use it.",fallen:"Face Vex unprepared, with no way out.",lastStandSafe:"Lose the battle, but get your family out first.",
- witchFall:"Let the witch fight your battle, without enough soldiers of your own.",chained:"Rise against your overlord, and fail.",
+ witchFall:"Let Morwen fight your battle, without enough soldiers of your own.",chained:"Rise against your overlord, and fail.",
  vassalForever:"Kneel, and never get back up.",fenThrone:"Give Emberfall to the green.",usurped:"Lose the Midwinter Council vote.",
  pricePeace:"Trade your daughter for your cousin's silence.",brokenChain:"Kneel, then rise, and win.",twoBanks:"Win the river and keep the people's love.",
  kingsHand:"Answer the King's call to war.",twoHouses:"Marry your house to the Marches.",emberLord:"End the year beloved.",
- ironYear:"Rule by the sword, not by love.",longYear:"Simply survive the year.",emberCrown:"Prove who murdered your father, in front of the whole council."};
+ ironYear:"Rule by the sword, not by love.",longYear:"Simply survive the year.",emberCrown:"Prove who murdered your father, in front of the whole council.",winterCoup:"Lose the battle of the Longest Night."};
 function countChoice(){S.stats=S.stats||{gold:0,lost:0,helped:0,choices:0};S.stats.choices++;if((LAST.favor||0)>0)S.stats.helped++}
 function reignSummary(){const st=S.stats||{gold:0,lost:0,helped:0,choices:0},ch=S.chron||[];
  const picks=ch.length<=4?ch:[0,1,2,3].map(i=>ch[Math.round(i*(ch.length-1)/3)]);
@@ -2744,10 +2823,11 @@ const ENDINGS={
  twoHouses:["Two Houses, One Blood","Emberfall and the Marches are family now. When the snow melts, Harwin's riders and yours hunt together in the Ashwood, and Maren's letters come every week."],
  emberLord:["The Ember Lord","They light every window in Emberfall on the anniversary of your crowning. Ask anyone in the city about their lord, and they'll talk for an hour. All of it good."],
  ironYear:["The Iron Year","Your soldiers fill the walls and your people fill the churches, praying you never turn your army on them. Emberfall is safe. It is not happy."],
+ winterCoup:["The Longest Night","Corvin's men took the gate in the dark. By dawn his grey banners hung from your towers, and the lords who came for the council found a new lord waiting for them, very sorry for the misunderstanding. You watched it from a cell under your own hall."],
  emberCrown:["The Ember Crown","Corvin left the great hall in chains, and the eleven lords knelt to you one by one. On the first day of spring they set your father's old crown on your head, and you swore, in front of everyone, to rule better than the men who wanted it. The bells of Saint Ember rang for a whole day."],
  longYear:["The Long Year","You made it. Not every choice was right, and not every winter night was warm, but spring comes to Emberfall, and it is still yours."]
 };
-const GOOD=["emberCrown","brokenChain","twoBanks","kingsHand","twoHouses","emberLord","longYear"],BAD=["revolt","fallen","witchFall","debt","chained","usurped"];
+const BAD2=["winterCoup"];const GOOD=["emberCrown","brokenChain","twoBanks","kingsHand","twoHouses","emberLord","longYear"],BAD=["winterCoup","revolt","fallen","witchFall","debt","chained","usurped"];
 function gotEndings(){try{return JSON.parse(localStorage.getItem("ef_end")||"[]").filter(k=>ENDINGS[k])}catch(e){return[]}}
 function ending(k){SC.court=null;
  const[t,d]=ENDINGS[k];const got=gotEndings();if(!got.includes(k))got.push(k);
