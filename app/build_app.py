@@ -33,6 +33,13 @@ def have_capacitor():
 def build_web(tester=False):
     WWW.mkdir(exist_ok=True)
     html = (ROOT / "index.html").read_text()
+    try:
+        rev = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
+    except Exception:
+        rev = ""
+    stamp = (rev or "local") + (" tester" if tester else "")
+    html = html.replace("<script>", f'<script>window.EF_BUILD="{stamp}";</script>\n<script>', 1)
+    print(f"build stamp: {stamp} (shown at the bottom of Settings)")
     if tester:
         html = html.replace("<script>", "<script>window.EF_TESTER=true;</script>\n<script>", 1)
         print("TESTER BUILD: the whole game is unlocked. Run plain `python3 build_app.py` before uploading to the App Store.")
@@ -41,6 +48,17 @@ def build_web(tester=False):
         shutil.rmtree(WWW / "fonts")
     shutil.copytree(ROOT / "fonts", WWW / "fonts")
     print(f"copied index.html and fonts/ -> {WWW.relative_to(ROOT)}/")
+
+
+def copy_public():
+    pub = IOS / "App" / "App" / "public"
+    if (IOS / "App" / "App").is_dir():
+        pub.mkdir(exist_ok=True)
+        shutil.copy2(WWW / "index.html", pub / "index.html")
+        if (pub / "fonts").exists():
+            shutil.rmtree(pub / "fonts")
+        shutil.copytree(WWW / "fonts", pub / "fonts")
+        print("copied the game into ios/App/App/public/")
 
 
 def platforms():
@@ -246,9 +264,12 @@ def main():
     if not platforms():
         print("No ios/ or android/ folder yet. Run `npm install` then `python3 build_app.py --setup`.")
     elif not have_capacitor():
-        print("Skipping `npx cap sync`: run `npm install` in app/ first.")
+        print("`npx cap sync` needs `npm install` in app/ first. Copying the game files into the iOS project directly instead.")
+        copy_public()
     else:
-        run(["npx", "cap", "sync"])
+        if run(["npx", "cap", "sync"], check=False) != 0:
+            print("`npx cap sync` failed. Copying the game files into the iOS project directly instead.")
+            copy_public()
         if "ios" in platforms() and platform.system() != "Darwin":
             print("Note: iOS native dependencies resolve when the project is opened in Xcode on a Mac.")
 

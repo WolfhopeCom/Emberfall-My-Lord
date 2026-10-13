@@ -2338,7 +2338,7 @@ function openSettings(quiet){if(!quiet)SFX.click();else SFX.blip&&SFX.blip(700);
   <button class="act" onclick="resetTips()">Show tips again</button>
   ${S&&!document.querySelector("#overlay .logo")?`<button class="act" onclick="closeModal();showTitle()">Save &amp; quit to title</button>`:""}
   ${PRO?'<p class="note">The full year is unlocked. Thank you!</p>':`<button class="act gold" onclick="closeModal();unlockFull()">Unlock the full year · ${STORE.price}</button>`}
-  <button class="act" onclick="restoreFull()">Restore purchase</button></section>
+  <button class="act" onclick="restoreFull()">Restore purchase</button><p class="note" style="margin-top:auto;opacity:.6">Build ${window.EF_BUILD||"preview"}</p></section>
  </div>`,"pnl")}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? <small>Hint: ${HINTS[k]||"Keep ruling."}</small></div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
