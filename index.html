@@ -176,6 +176,27 @@ img.px{image-rendering:pixelated}
  #txt{font-size:15.5px;line-height:1.28;margin-top:4px}
  .ch{font-size:14.5px;padding:6px 8px 6px 24px}#choices{gap:6px}
 }
+@media (orientation:landscape) and (min-aspect-ratio:5/4){
+ /* title: the castle fills the screen, logo on top, the menu along the bottom */
+ #overlay.ts,#overlay.fb{display:block;overflow:hidden}
+ #overlay.ts .cwrap,#overlay.fb .cwrap{position:absolute;inset:0;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+ #overlay.ts #castle,#overlay.fb #castle{width:max(100%,calc(100dvh * 4 / 3));height:auto;flex:none}
+ #overlay.ts .logo{top:max(5%,env(safe-area-inset-top))}
+ #overlay.ts .logo h1{font-size:min(9vw,76px)}#overlay.ts .logo h2{font-size:20px}
+ #overlay.ts .ovb{position:absolute;left:0;right:0;bottom:0;height:auto;overflow:visible;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 12px;
+  padding:40px max(18px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 16px) max(18px,env(safe-area-inset-left));background:linear-gradient(rgba(5,3,8,0),rgba(5,3,8,.85) 45%)}
+ #overlay.ts .ovb p.dim{flex-basis:100%;margin:0 0 4px;font-size:15px;opacity:.85;text-shadow:0 2px 0 #000}
+ #overlay.ts .pb{min-width:0;margin:0;padding:10px 18px}
+ /* story screens: the scene fills the screen, the text sits in a box over it */
+ #overlay.fb .ovb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,86vw);height:auto;max-height:88%;overflow-y:auto;
+  background:rgba(14,9,18,.86);border:3px solid #000;box-shadow:inset 0 0 0 2px #5a4020,0 10px 40px rgba(0,0,0,.6);padding:16px 22px 18px;animation:none}
+ #overlay.fb .ovb{width:min(780px,92vw);flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:0 10px;padding:12px 20px 14px}
+ #overlay.fb .ovb>*{flex-basis:100%}#overlay.fb .ovb>.pb{flex-basis:auto;min-width:0;margin:6px 0 0;padding:9px 16px}
+ #overlay.fb .ovb h3{margin:2px 0 6px}#overlay.fb .ovb p{font-size:15.5px;margin:4px auto;max-width:640px}
+ #overlay.fb .ovb{max-height:95%}#overlay.fb .ovb>.dim{font-size:13px;margin:0}#overlay.fb .nums div{padding:5px 3px}#overlay.fb .nums{grid-template-columns:repeat(6,1fr);gap:6px}#overlay.fb .nums b{font-size:20px}#overlay.fb .nums small{font-size:11.5px}
+ #overlay.fb .summary h3.sm{font-size:16px;margin:8px 0 4px}#overlay.fb .summary ul{columns:2;column-gap:24px;font-size:14px;margin:4px 0}
+ #overlay.fb .summary{max-width:none}
+}
 </style>
 </head>
 <body>
@@ -1678,7 +1699,7 @@ async function restoreFull(after){const np=nativeStore();
  const own=await storeCheck();toast(own||PRO?"Purchase restored! The full year is unlocked.":"No purchase found for this Apple ID.");if(own)after&&after()}
 function paywall(after){
  setCastle("map");SFX.toll();
- overlay(`${castleHTML()}</div><div class="ovb"><div class="dim">— THE END OF SPRING —</div><h3>Vex's banners are coming</h3>
+ overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE END OF SPRING —</div><h3>Vex's banners are coming</h3>
   <p>Spring is over. Scouts report Baron Vex's army on the march, Brannoc is sharpening his blades, and Emberfall's first summer is about to begin.</p>
   <p>Unlock the full year to play on: the July battle, the harvest, a rival for your throne, the King's war, winter, the Midwinter Council, and all 19 endings.</p>
   <button class="pb" id="buyBtn">Unlock the full year · ${STORE.price}</button>
@@ -1804,7 +1825,7 @@ function ending(k){
   <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
   <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="showTitle()">Title Screen</button></div>`);
  return true}
-function overlay(h){const o=$("overlay");o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
+function overlay(h){const o=$("overlay");o.className=/class="logo"/.test(h)?"ts":/class="ovb (siege|ending)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
 function modal(h){const m=$("modal");m.innerHTML=`<div class="box">${h}</div>`;m.style.display="flex"}
 function closeModal(){const m=$("modal");m.style.display="none";m.innerHTML=""}
@@ -1831,7 +1852,6 @@ function showTitle(){
  setCastle("title");Music.play("title");
  overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
   <p class="dim">The throne is yours. So is everything that follows.</p>
-  ${PRO?"":`<p class="dim" style="font-size:14px;margin-top:-4px">Spring is free. Unlock the full year for ${STORE.price}.</p>`}
   ${hasSave?'<button class="pb" onclick="cont()">Continue Reign</button>':""}<button class="pb ${hasSave?"alt":""}" onclick="${hasSave?"confirmNew()":"newGame()"}">New Reign</button>
   <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
   <button class="pb alt" onclick="openSettings()">Settings</button></div>`)}
