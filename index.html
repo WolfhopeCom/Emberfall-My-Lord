@@ -96,6 +96,8 @@ img.px{image-rendering:pixelated}
 .room.story{box-shadow:inset 0 0 0 2px #f2c14e,0 4px 0 #000}.room em.bang.gold{background:#f2c14e;color:#2a1810}.must{color:#f2c14e!important;font-weight:700}
 .evc.story{box-shadow:inset 0 0 0 2px #f2c14e}.evc .sh{display:flex;align-items:center;gap:10px;margin-bottom:8px}.evc .sh canvas{width:48px;height:48px;background:#2a1d2e;border:2px solid #000}.evc .sh b{font-family:var(--display);color:var(--blood);font-size:18px}.evc p{white-space:pre-line}
 .pb:disabled{opacity:.45}
+.panel{display:flex;flex-direction:column;align-items:center;width:100%}.panel .dim{color:#b8a488;font-size:15px;margin:0 0 8px}.panel h3.sm{font-size:19px;margin:14px 0 6px}
+#castle.map{cursor:pointer}
 .room.done{box-shadow:inset 0 0 0 2px #3e8a34,0 4px 0 #000}.room.ev{box-shadow:inset 0 0 0 2px #e0705a,0 4px 0 #000}
 @keyframes bob{to{transform:translateY(-3px)}}
 .ovb h3.sm{font-size:19px;margin:14px 0 6px}
@@ -163,6 +165,7 @@ const C={
  widow:{n:"Widow Agna",r:"A villager of Thornby",skin:"#a87048",hair:"#999999",robe:"#5a4a44",acc:"hood",dress:1,mood:"sad",voice:280},
  herald:{n:"Royal Herald",r:"Voice of King Osmund",skin:"#8a5a3a",hair:"#1a120a",robe:"#2a3a8a",trim:"#e0b040",acc:"hat",mood:"neutral",voice:260},
  eastlord:{n:"Lord Harwin",r:"Lord of the Eastern Marches",skin:"#e0b48a",hair:"#dddddd",robe:"#2a4a6a",acc:"circlet",beard:1,mood:"stern",voice:145},
+ wynn:{n:"Sergeant Wynn",r:"Acting captain of the guard",skin:"#c89070",hair:"#6a4a2a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",beard:1,mood:"neutral",voice:150},
  mason:{n:"Hildra",r:"Master mason",skin:"#c8906a",hair:"#b84a20",robe:"#7a6a50",trim:"#4a3a2a",mood:"kind",blush:1,voice:235},
  lord:{skin:"#ecc49c",hair:"#5a3418",robe:"#6a1f2a",trim:"#e0b040",crown:1,cape:"#4a1220"},
  guard:{skin:"#d8a880",hair:"#3a2a1a",robe:"#5c6470",acc:"helm",tabard:"#8a1f2a",trim:"#3a3030"},
@@ -366,7 +369,7 @@ document.addEventListener("visibilitychange",()=>{if(!AU.ctx)return;document.hid
    THRONE ROOM SCENE
    ========================================================= */
 const W=192,H=120,cv=$("scene"),g=cv.getContext("2d");
-const SC={t:0,door:0,doorT:0,walker:null,parts:[],shake:0,phase:"day",emote:null,BG:null,talk:false};
+const SC={t:0,door:0,doorT:0,walker:null,parts:[],shake:0,phase:"day",emote:null,BG:null,talk:false,room:null,cast:[],speaker:null,fade:0};
 const TORCH=[[38,50],[128,50],[157,44]];
 function arch(ctx,x,y,w,h,col){const r=w/2;for(let i=0;i<h;i++){let inset=0;if(i<r){inset=Math.round(r-Math.sqrt(r*r-(r-i)*(r-i)))}ctx.fillStyle=typeof col==="function"?col(i/h):col;ctx.fillRect(x+inset,y+i,w-inset*2,1)}}
 function lerpCol(a,b,t){const A=parseInt(a.slice(1),16),B=parseInt(b.slice(1),16);const m=(s)=>Math.round(((A>>s)&255)*(1-t)+((B>>s)&255)*t);return `rgb(${m(16)},${m(8)},${m(0)})`}
@@ -420,9 +423,16 @@ function drawDoor(x){
   x.fillStyle="rgba(255,190,110,.12)";x.fillRect(18-gw/2,37,gw,49)}
  else{x.fillStyle="#c99a3a";x.fillRect(15,60,2,2);x.fillRect(19,60,2,2)}
 }
-function drawScene(){
- const x=g;SC.t++;x.save();
- if(SC.shake>0){x.translate(Math.round((Math.random()-.5)*SC.shake),Math.round((Math.random()-.5)*SC.shake));SC.shake*=.86;if(SC.shake<.6)SC.shake=0}
+function torch(x,tx,ty){x.fillStyle="#3a3030";x.fillRect(tx,ty,2,5);x.fillStyle="#5a4a3a";x.fillRect(tx-1,ty-1,4,2);
+ const f=Math.floor(SC.t/4+tx)%3;x.fillStyle="#f08020";x.fillRect(tx-1,ty-5-f%2,4,5);x.fillStyle="#ffd060";x.fillRect(tx,ty-4-f,2,4);x.fillStyle="#fff4c0";x.fillRect(tx,ty-2,1,2);
+ if(Math.random()<.04)part({x:tx+1,y:ty-6,vx:(Math.random()-.5)*.3,vy:-.4,life:50,max:50,col:Math.random()<.5?"#ffb040":"#ff7020"})}
+function candle(x,cx,cy){x.fillStyle="#efe6d6";x.fillRect(cx,cy,2,4);x.fillStyle="#c8bca8";x.fillRect(cx+1,cy,1,4);const f=Math.floor(SC.t/5+cx)%2;
+ x.fillStyle="#ffb040";x.fillRect(cx,cy-2-f,2,2+f);x.fillStyle="#fff4c0";x.fillRect(cx,cy-1,1,1)}
+function blaze(x,fx,fy,w){for(let i=0;i<w;i++){const h=3+((Math.floor(SC.t/3)*7+i*13)%5)+(i>0&&i<w-1?2:0);
+  x.fillStyle="#e04010";x.fillRect(fx+i,fy-h,1,h);x.fillStyle="#ff9a30";x.fillRect(fx+i,fy-h+1,1,Math.max(1,h-2));
+  if(i>0&&i<w-1&&h>4){x.fillStyle="#ffe080";x.fillRect(fx+i,fy-h+3,1,h-4)}}
+ if(Math.random()<.08)part({x:fx+Math.random()*w,y:fy-6,vx:(Math.random()-.5)*.3,vy:-.5,life:40,max:40,col:Math.random()<.5?"#ffb040":"#ff7020"})}
+function drawThrone(x,w){
  x.drawImage(SC.BG,0,0);
  if(SC.phase!=="night"){x.fillStyle=SC.phase==="dusk"?"rgba(255,140,80,.07)":"rgba(255,240,200,.07)";
   for(const wx of[50,104]){x.beginPath();x.moveTo(wx,50);x.lineTo(wx+14,50);x.lineTo(wx+40,118);x.lineTo(wx+18,118);x.closePath();x.fill()}
@@ -432,9 +442,7 @@ function drawScene(){
   if(ss==="autumn"&&SC.t%22===0)part({x:wx+Math.random()*14,y:14,vx:.15,vy:.18,life:200,max:200,col:Math.random()<.5?"#e07a20":"#c8401a",win:1,leaf:1});
   if(ss==="spring"&&SC.t%3===0&&Math.floor(SC.t/900)%2===0)part({x:wx+Math.random()*14,y:14,vx:-.2,vy:1.6,life:40,max:40,col:"#cfe4f4",win:1})}
  drawDoor(x);
- for(const[tx,ty]of TORCH){x.fillStyle="#3a3030";x.fillRect(tx,ty,2,5);x.fillStyle="#5a4a3a";x.fillRect(tx-1,ty-1,4,2);
-  const f=Math.floor(SC.t/4+tx)%3;x.fillStyle="#f08020";x.fillRect(tx-1,ty-5-f%2,4,5);x.fillStyle="#ffd060";x.fillRect(tx,ty-4-f,2,4);x.fillStyle="#fff4c0";x.fillRect(tx,ty-2,1,2);
-  if(Math.random()<.04)part({x:tx+1,y:ty-6,vx:(Math.random()-.5)*.3,vy:-.4,life:50,max:50,col:Math.random()<.5?"#ffb040":"#ff7020"})}
+ for(const[tx,ty]of TORCH)torch(x,tx,ty);
  drawBody(x,C.guard,70,88,1,{bob:bobOf(0),blink:blinkOf(1)});x.fillStyle="#6a4a2a";x.fillRect(77,44,1,44);x.fillStyle="#c8cdd6";x.fillRect(76,41,3,3);x.fillRect(77,39,1,2);
  drawBody(x,C.guard2,142,88,-1,{bob:bobOf(3),blink:blinkOf(4)});x.fillStyle="#6a4a2a";x.fillRect(135,44,1,44);x.fillStyle="#c8cdd6";x.fillRect(134,41,3,3);x.fillRect(135,39,1,2);
  drawBody(x,C.lord,174,79,-1,{seated:1,bob:bobOf(2),blink:blinkOf(2)});
@@ -443,13 +451,120 @@ function drawScene(){
  x.fillStyle="#7a5030";x.fillRect(138,95-br,11,4+br);x.fillRect(134,93,5,4);x.fillStyle="#5a3a20";x.fillRect(139,98,9,1);x.fillRect(132,95,2,2);
  x.fillStyle="#111";x.fillRect(132,95,1,1);x.fillRect(135,94,1,1);x.fillStyle="#4a2a18";x.fillRect(137,93,2,3);x.fillStyle="#6a4428";x.fillRect(132,98,5,1);
  x.fillStyle="#7a5030";x.fillRect(149,wag?93:95,3,1);x.fillRect(148,94,1,1);
+ drawWalker(x,w,true);
+}
+function drawWalker(x,w,talks){
+ if(!w||(w.waitDoor&&SC.door<.8))return;
+ const moving=Math.abs(w.target-w.x)>.5;
+ drawBody(x,w.c,w.x,104,w.dir,{frame:moving?w.frame:0,bob:moving?w.frame:bobOf(6),blink:!moving&&blinkOf(7),talk:talks&&SC.talk&&(SC.t%10<5)});
+ x.fillStyle="rgba(0,0,0,.25)";x.fillRect(Math.round(w.x)-6,104,12,1)}
+
+/* ---- the castle's other rooms, drawn in the same scene window ---- */
+function rmWall(x,pal,mortar){x.fillStyle=mortar;x.fillRect(0,0,W,86);
+ for(let row=0;row<15;row++){const y=row*6,off=row%2?6:0;for(let bx=-off;bx<W;bx+=12){x.fillStyle=pal[Math.floor(rnd()*pal.length)];x.fillRect(bx+1,y+1,10,4);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(bx+1,y+1,10,1)}}
+ const gr=x.createLinearGradient(0,0,0,70);gr.addColorStop(0,"rgba(0,0,0,.55)");gr.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gr;x.fillRect(0,0,W,70)}
+function rmFloor(x,a,b,edge,base){x.fillStyle=base;x.fillRect(0,82,W,4);x.fillStyle=shade(base,.15);x.fillRect(0,82,W,1);x.fillStyle="#1a1418";x.fillRect(0,85,W,1);
+ const rows=[86,91,97,104,112,121];
+ for(let i=0;i<rows.length-1;i++){const y=rows[i],hh=rows[i+1]-y,tw=12+i*3,off=i%2?tw/2:0;
+  for(let fx=-off;fx<W;fx+=tw){x.fillStyle=((fx/tw|0)+i)%2?a:b;x.fillRect(fx,y,tw,hh);x.fillStyle=edge;x.fillRect(fx,y,1,hh);x.fillStyle="rgba(255,255,255,.04)";x.fillRect(fx+1,y,tw-1,1)}
+  x.fillStyle=edge;x.fillRect(0,y,W,1)}}
+function rmWindow(x,wx,wy,w,h){arch(x,wx-2,wy-2,w+4,h+2,"#4e4458");arch(x,wx,wy,w,h,t=>lerpCol("#141c44","#2c3a74",t));
+ x.fillStyle="#fff";x.fillRect(wx+3,wy+6,1,1);x.fillRect(wx+w-4,wy+12,1,1);x.fillRect(wx+5,wy+h-8,1,1);x.fillStyle="#f0ead0";x.fillRect(wx+w-6,wy+4,3,3);
+ x.fillStyle="#2a2232";x.fillRect(wx+Math.floor(w/2)-1,wy,2,h);x.fillRect(wx,wy+Math.floor(h*.45),w,1);x.fillStyle="#5c5266";x.fillRect(wx-3,wy+h,w+6,2)}
+function stone(x,a,b,w,h){cfill(x,"#8a8494",a,b,w,h);cfill(x,"#a8a2b2",a,b,w,1);cfill(x,"#5a5466",a,b+h-1,w,1);cfill(x,"#5a5466",a+w-1,b,1,h)}
+const ROOMBG={
+ treasury(x){rmWall(x,["#3b302c","#372c28","#3f3430","#3a2e2a"],"#1e1614");rmWindow(x,128,14,10,22);
+  cfill(x,"#2a180c",44,22,58,60);cfill(x,"#5a3418",42,20,62,2);cfill(x,"#5a3418",42,22,2,60);cfill(x,"#5a3418",102,22,2,60);
+  for(const sy of[40,58,76]){cfill(x,"#7a4a24",44,sy,58,2);cfill(x,"#9a6234",44,sy,58,1)}
+  const BK=["#8a2a2a","#2a4a7a","#3a6a3a","#7a5a2a","#5a2a5a","#a08050"];
+  for(let bx=46;bx<99;){const w=2+Math.floor(rnd()*2),h=9+Math.floor(rnd()*6);cfill(x,BK[Math.floor(rnd()*BK.length)],bx,40-h,w,h);cfill(x,"rgba(255,255,255,.12)",bx,42-h,w,1);bx+=w+(rnd()<.15?4:0)}
+  for(const sx of[47,60,73,86]){cfill(x,"#a08050",sx,51,9,7);cfill(x,"#7a5a30",sx+3,49,3,2);cfill(x,"#c0a070",sx+1,52,2,4);cfill(x,"#5a3a1a",sx+2,50,5,1)}
+  for(let i=0;i<5;i++){cfill(x,"#c99a3a",47+i*10,71,8,5);cfill(x,"#f2d060",47+i*10,71,8,1)}for(let i=0;i<4;i++){cfill(x,"#c99a3a",52+i*10,67,8,4);cfill(x,"#f2d060",52+i*10,67,8,1)}
+  rmFloor(x,"#3a3040","#342a38","#241c28","#4a3f54");
+  cfill(x,"#4a2a12",104,78,30,3);cfill(x,"#6a4020",104,77,30,1);cfill(x,"#4a2a12",106,81,2,9);cfill(x,"#4a2a12",130,81,2,9);
+  cfill(x,"#efe6d6",108,75,12,2);cfill(x,"#c8bca8",114,75,1,2);cfill(x,"#3a2a1a",110,76,3,1);cfill(x,"#3a2a1a",116,76,3,1);
+  cfill(x,"#4a2410",150,78,30,6);cfill(x,"#f2c14e",151,82,28,4);cfill(x,"#f8dc7a",156,81,14,2);cfill(x,"#f2c14e",160,80,6,1);
+  cfill(x,"#6a3a1a",150,86,30,12);cfill(x,"#8a5a2a",150,86,30,1);cfill(x,"#c99a3a",150,89,30,1);cfill(x,"#c99a3a",150,95,30,1);cfill(x,"#c99a3a",158,86,2,12);cfill(x,"#c99a3a",170,86,2,12);cfill(x,"#2a1810",164,90,2,3);
+  for(const[a,b]of[[140,104],[144,106],[184,102],[186,108],[176,104]]){cfill(x,"#f2c14e",a,b,2,1);cfill(x,"#c98a1a",a,b+1,2,1)}},
+ war(x){rmWall(x,["#2f2636","#2b2232","#33293b","#2d2434"],"#1d1622");rmWindow(x,44,14,14,34);banner(x,92,2,14,30);
+  cfill(x,"#5a3418",146,44,40,2);cfill(x,"#5a3418",146,76,40,2);
+  for(const sx of[150,156,162]){cfill(x,"#6a4a2a",sx,30,1,48);cfill(x,"#c8cdd6",sx-1,27,3,3);cfill(x,"#c8cdd6",sx,25,1,2)}
+  for(const[sx,col]of[[171,"#8a1f2a"],[181,"#2a4a7a"]]){cfill(x,col,sx-3,50,7,10);cfill(x,col,sx-2,49,5,12);cfill(x,shade(col,-.3),sx+2,50,1,10);cfill(x,"#e0b040",sx-1,54,2,2)}
+  rmFloor(x,"#3d3244","#362c3d","#2a2130","#4a3f54");
+  cfill(x,"#5a3418",80,81,50,8);cfill(x,"#d8c090",82,82,46,5);
+  cfill(x,"#6a9a4a",85,83,10,2);cfill(x,"#6a9a4a",100,82,8,3);cfill(x,"#6a9a4a",114,84,9,2);cfill(x,"#4a7ab8",96,82,2,3);cfill(x,"#4a7ab8",97,85,8,1);cfill(x,"#4a7ab8",105,84,1,1);
+  cfill(x,"#9a1f1f",118,82,1,2);cfill(x,"#9a1f1f",121,83,1,2);cfill(x,"#9a1f1f",124,82,1,2);cfill(x,"#2a3a8a",88,83,1,2);cfill(x,"#2a3a8a",91,84,1,2);
+  cfill(x,"#7a4a24",80,87,50,1);cfill(x,"#4a2a12",80,88,50,4);cfill(x,"#3a2010",82,92,3,8);cfill(x,"#3a2010",125,92,3,8)},
+ mason(x){const se=SC.season||"spring";
+  const sky=x.createLinearGradient(0,0,0,70);sky.addColorStop(0,"#05081a");sky.addColorStop(1,"#22325c");x.fillStyle=sky;x.fillRect(0,0,W,86);
+  for(let i=0;i<34;i++){x.globalAlpha=.3+rnd()*.7;cfill(x,"#fff",Math.floor(rnd()*W),Math.floor(rnd()*50),1,1)}x.globalAlpha=1;
+  for(let i=-4;i<=4;i++)for(let j=-4;j<=4;j++)if(i*i+j*j<=16)cfill(x,i*i+j*j>9?"#d8d0b0":"#f0ead0",66+i,11+j,1,1);
+  const top=px=>px<112?28:28+Math.min(40,Math.floor((px-112)/10+1)*7);
+  for(let px=0;px<W;px++){const t=top(px);cfill(x,"#3e3648",px,t,1,86-t);if(se==="winter")cfill(x,"#e8eef6",px,t,1,1)}
+  for(let row=0;row<10;row++){const y=28+row*6,off=row%2?6:0;for(let bx=-off;bx<W;bx+=12)if(y>=top(bx+6)){cfill(x,["#4a4256","#463e52","#4e465a"][Math.floor(rnd()*3)],bx+1,y+1,10,4)}}
+  for(let px=0;px<112;px+=8)cfill(x,"#3e3648",px,24,4,4);
+  for(const sx of[118,146,174])cfill(x,"#7a5030",sx,30,2,56);for(const sy of[46,64]){cfill(x,"#8a6040",114,sy,70,2);cfill(x,"#5a3a20",114,sy+2,70,1)}
+  cfill(x,"#6a4428",158,46,1,40);cfill(x,"#6a4428",163,46,1,40);for(let ry=48;ry<86;ry+=5)cfill(x,"#6a4428",158,ry,6,1);
+  cfill(x,"#6a4428",186,12,2,74);cfill(x,"#6a4428",150,12,38,2);for(let i=0;i<9;i++)cfill(x,"#6a4428",185-i,14+i,1,1);
+  const gnd=se==="winter"?["#cfd8e4","#b8c4d4"]:se==="autumn"?["#5a4430","#7a4a20"]:["#4e3e2c","#3e5a2a"];
+  cfill(x,gnd[0],0,86,W,34);for(let i=0;i<140;i++)cfill(x,gnd[1],Math.floor(rnd()*W),86+Math.floor(rnd()*34),2,1);cfill(x,shade(gnd[0],-.35),0,86,W,1);
+  stone(x,70,92,12,7);stone(x,82,94,10,6);stone(x,74,86,9,6);stone(x,170,94,13,8);stone(x,176,88,8,6);
+  cfill(x,"#6a4a2a",76,85,1,2);cfill(x,"#8e95a3",74,84,4,1);
+  cfill(x,"#2a2226",98,92,1,8);cfill(x,"#2a2226",104,92,1,8);cfill(x,"#2a2226",101,93,1,7);cfill(x,"#4a3a40",96,89,11,3);cfill(x,"#2a2226",97,92,9,1)},
+ family(x){rmWall(x,["#4a3a30","#46362c","#4e3e32","#483830"],"#24180f");rmWindow(x,40,16,14,30);
+  cfill(x,"#c99a3a",66,10,30,2);cfill(x,"#2f5a3a",68,12,26,34);cfill(x,"#244a2e",68,12,2,34);cfill(x,"#c99a3a",70,14,22,1);cfill(x,"#c99a3a",70,43,22,1);
+  cfill(x,"#e0b040",80,24,2,16);cfill(x,"#e0b040",75,20,12,5);cfill(x,"#e0b040",77,18,8,2);cfill(x,"#a8322a",73,36,3,4);cfill(x,"#a8322a",86,36,3,4);for(let px=68;px<94;px+=2)cfill(x,"#c99a3a",px,46,1,2);
+  cfill(x,"#6a6070",146,48,42,38);cfill(x,"#7a7080",146,48,42,1);for(let sy=52;sy<86;sy+=6)cfill(x,"#5a5262",146,sy,42,1);
+  cfill(x,"#140c0c",152,60,30,26);cfill(x,"#2a1a18",152,60,30,2);cfill(x,"#7a5a3a",142,44,50,4);cfill(x,"#9a7a5a",142,44,50,1);
+  rmFloor(x,"#5a3a24","#523420","#3a2414","#4a3428");
+  cfill(x,"#5a3418",156,82,22,3);cfill(x,"#3a2010",160,80,14,2);
+  cfill(x,"#5a3418",64,56,2,36);cfill(x,"#5a3418",102,56,2,36);cfill(x,"#8a1f2a",62,54,44,4);cfill(x,"#6a1520",62,58,44,2);cfill(x,"#8a1f2a",66,58,3,14);cfill(x,"#8a1f2a",99,58,3,14);
+  cfill(x,"#6a4020",66,70,4,20);cfill(x,"#e8dcc4",70,80,32,4);cfill(x,"#f4ecd8",71,77,8,3);cfill(x,"#2f6e44",80,79,22,6);cfill(x,"#245a36",80,84,22,2);
+  cfill(x,"#5a3418",66,86,38,4);cfill(x,"#3a2010",67,90,2,3);cfill(x,"#3a2010",101,90,2,3);
+  cfill(x,"#8a1f2a",108,100,80,10);cfill(x,"#c99a3a",108,100,80,1);cfill(x,"#c99a3a",108,109,80,1);for(let px=114;px<184;px+=10){cfill(x,"#c99a3a",px,104,2,2);cfill(x,"#a83444",px+5,103,2,4)}},
+ dungeon(x){rmWall(x,["#262230","#22202c","#2a2634","#201c28"],"#100c14");
+  for(let i=0;i<46;i++)cfill(x,rnd()<.5?"#2a3a24":"#344a2a",Math.floor(rnd()*W),Math.floor(rnd()*86),2,1);
+  for(const sx of[60,96,140])cfill(x,"rgba(120,140,160,.12)",sx,0,1,80);
+  cfill(x,"#2a2634",148,8,18,12);cfill(x,"#141c44",150,10,14,8);for(let bx=152;bx<164;bx+=3)cfill(x,"#4a4a56",bx,10,1,8);
+  for(let cy=40;cy<62;cy+=3)cfill(x,"#6a6a78",172,cy,1,2);cfill(x,"#6a6a78",170,62,5,2);
+  rmFloor(x,"#2a2430","#26202c","#18141c","#302a38");
+  cfill(x,"#8a7430",148,97,38,6);cfill(x,"#b09a42",152,96,28,2);for(let i=0;i<10;i++)cfill(x,"#c8b050",150+i*3,95+(i%3),1,2);
+  cfill(x,"#3a4a5a",86,108,22,2);cfill(x,"#4a5a6a",90,108,10,1);
+  cfill(x,"#3a3a44",126,26,4,80);cfill(x,"#3a3a44",126,26,66,3);cfill(x,"#5a5a66",126,26,66,1)},
+};
+/* host = who keeps the room; at = where each one stands. Scene characters join them. */
+const ROOMS={
+ treasury:{title:"the Treasury",lights:[[125,71],[161,41]],cast:()=>[["aldric",132]],
+  draw(x){torch(x,160,46);candle(x,124,73);if(SC.t%9===0)part({x:151+Math.random()*28,y:80+Math.random()*3,life:16,max:16,col:"#fffbe0"})}},
+ war:{title:"the War Room",lights:[[69,43],[133,39]],cast:()=>[[warHost(),140]],
+  draw(x){torch(x,68,48);torch(x,132,44)}},
+ mason:{title:"the Mason's Yard",lights:[[101,82],[45,39]],cast:()=>[["mason",134]],
+  draw(x){torch(x,44,44);blaze(x,97,89,9);const s=Math.round(Math.sin(SC.t/40)*2);cfill(x,"#c8b898",154+Math.round(s/2),14,1,22);stone(x,151+s,36,8,6);
+   const se=SC.season;if(se==="winter"&&SC.t%4===0)part({x:Math.random()*W,y:0,vx:(Math.random()-.5)*.2,vy:.35,life:300,max:300,col:"#fff"});
+   if((se==="summer"||se==="spring")&&SC.t%40===0)part({x:20+Math.random()*160,y:70+Math.random()*30,vx:(Math.random()-.5)*.2,vy:-.1,life:120,max:120,col:"#e8f080",dust:1})}},
+ family:{title:"the Family Quarters",lights:[[167,74],[149,38],[185,38]],cast:()=>[["elinor",118],["maren",138],["tobin",160]],stand:52,
+  draw(x){blaze(x,158,84,18);candle(x,148,40);candle(x,184,40)}},
+ dungeon:{title:"the Dungeon",lights:[[101,41]],cast:()=>has("brannocExiled")&&!S.night.reqDone.prisoner?[]:[["brannoc",160]],
+  draw(x){torch(x,100,46);x.fillStyle="rgba(140,170,230,.06)";x.beginPath();x.moveTo(150,18);x.lineTo(164,18);x.lineTo(182,104);x.lineTo(150,104);x.closePath();x.fill();
+   if(SC.t%55===0)part({x:98+Math.random()*4,y:2,vy:1.6,life:66,max:66,col:"#8ab0d0"})},
+  front(x){for(let bx=134;bx<192;bx+=7){cfill(x,"#24242c",bx,29,2,77);cfill(x,"#6a6a78",bx,29,1,77)}cfill(x,"#3a3a44",126,62,66,2);cfill(x,"#5a5a66",126,62,66,1)}},
+};
+function warHost(){return leader()==="Sergeant Wynn"?"wynn":"brannoc"}
+function drawRoom(x,w){
+ const id=SC.room,R=ROOMS[id],key=id+(id==="mason"?SC.season:"");
+ SC.RBG=SC.RBG||{};if(!SC.RBG[key]){const c=document.createElement("canvas");c.width=W;c.height=H;seed=17;ROOMBG[id](c.getContext("2d"));SC.RBG[key]=c}
+ x.drawImage(SC.RBG[key],0,0);drawDoor(x);R.draw(x);
+ SC.cast.forEach((m,i)=>{drawBody(x,C[m.k],m.x,104,m.dir,{bob:bobOf(i+8),blink:blinkOf(i+9),talk:SC.talk&&SC.speaker===m.k&&(SC.t%10<5)});x.fillStyle="rgba(0,0,0,.25)";x.fillRect(m.x-6,104,12,1)});
+ R.front&&R.front(x);
+ drawWalker(x,w,false);
+}
+function focusX(){if(SC.room){const m=SC.cast.find(m=>m.k===SC.speaker)||SC.cast[0];return m?m.x:(SC.walker?SC.walker.x:96)}return SC.walker?SC.walker.x:112}
+function drawScene(){
+ const x=g;SC.t++;x.save();
+ if(SC.shake>0){x.translate(Math.round((Math.random()-.5)*SC.shake),Math.round((Math.random()-.5)*SC.shake));SC.shake*=.86;if(SC.shake<.6)SC.shake=0}
  const w=SC.walker;
- if(w&&!(w.waitDoor&&SC.door<.8)){
-  const moving=Math.abs(w.target-w.x)>.5;
-  drawBody(x,w.c,w.x,104,w.dir,{frame:moving?w.frame:0,bob:moving?w.frame:bobOf(6),blink:!moving&&blinkOf(7),talk:SC.talk&&(SC.t%10<5)});
-  x.fillStyle="rgba(0,0,0,.25)";x.fillRect(Math.round(w.x)-6,104,12,1);
- }
- if(SC.emote&&w){const e=SC.emote;e.t++;const by=Math.round(w.x)-6,pop=e.t<6?6-e.t:0,yy=58-pop+(e.t>80?(e.t-80)*.5:0);
+ if(SC.room)drawRoom(x,w);else drawThrone(x,w);
+ if(SC.emote&&(w||SC.room)){const e=SC.emote;e.t++;const by=Math.round(focusX())-6,pop=e.t<6?6-e.t:0,yy=58-pop+(e.t>80?(e.t-80)*.5:0);
   x.globalAlpha=e.t>80?Math.max(0,1-(e.t-80)/20):1;
   x.fillStyle="#2a1810";x.fillRect(by-1,yy-1,13,11);x.fillStyle="#f4ecd8";x.fillRect(by,yy,11,9);x.fillStyle="#2a1810";x.fillRect(by+4,yy+9,3,1);x.fillRect(by+5,yy+10,1,1);
   const im=EMO[e.type];x.drawImage(im,by+Math.round((11-im.width)/2),yy+Math.round((9-im.height)/2));x.globalAlpha=1;if(e.t>100)SC.emote=null}
@@ -459,13 +574,17 @@ function drawScene(){
   if(p.life<=0||(p.win&&p.y>43)){SC.parts.splice(i,1);continue}
   x.globalAlpha=p.dust?Math.sin(Math.PI*p.life/p.max)*.6:Math.min(1,p.life/p.max*1.5);x.fillStyle=p.col;x.fillRect(Math.round(p.x),Math.round(p.y),p.sz,p.sz)}
  x.globalAlpha=1;
- if(SC.phase==="night"){x.fillStyle="rgba(8,12,40,.5)";x.fillRect(0,0,W,H)}
- if(SC.phase==="dusk"){x.fillStyle="rgba(90,20,10,.16)";x.fillRect(0,0,W,H)}
+ const night=SC.room||SC.phase==="night";
+ if(SC.room){x.fillStyle="rgba(8,12,40,.2)";x.fillRect(0,0,W,H)}
+ else if(SC.phase==="night"){x.fillStyle="rgba(8,12,40,.5)";x.fillRect(0,0,W,H)}
+ if(SC.phase==="dusk"&&!SC.room){x.fillStyle="rgba(90,20,10,.16)";x.fillRect(0,0,W,H)}
  x.globalCompositeOperation="lighter";
- for(const[tx,ty]of TORCH){const fl=.15+Math.sin(SC.t/7+tx)*.025+Math.random()*.02;const r=x.createRadialGradient(tx+1,ty-3,1,tx+1,ty-3,30);
-  r.addColorStop(0,`rgba(255,150,60,${SC.phase==="night"?fl*1.8:fl})`);r.addColorStop(1,"rgba(255,150,60,0)");x.fillStyle=r;x.fillRect(tx-30,ty-33,62,62)}
+ for(const[tx,ty]of SC.room?ROOMS[SC.room].lights:TORCH){const fl=.15+Math.sin(SC.t/7+tx)*.025+Math.random()*.02;const r=x.createRadialGradient(tx+1,ty-3,1,tx+1,ty-3,30);
+  r.addColorStop(0,`rgba(255,150,60,${night?fl*1.8:fl})`);r.addColorStop(1,"rgba(255,150,60,0)");x.fillStyle=r;x.fillRect(tx-30,ty-33,62,62)}
  x.globalCompositeOperation="source-over";
- x.drawImage(VIG,0,0);x.restore();
+ x.drawImage(VIG,0,0);
+ if(SC.fade>0){x.fillStyle=`rgba(0,0,0,${SC.fade})`;x.fillRect(0,0,W,H);SC.fade=Math.max(0,SC.fade-(FAST?1:.05))}
+ x.restore();
  if(w){const spd=FAST?10:1.7;
   if(w.waitDoor){if(SC.door>=.95||FAST)w.waitDoor=false}
   else if(Math.abs(w.target-w.x)>.5){const st=Math.sign(w.target-w.x)*Math.min(spd,Math.abs(w.target-w.x));w.x+=st;w.dist+=Math.abs(st);
@@ -531,6 +650,64 @@ function drawCastle(x){
 }
 function castleHTML(){return `<div class="cwrap"><canvas id="castle" width="${CW}" height="${CH}"></canvas>`}
 function setCastle(m){if(CS.mode!==m){CS.mode=m;CS.parts=[]}}
+/* the night hub: a cut-away of the castle. Tap a room to go there. */
+const MAPR={family:[16,28,42,22],treasury:[62,28,42,22],war:[16,56,42,22],mason:[120,60,38,40],dungeon:[36,106,48,11]};
+function fig(x,px,base,robe,hair,skin){cfill(x,hair,px,base-7,2,1);cfill(x,skin||"#e8c39e",px,base-6,2,2);cfill(x,robe,px,base-4,2,4)}
+function mapBadge(x,bx,by,kind){const bg=kind==="req"?"#f2c14e":kind==="ev"?"#c8382a":"#3e8a34",fg=kind==="req"?"#2a1810":"#fff4dc";
+ cfill(x,"#000",bx-1,by-1,9,10);cfill(x,bg,bx,by,7,8);
+ if(kind==="done"){cfill(x,fg,bx+1,by+4,1,1);cfill(x,fg,bx+2,by+5,1,1);cfill(x,fg,bx+3,by+4,1,1);cfill(x,fg,bx+4,by+3,1,1);cfill(x,fg,bx+5,by+2,1,1)}
+ else{cfill(x,fg,bx+3,by+1,1,4);cfill(x,fg,bx+3,by+6,1,1)}}
+function drawMap(x){
+ const t=++CS.t,se=CS.season||"spring",M=CM.night,fl=(t>>3)%2,jailed=has("brannocJailed")&&!has("brannocExiled");
+ M.sky.forEach((c,i)=>cfill(x,c,0,i*17,CW,17));
+ STARS.forEach(s=>{x.globalAlpha=.4+.6*Math.abs(Math.sin(t/40+s.p));cfill(x,"#fff",s.x,s.y,1,1)});x.globalAlpha=1;
+ for(let i=-5;i<=5;i++)for(let j=-5;j<=5;j++)if(i*i+j*j<=25)cfill(x,i*i+j*j>16?"#d8d0b0":"#f0ead0",146+i,12+j,1,1);
+ mtn(x,MT2,M.m2);
+ cfill(x,"#1e140e",0,100,CW,20);cfill(x,se==="winter"?"#c8d0dc":shade(LAND[se],-.55),0,99,CW,2);for(let i=0;i<24;i++)cfill(x,"#2a1c14",(i*37)%CW,103+(i*7)%15,3,1);
+ const st="#4a4256",sd="#3a3446";
+ for(const tx of[4,106]){cfill(x,st,tx,14,12,86);for(let yy=18;yy<100;yy+=4)cfill(x,sd,tx,yy,12,1);roof(x,"#5a1a24",tx+6,1,13);if(se==="winter")cfill(x,"#e8eef6",tx+5,1,2,3);
+  x.globalAlpha=.6+.4*Math.abs(Math.sin(t/30+tx));cfill(x,"#ffcf6a",tx+5,24,2,3);cfill(x,"#ffcf6a",tx+5,64,2,3);x.globalAlpha=1}
+ cfill(x,st,14,22,94,78);
+ for(let yy=25;yy<100;yy+=4){cfill(x,sd,14,yy,94,1);for(let xx=14+((yy>>2)%2)*4;xx<108;xx+=8)cfill(x,sd,xx,yy+1,1,3)}
+ for(let px=14;px<108;px+=6){cfill(x,st,px,18,3,4);if(se==="winter")cfill(x,"#e8eef6",px,18,3,1)}
+ cfill(x,"#6a4a2a",60,4,1,14);cfill(x,"#9a1f1f",61,4+fl,5,2);cfill(x,"#9a1f1f",61,6,4,1);
+ arch(x,52,86,16,14,"#140c10");for(let i=0;i<5;i++)cfill(x,"#3a3036",54+i*3,88,1,12);cfill(x,"#3a3036",53,93,14,1);
+ for(const[a,b]of[[24,88],[36,88],[80,88],[92,88]]){x.globalAlpha=.7+.3*Math.abs(Math.sin(t/25+a));cfill(x,"#ffcf6a",a,b,2,3);x.globalAlpha=1}
+ cfill(x,"#140c10",88,100,3,6);
+ const room=(id,[rx,ry,rw,rh])=>{cfill(x,"#1a1218",rx-1,ry-1,rw+2,rh+2);for(let i=0;i<rh;i++)cfill(x,lerpCol("#2e2020","#5a3c28",i/rh),rx,ry+i,rw,1);const fb=ry+rh-2;cfill(x,"#2a1a12",rx,fb,rw,2);return fb};
+ let fb=room("family",MAPR.family),[rx,ry,rw]=MAPR.family;
+ cfill(x,"#22325c",rx+19,ry+3,4,7);cfill(x,"#141c44",rx+20,ry+4,2,5);
+ cfill(x,"#5a3418",rx+3,fb-13,1,13);cfill(x,"#5a3418",rx+15,fb-13,1,13);cfill(x,"#8a1f2a",rx+2,fb-14,15,2);cfill(x,"#e8dcc4",rx+4,fb-5,11,2);cfill(x,"#2f6e44",rx+7,fb-5,8,3);cfill(x,"#5a3418",rx+3,fb-3,13,3);
+ cfill(x,"#6a6070",rx+rw-11,fb-10,9,10);cfill(x,"#140c0c",rx+rw-9,fb-6,5,6);cfill(x,"#f08020",rx+rw-8,fb-3-fl,3,3+fl);cfill(x,"#ffd060",rx+rw-7,fb-2,1,2);
+ fig(x,rx+21,fb,"#2f6e44","#a8401c","#f1cfae");fig(x,rx+25,fb,"#3a62a0","#e8bf5a","#f3d4b5");fig(x,rx+28,fb,"#9a2a2a","#3a2618","#f0cba6");
+ fb=room("treasury",MAPR.treasury);[rx,ry,rw]=MAPR.treasury;
+ cfill(x,"#3a2010",rx+3,ry+3,14,12);for(const sy of[7,11,15])cfill(x,"#7a4a24",rx+3,ry+sy,14,1);for(let i=0;i<6;i++){cfill(x,["#8a2a2a","#2a4a7a","#c99a3a"][i%3],rx+4+i*2,ry+4,1,3);cfill(x,"#c99a3a",rx+4+i*2,ry+9,1,2)}
+ for(const cx of[rx+20,rx+28]){cfill(x,"#6a3a1a",cx,fb-5,7,5);cfill(x,"#c99a3a",cx,fb-3,7,1);cfill(x,"#f2c14e",cx+1,fb-6,5,1)}
+ cfill(x,"#f2c14e",rx+35,fb-2,5,2);cfill(x,"#f2c14e",rx+36,fb-3,3,1);if((t>>4)%4===0)cfill(x,"#fff",rx+37,fb-3,1,1);
+ fig(x,rx+13,fb,"#5b4128","#c8c8c8");
+ fb=room("war",MAPR.war);[rx,ry,rw]=MAPR.war;
+ for(let i=0;i<4;i++){cfill(x,"#6a4a2a",rx+3+i*2,ry+5,1,15);cfill(x,"#c8cdd6",rx+3+i*2,ry+4,1,1)}cfill(x,"#8a1f2a",rx+rw-7,ry+6,5,6);cfill(x,"#e0b040",rx+rw-5,ry+8,1,2);
+ cfill(x,"#5a3418",rx+13,fb-5,18,2);cfill(x,"#d8c090",rx+14,fb-6,16,1);cfill(x,"#6a9a4a",rx+16,fb-6,4,1);cfill(x,"#9a1f1f",rx+26,fb-7,1,1);cfill(x,"#3a2010",rx+14,fb-3,1,3);cfill(x,"#3a2010",rx+29,fb-3,1,3);
+ fig(x,rx+34,fb,"#5c6470","#8e95a3");
+ fb=room("hall",[62,56,42,22]);
+ cfill(x,"#8c2232",65,fb-1,30,1);cfill(x,"#c99a3a",96,fb-9,5,9);cfill(x,"#6a1a34",97,fb-8,3,5);for(const bx of[70,80,90])cfill(x,"#8c2232",bx,59,3,8);
+ fig(x,74,fb,"#5c6470","#8e95a3");fig(x,88,fb,"#5c6470","#8e95a3");cfill(x,"rgba(0,0,0,.35)",62,56,42,22);
+ [rx,ry,rw]=MAPR.dungeon;const rh=MAPR.dungeon[3];cfill(x,"#0e0a0c",rx-1,ry-1,rw+2,rh+2);cfill(x,"#22202c",rx,ry,rw,rh);cfill(x,"#18141c",rx,ry+rh-1,rw,1);
+ cfill(x,"#3a3030",rx+8,ry+4,1,3);cfill(x,fl?"#ffd060":"#f08020",rx+7,ry+2,3,2);
+ if(jailed)fig(x,rx+rw-10,ry+rh-1,"#5c6470","#2a1a10","#b07a52");
+ for(let px=rx+rw-18;px<rx+rw;px+=3)cfill(x,"#6a6a78",px,ry+1,1,rh-2);
+ if(!jailed)cfill(x,"rgba(0,0,0,.45)",rx,ry,rw,rh);
+ for(let i=0;i<4;i++){const h=24-i*5;cfill(x,"#5a5268",122+i*8,99-h,8,h);for(let yy=99-h+3;yy<99;yy+=3)cfill(x,"#46405a",122+i*8,yy,8,1);if(se==="winter")cfill(x,"#e8eef6",122+i*8,99-h,8,1)}
+ cfill(x,"#7a5030",124,66,1,34);cfill(x,"#7a5030",140,72,1,28);cfill(x,"#8a6040",121,78,24,1);cfill(x,"#8a6040",121,88,24,1);
+ cfill(x,"#6a4428",155,62,1,37);cfill(x,"#6a4428",142,62,14,1);const sw=Math.round(Math.sin(t/30));cfill(x,"#c8b898",144+sw,63,1,8);cfill(x,"#8a8494",142+sw,71,4,3);
+ cfill(x,"#8a8494",126,96,5,3);cfill(x,"#8a8494",131,97,4,2);cfill(x,"#3a3036",146,95,5,2);cfill(x,fl?"#ffd060":"#f08020",147,93-fl,3,2+fl);
+ fig(x,137,99,"#7a6a50","#b84a20","#c8906a");
+ for(const[id,[bx,by,bw,bh]]of Object.entries(MAPR)){if(id==="dungeon"&&!jailed)continue;const k=roomStatus(id);
+  if(k==="req"){x.globalAlpha=.55+.45*Math.sin(t/8);cfill(x,"#f2c14e",bx-1,by-1,bw+2,1);cfill(x,"#f2c14e",bx-1,by+bh,bw+2,1);cfill(x,"#f2c14e",bx-1,by-1,1,bh+2);cfill(x,"#f2c14e",bx+bw,by-1,1,bh+2);x.globalAlpha=1}
+  if(k)mapBadge(x,bx+Math.floor(bw/2)-3,(id==="dungeon"?by-10:by+1)+(k==="done"?0:(t>>4)%2),k)}
+}
+function mapTap(e){const cv=e.currentTarget,r=cv.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*CW,py=(e.clientY-r.top)/r.height*CH;
+ for(const[id,[a,b,c,d]]of Object.entries(MAPR)){if(id==="dungeon"&&!has("brannocJailed"))continue;if(px>=a-3&&px<a+c+3&&py>=b-3&&py<b+d+3)return enterRoom(id)}}
 
 /* =========================================================
    MAIN LOOP
@@ -538,7 +715,7 @@ function setCastle(m){if(CS.mode!==m){CS.mode=m;CS.parts=[]}}
 const pctx=$("portrait").getContext("2d");let PCHAR=null;
 function loop(){
  drawScene();
- const cc=document.getElementById("castle");if(cc)drawCastle(cc.getContext("2d"));
+ const cc=document.getElementById("castle");if(cc)(CS.mode==="map"?drawMap:drawCastle)(cc.getContext("2d"));
  drawPortrait(pctx,PCHAR,{talk:SC.talk&&(SC.t%10<5),blink:((SC.t)%200)<6});
  requestAnimationFrame(loop)}
 
@@ -724,12 +901,10 @@ function next(){
  SC.enter(e.who,()=>present(e));
 }
 function present(e){
- const c=C[e.who];PCHAR=c;$("who").textContent=c.n;$("role").textContent=c.r;$("txt").className="";
+ const c=C[e.who];PCHAR=c;$("pbox").style.display="";$("who").textContent=c.n;$("role").textContent=c.r;$("txt").className="";
  typeText(e.text,c.voice,()=>{
   const ch=$("choices");ch.innerHTML="";
-  e.choices.filter(o=>!o.req||o.req()).forEach((o,i)=>{const b=document.createElement("button");b.className="ch";b.style.animationDelay=i*70+"ms";
-   b.innerHTML=o.t+(o.cost?`<span class="cost">${Object.entries(o.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}">−${v}</span>`).join("")}${can(o)?"":"<span>(not enough)</span>"}</span>`:"");
-   b.disabled=!can(o);b.onclick=()=>choose(e,o);ch.appendChild(b)})});
+  e.choices.filter(o=>!o.req||o.req()).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>choose(e,o))))});
 }
 function choose(e,o){
  SFX.click();$("choices").innerHTML="";LAST={};const reply=o.go();render();react();
@@ -738,7 +913,7 @@ function choose(e,o){
   $("choices").appendChild(b)});
 }
 function react(){
- const L=LAST,w=SC.walker;let emo="dots";const px=w?w.x:112;
+ const L=LAST;let emo="dots";const px=focusX();
  const burst=(col,n,up)=>{for(let i=0;i<n;i++)part({x:px+(Math.random()-.5)*10,y:84,vx:(Math.random()-.5)*1.2,vy:up?-.6-Math.random():-1.4-Math.random(),grav:up?0:.06,life:50,max:50,col,sz:Math.random()<.4?2:1})};
  if((L.favor||0)>=4){emo="heart";SFX.heart();burst("#ff7a8a",14,1)}
  else if((L.favor||0)<=-5){emo="anger";SFX.bad();SC.shake=3;burst("#5a5060",10,1)}
@@ -837,7 +1012,7 @@ const SCENES=[
   choices:[{t:"Pay the debt",cost:{gold:20},go:()=>{fx({gold:-20,favor:5});set("debtPaid");return "Cuthbert blesses your name from the pulpit on Sunday."}},
    {t:"Ask the abbey to forgive it",go:()=>{fx({favor:-2});return "Cuthbert agrees, sweetly. Everyone hears that you asked."}},
    {t:"\"It was my father's debt, not mine.\"",go:()=>{fx({favor:-6});set("churchAngry");return "Aldric closes the ledger very slowly."}}]},
- {id:"quarrel",m:[2],room:"war",who:"brannoc",text:"Brannoc and Aldric are shouting over the map table.\n\nBrannoc: \"Vex has two hundred men! Pay him, smile, and buy a year.\"\nAldric: \"Your father never paid that man a copper. Nor should you.\"",
+ {id:"quarrel",m:[2],room:"war",who:"brannoc",with:["aldric"],text:"Brannoc and Aldric are shouting over the map table.\n\nBrannoc: \"Vex has two hundred men! Pay him, smile, and buy a year.\"\nAldric: \"Your father never paid that man a copper. Nor should you.\"",
   choices:[{t:"Side with Brannoc",go:()=>{set("trustBrannoc");return "Brannoc grins and claps your shoulder. Aldric leaves without a word."}},
    {t:"Side with Aldric",go:()=>{set("aldricTrusted");fx({favor:2});return "Aldric bows deeply. Brannoc's jaw tightens."}},
    {t:"Send Brannoc to hold the river fort",go:()=>{set("brannocAway");fx({men:-6});note("Sent Brannoc and six men to the river fort.");return "\"The fort? As you command.\" He takes six men and doesn't look back."}}]},
@@ -895,7 +1070,7 @@ const HAMMER=bmp(["....kk..","...kssk.","..kssk..",".kbks...","kbk.....","bk....
 const HAMMERURL=HAMMER.toDataURL();
 const KEYURL=bmp(["..YYY...",".Y...Y..",".Y...Y..","..YYY...","...Y....","...YY...","...Y....","...YY..."],{Y:"#c8cdd6"}).toDataURL();
 function ensureState(){S.doneScenes=S.doneScenes||[];S.tax=S.tax||"normal";S.bond=S.bond||{elinor:0,maren:0,tobin:0};S.night=S.night||{};S.done=S.done||[];S.b=S.b||{};S.usedR=S.usedR||[]}
-function leader(){return has("brannocJailed")||has("brannocExiled")?"Sergeant Wynn":"Captain Brannoc"}
+function leader(){return has("brannocJailed")||has("brannocExiled")||has("brannocAway")?"Sergeant Wynn":"Captain Brannoc"}
 function chance(id,n){const M=MISSIONS[id];return Math.max(5,Math.min(95,M.base+n*M.per))}
 function ledgerRows(){ensureState();const b=S.b,se=SEASON(S.month),T=TAX[S.tax];
  const tax=Math.round((6+S.favor/5)*T.mult)+(b.market?8:0)-(has("guildEnemy")?4:0);
@@ -912,73 +1087,106 @@ function endMonth(){
  const busy=new Set(S.night.req.map(id=>SCENES.find(x=>x.id===id).room));S.night.evs=[];S.night.evDone={};
  const want=Math.random()<.5?1:2;for(let k=0;k<want;k++){const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>!S.usedN.includes(i)&&!busy.has(NIGHT_EVENTS[i].room));
   if(!pool.length)break;const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.evs.push(i);busy.add(NIGHT_EVENTS[i].room)}
- const se=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();setCastle(se==="winter"?"snow":se);
+ CS.season=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();
  showNight("hub");
 }
 function resBar(){return `<div class="resbar">${["gold","food","men","favor"].map(k=>`<div><img class="px" src="${ICONURL[k]}" alt="">${S[k]}</div>`).join("")}</div>`}
 function money(v){return (v>=0?"+":"−")+Math.abs(v)}
-function showNight(view){
- const N=S.night,req=(N.req||[]).map(id=>SCENES.find(x=>x.id===id)),left=req.filter(sc=>!N.reqDone[sc.id]),leftRooms=[...new Set(left.map(sc=>sc.room))],evs=N.evs||[],mis=S.mission,keep=view===S.nightView?$("overlay").scrollTop:0;S.nightView=view;
- let body="";
- if(view==="hub"){
-  const tiles=[
-   ["treasury",ICONURL.gold,"Treasury",`Taxes: ${TAX[S.tax].n}. Next month ${money(ledgerRows().gold)} gold.`,0],
-   ["war",ICONURL.men,"War Room",mis?`${mis.n} soldiers out: ${MISSIONS[mis.id].n.toLowerCase()}.`:`${leader()} awaits orders.`,!!mis],
-   ["mason",HAMMERURL,"Mason's Yard",N.built?`Building the ${BUILD[N.built].n}.`:"Hildra is ready to build.",!!N.built],
-   ["family",ICONURL.favor,"Family Quarters",N.visited?`You spent the evening with ${C[N.visited].n.replace("Lady ","")}.`:"Your family is still awake.",!!N.visited]];
-  if(has("brannocJailed"))tiles.push(["dungeon",KEYURL,"Dungeon","Brannoc waits in chains.",0]);
-  body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. ${req.length?`${["","One matter needs","Two matters need","Three matters need"][req.length]} you tonight. The rest of the castle is yours to wander.`:"Nothing urgent tonight. Visit any room you like, or go straight to bed."}</p>
-   <div class="rooms">${tiles.map(([id,ic,n,st,done])=>{const stHere=leftRooms.includes(id),evHere=!stHere&&evs.some(i=>NIGHT_EVENTS[i].room===id&&!N.evDone[i]);return `<button class="room${done?" done":""}${stHere?" story":evHere?" ev":""}" onclick="SFX.click();showNight('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${stHere?'<em class="bang gold">!</em>':evHere?'<em class="bang">!</em>':done?'<em>✓</em>':""}</span><small>${stHere?"<b class='must'>A matter that can't wait.</b>":evHere?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
+function roomStatus(id){const N=S.night||{};
+ if((N.req||[]).some(k=>!N.reqDone[k]&&SCENES.find(x=>x.id===k).room===id))return"req";
+ if((N.evs||[]).some(i=>NIGHT_EVENTS[i].room===id&&!N.evDone[i]))return"ev";
+ return(N.seen&&N.seen[id])||{war:!!S.mission,mason:!!N.built,family:!!N.visited}[id]?"done":""}
+function showNight(){
+ ensureState();const N=S.night,req=(N.req||[]).map(id=>SCENES.find(x=>x.id===id)),left=req.filter(sc=>!N.reqDone[sc.id]),leftRooms=[...new Set(left.map(sc=>sc.room))],mis=S.mission;
+ SC.room=null;SC.cast=[];SC.walker=null;SC.speaker=null;SC.emote=null;clearDialog();setCastle("map");
+ const tiles=[
+  ["treasury",ICONURL.gold,"Treasury",`Taxes: ${TAX[S.tax].n}. Next month ${money(ledgerRows().gold)} gold.`],
+  ["war",ICONURL.men,"War Room",mis?`${mis.n} soldiers out: ${MISSIONS[mis.id].n.toLowerCase()}.`:`${leader()} awaits orders.`],
+  ["mason",HAMMERURL,"Mason's Yard",N.built?`Building the ${BUILD[N.built].n}.`:"Hildra is ready to build."],
+  ["family",ICONURL.favor,"Family Quarters",N.visited?`You spent the evening with ${C[N.visited].n.replace("Lady ","")}.`:"Your family is still awake."]];
+ if(has("brannocJailed"))tiles.push(["dungeon",KEYURL,"Dungeon",has("brannocExiled")?"An empty cell.":"Brannoc waits in chains."]);
+ const body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. ${req.length?`${["","One matter needs","Two matters need","Three matters need"][req.length]} you tonight. Tap a room to go there.`:"Nothing urgent tonight. Wander the castle, or go straight to bed."}</p>
+   <div class="rooms">${tiles.map(([id,ic,n,st])=>{const k=roomStatus(id);return `<button class="room${k==="done"?" done":k==="req"?" story":k==="ev"?" ev":""}" onclick="enterRoom('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${k==="req"?'<em class="bang gold">!</em>':k==="ev"?'<em class="bang">!</em>':k==="done"?'<em>✓</em>':""}</span><small>${k==="req"?"<b class='must'>A matter that can't wait.</b>":k==="ev"?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
    <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20?"There is muttering in the taverns.":S.month===4?"Scouts say Vex's army is on the march.":"Emberfall sleeps."}</p>
    ${left.length?`<p class="must">Before you sleep: ${leftRooms.map(r=>ROOMNAME[r]).join(", ")}.</p>`:""}<button class="pb" id="nextBtn" ${left.length?"disabled":""}>Sleep until ${MONTHS[S.month]}</button>`;
- }
+ overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${body}</div>`);
+ const cv=$("castle");cv.classList.add("map");cv.onclick=mapTap;
+ $("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id]))return;SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
+  setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>missionReport(()=>{buildMonth();next()}))};
+}
+/* walking into a room: the lord comes through the door, then each matter plays out as dialogue */
+function clearDialog(){PCHAR=null;$("pbox").style.display="";$("who").textContent="";$("role").textContent="";$("choices").innerHTML="";$("txt").className="";$("txt").textContent=""}
+function roomCast(id){const N=S.night,list=ROOMS[id].cast();
+ const add=k=>{if(!list.some(m=>m[0]===k))list.unshift([k,(list.length?Math.min(...list.map(m=>m[1])):134)-22])};
+ (N.req||[]).map(k=>SCENES.find(x=>x.id===k)).filter(sc=>sc.room===id&&!N.reqDone[sc.id]).forEach(sc=>{add(sc.who);(sc.with||[]).forEach(add)});
+ return list.map(([k,x])=>({k,x,dir:-1}))}
+function enterRoom(id){
+ const N=S.night;if(!N||!N.reqDone||(id==="dungeon"&&!has("brannocJailed")))return;
+ SFX.click();closeOverlay();N.seen=N.seen||{};N.seen[id]=1;save();
+ SC.room=id;SC.fade=1;SC.emote=null;SC.parts=[];SC.speaker=null;SC.cast=roomCast(id);
+ clearDialog();$("txt").className="wait";$("txt").textContent=`You make your way to ${ROOMS[id].title}...`;
+ SC.door=0;SC.doorT=1;SFX.door();
+ SC.walker={c:C.lord,x:14,dir:1,target:ROOMS[id].stand||58,frame:0,dist:0,waitDoor:true,arrive:()=>{SC.doorT=0;setTimeout(()=>SFX.thud(),150);roomStep()}};
+}
+function speak(k,text,done){const c=k?C[k]:null;SC.speaker=k;PCHAR=c;$("pbox").style.display=c?"":"none";
+ $("who").textContent=c?c.n:ROOMNAME[SC.room];$("role").textContent=c?c.r:"Tonight";$("txt").className="";$("choices").innerHTML="";
+ typeText(text,c?c.voice:190,done)}
+function choiceBtn(o,i,fn){const b=document.createElement("button");b.className="ch";b.style.animationDelay=i*70+"ms";
+ b.innerHTML=o.t+(o.cost?`<span class="cost">${Object.entries(o.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}">−${v}</span>`).join("")}${can(o)?"":"<span>(not enough)</span>"}</span>`:"");
+ b.disabled=!can(o)||!!o.off;b.onclick=fn;return b}
+function goBtn(label,fn){const b=document.createElement("button");b.className="ch go";b.textContent=label;b.onclick=()=>{SFX.click();$("choices").innerHTML="";fn()};$("choices").appendChild(b)}
+function roomStep(){
+ const id=SC.room,N=S.night;if(!id)return;
+ const sc=(N.req||[]).map(k=>SCENES.find(x=>x.id===k)).find(sc=>sc.room===id&&!N.reqDone[sc.id]);
+ if(sc)return matter(sc.who,sc.text,sc.choices,c=>{N.reqDone[sc.id]=c.go();S.doneScenes.push(sc.id);return N.reqDone[sc.id]});
+ const i=(N.evs||[]).find(i=>NIGHT_EVENTS[i].room===id&&!N.evDone[i]);
+ if(i!==undefined)return matter(null,NIGHT_EVENTS[i].text,NIGHT_EVENTS[i].choices,c=>N.evDone[i]=c.go());
+ roomIdle()}
+function matter(k,text,choices,apply){
+ speak(k,text,()=>{const ch=$("choices");
+  choices.forEach((o,i)=>{if(o.req&&!o.req())return;ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};
+   const reply=apply(o);render();save();react();
+   typeText(reply,k?C[k].voice:190,()=>goBtn("Continue",()=>{if(fail())return;roomStep()}))}))})})}
+const ROOMTALK={
+ treasury:()=>{const P=ledgerRows();return{k:"aldric",text:`"The books are open, my lord. Taxes are ${TAX[S.tax].n.toLowerCase()}. If nothing changes, next month brings ${money(P.gold)} gold and ${money(P.food)} grain."`,
+  acts:[{t:"Read the ledger and set taxes",go:()=>panel("treasury")}]}},
+ war:()=>{const mis=S.mission;return{k:warHost(),text:mis?`"${mis.n} of our soldiers are out, my lord: ${MISSIONS[mis.id].n.toLowerCase()}. They'll report back next month."`:`"${S.men} soldiers, my lord. Where do you want them? Whoever rides out tonight reports back next month."`,
+  acts:[{t:"Plan a mission",go:()=>panel("war"),off:!!mis}]}},
+ mason:()=>{const N=S.night;return{k:"mason",text:N.built?`"The ${BUILD[N.built].n} is underway, my lord. One project a month. Stone won't be hurried."`:`"What shall we build, my lord? One project a month. Stone won't be hurried."`,
+  acts:[{t:"Commission a building",go:()=>panel("mason"),off:!!N.built}]}},
+ family:()=>{const N=S.night;return N.visited?{k:null,text:"The candles are burning low. Everyone has gone to bed.",acts:[]}:
+  {k:null,text:"Your family is still awake. Who will you spend the evening with?",acts:["elinor","maren","tobin"].map(k=>({t:`Spend the evening with ${C[k].n.replace("Lady ","")}`,go:()=>visit(k)}))}},
+ dungeon:()=>({k:null,text:!has("brannocExiled")?"Brannoc doesn't look up when you pass. Somewhere, water drips onto stone.":SC.cast.length?"The guards are already unlocking his chains. He'll be across the river by dawn.":"The cell is empty. Only the straw remembers him.",acts:[]}),
+};
+function roomIdle(){const id=SC.room;if(!id)return;const R=ROOMTALK[id]();
+ speak(R.k,R.text,()=>{const ch=$("choices");R.acts.forEach((a,i)=>ch.appendChild(choiceBtn(a,i,()=>{if(a.off)return;SFX.click();a.go()})));goBtn(`Leave ${ROOMS[id].title}`,leaveRoom)})}
+function leaveRoom(){clearDialog();$("txt").className="wait";$("txt").textContent="You head back into the castle...";SC.speaker=null;SC.emote=null;
+ const w=SC.walker;if(!w)return showNight();w.dir=-1;w.target=14;w.arrive=()=>{SC.doorT=0;SFX.thud();setTimeout(()=>showNight(),FAST?0:200)}}
+/* treasury ledger, war-room missions and the mason's plans open over the room */
+function panelHTML(view){const N=S.night,mis=S.mission;
  if(view==="treasury"){const L=S.lastLedger,P=ledgerRows();
   const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}" alt="">${l}</span><b>${money(v)}</b></div>`;
-  body=`<h3>The Treasury</h3><p class="dim" style="margin-top:0">Aldric's ledger for ${MONTHS[S.month-1]}</p>
+  return `<h3>The Treasury</h3><p class="dim">Aldric's ledger for ${MONTHS[S.month-1]}</p>
    <div class="ledger">${row("gold","Taxes",L.tax)}${row("gold","Soldiers' wages",-L.wages)}${row("food","Fields &amp; stores",L.crops)}${row("food","The castle eats",-L.eat)}${L.mood?row("favor","The people's mood",L.mood):""}</div>
    <h3 class="sm">Next month, if nothing changes</h3>
    <div class="ledger">${row("gold","Gold",P.gold)}${row("food","Grain",P.food)}${P.mood?row("favor","Favor",P.mood):""}</div>
-   <p class="dim" style="margin-top:0">${P.food<0&&S.food+P.food*2<0?"At this rate the granary runs dry within two months.":P.gold<0?"The army costs more than the taxes bring in.":"The books balance, my lord."}</p>
+   <p class="dim">${P.food<0&&S.food+P.food*2<0?"At this rate the granary runs dry within two months.":P.gold<0?"The army costs more than the taxes bring in.":"The books balance, my lord."}</p>
    <h3 class="sm">Set the tax rate</h3>
-   <div class="taxes">${Object.entries(TAX).map(([k,t])=>`<button class="tx${S.tax===k?" on":""}" onclick="setTax('${k}')"><b>${t.n}</b><small>${t.d}</small></button>`).join("")}</div>`;
- }
- if(view==="war"){
-  const list=Object.entries(MISSIONS).filter(([id,M])=>S.month>=M.from&&S.month<=M.to&&!(M.once&&S.done.includes(id)));
-  body=`<h3>The War Room</h3><p class="dim" style="margin-top:0">${leader()} leans over the map table. ${mis?"":`"Where do you want them, my lord? They'll report back next month."`}</p>
+   <div class="taxes">${Object.entries(TAX).map(([k,t])=>`<button class="tx${S.tax===k?" on":""}" onclick="setTax('${k}')"><b>${t.n}</b><small>${t.d}</small></button>`).join("")}</div>`}
+ if(view==="war"){const list=Object.entries(MISSIONS).filter(([id,M])=>S.month>=M.from&&S.month<=M.to&&!(M.once&&S.done.includes(id)));
+  return `<h3>The War Room</h3><p class="dim">${leader()} leans over the map table.</p>
    ${mis?`<div class="bld done"><div><b>${MISSIONS[mis.id].n}</b><small>${mis.n} soldiers rode out tonight. Report next month.</small></div></div>`:
    list.map(([id,M])=>`<div class="bld col"><div><b>${M.n}</b><small>${M.d}</small></div><div class="btns">${[5,10,20].map(n=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""}>Send ${n} · ${chance(id,n)}%</button>`).join("")}</div></div>`).join("")}
-   <p class="dim">You have ${S.men} soldiers. Soldiers on a mission are away until they report back. Keep at least 5 home.</p>`;
- }
- if(view==="mason"){
-  body=`<h3>The Mason's Yard</h3><p class="dim" style="margin-top:0">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
+   <p class="dim">You have ${S.men} soldiers. Soldiers on a mission are away until they report back. Keep at least 5 home.</p>`}
+ if(view==="mason")return `<h3>The Mason's Yard</h3><p class="dim">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
    Object.entries(BUILD).map(([k,o])=>{const cost=Math.max(5,(k==="walls"?o.cost-(has("masonWalls")?10:0)-(has("quarry")?10:0)-(has("refugeeMasons")?10:0):o.cost)-(has("freeStone")?15:0));
     return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built · ${o.d}</small></div></div>`:
-    `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" alt="" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("");
- }
- if(view==="dungeon"){body=`<h3>The Dungeon</h3><p class="dim" style="margin-top:0">Damp stone, one torch, and the drip of the river through the walls.</p>${N.reqDone.prisoner||S.doneScenes.includes("prisoner")?`<div class="famtxt"><p>Brannoc doesn't look up when you pass.</p></div>`:""}`}
- if(view==="family"){
-  body=`<h3>Family Quarters</h3><p class="dim" style="margin-top:0">${N.visited?"The candles are burning low.":"Who will you spend the evening with?"}</p>
-   ${N.visited?`<div class="famtxt"><p>${N.famLine}</p><p class="dim">${N.famEff}</p></div>`:
-   `<div class="fam">${["elinor","maren","tobin"].map(k=>`<button class="famb" onclick="visit('${k}')"><canvas id="fp-${k}" width="32" height="32"></canvas><b>${C[k].n.replace("Lady ","")}</b></button>`).join("")}</div>`}`;
- }
- if(view!=="hub"){let cards="";
-  req.filter(sc=>sc.room===view).forEach(sc=>{cards+=N.reqDone[sc.id]?`<div class="evc story done"><p>${N.reqDone[sc.id]}</p></div>`:
-   `<div class="evc story"><div class="sh"><canvas class="sp" data-who="${sc.who}" width="32" height="32"></canvas><b>${C[sc.who].n}</b></div><p>${sc.text}</p>${sc.choices.map((c,i)=>(!c.req||c.req())?`<button class="ch" onclick="sceneChoice('${sc.id}',${i})" ${can(c)?"":"disabled"}>${c.t}${c.cost?`<span class="cost">${Object.entries(c.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}" alt="">−${v}</span>`).join("")}</span>`:""}</button>`:"").join("")}</div>`});
-  evs.filter(i=>NIGHT_EVENTS[i].room===view).forEach(i=>{const ev=NIGHT_EVENTS[i];cards+=N.evDone[i]?`<div class="evc done"><p>${N.evDone[i]}</p></div>`:
-   `<div class="evc"><p>${ev.text}</p>${ev.choices.map((c,j)=>`<button class="ch" onclick="nightChoice(${i},${j})" ${can(c)?"":"disabled"}>${c.t}</button>`).join("")}</div>`});
-  body=body.replace('</p>','</p>'+cards)}
- const back=view==="hub"?"":`<button class="pb alt" onclick="SFX.click();showNight('hub')">Back to the castle</button>`;
- overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${body}${back}</div>`);
- $("overlay").scrollTop=keep;
- document.querySelectorAll("canvas.sp").forEach(cv=>drawPortrait(cv.getContext("2d"),C[cv.dataset.who],{}));
- if(view==="family"&&!N.visited)["elinor","maren","tobin"].forEach(k=>drawPortrait($("fp-"+k).getContext("2d"),C[k],{}));
- if(view==="hub")$("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id]))return;SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
-  setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>missionReport(()=>{buildMonth();next()}))};
-}
-function nightChoice(i,j){const N=S.night,c=NIGHT_EVENTS[i].choices[j];if(N.evDone[i]||!can(c))return;SFX.click();LAST={};N.evDone[i]=c.go();render();save();if(fail())return;showNight(S.nightView)}
-function sceneChoice(id,i){const N=S.night,sc=SCENES.find(x=>x.id===id),c=sc.choices[i];if(N.reqDone[id]||!can(c))return;SFX.click();LAST={};N.reqDone[id]=c.go();S.doneScenes.push(id);render();save();if(fail())return;showNight(S.nightView)}
-function setTax(k){SFX.click();S.tax=k;save();showNight("treasury")}
-function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();showNight("war")}
+    `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" alt="" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("")}
+function panel(view){const keep=$("modal").style.display==="flex"&&$("modal").querySelector(".box")?$("modal").querySelector(".box").scrollTop:0;
+ modal(`<div class="panel">${panelHTML(view)}</div><button class="pb" onclick="closePanel()">Done</button>`);$("modal").querySelector(".box").scrollTop=keep}
+function closePanel(){SFX.click();closeModal();roomIdle()}
+function setTax(k){SFX.click();S.tax=k;save();panel("treasury")}
+function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();SC.emote={type:"bang",t:0};panel("war")}
 function missionReport(cb){
  const mis=S.mission;if(!mis)return cb();S.mission=null;const M=MISSIONS[mis.id];
  const ok=Math.random()*100<chance(mis.id,mis.n);if(M.once)S.done.push(mis.id);
@@ -993,11 +1201,11 @@ function missionReport(cb){
   <button class="pb" id="repBtn">To the throne room</button>`);
  let gone=false;$("repBtn").onclick=()=>{if(gone)return;gone=true;SFX.click();closeModal();if(fail())return;cb()};
 }
-function visit(k){if(S.night.visited)return;SFX.heart();const F=FAMILY[k];const i=Math.min(F.lines.length-1,S.bond[k]||0);
- if(k==="elinor")S.bond.elinor++;S.night.visited=k;S.night.famLine=F.lines[i];LAST={};S.night.famEff=F.eff();render();save();showNight("family")}
+function visit(k){const N=S.night;if(N.visited)return;SFX.heart();const F=FAMILY[k];const i=Math.min(F.lines.length-1,S.bond[k]||0);
+ if(k==="elinor")S.bond.elinor++;N.visited=k;N.famLine=F.lines[i];LAST={};N.famEff=F.eff();render();save();
+ speak(k,N.famLine,()=>{SC.emote={type:"heart",t:0};$("txt").textContent=N.famLine+"\n\n("+N.famEff+")";goBtn("Continue",roomIdle)})}
 function build(k,cost){if(S.night.built||S.gold<cost)return;S.b[k]=1;S.night.built=k;LAST={};fx({gold:-cost});if(k==="barracks")fx({men:8});
- delete S.f.freeStone;note(`Hildra's masons built the ${BUILD[k].n}.`);SFX.thud();SFX.coin();render();save();showNight("mason")}
-
+ delete S.f.freeStone;note(`Hildra's masons built the ${BUILD[k].n}.`);SFX.thud();SFX.coin();render();save();SC.emote={type:"coin",t:0};SC.shake=2;panel("mason")}
 function monthCard(cb){render();const c=$("card"),se=SEASON(S.month);c.querySelector("b").textContent=MONTHS[S.month-1].toUpperCase();
  c.querySelector("b").style.color=SCOL[se];c.querySelector("span").textContent=S.month>=LAST_MONTH?"THE BANNERS COME":`${se.toUpperCase()} · MONTH ${S.month} OF 12`;
  $("pips").innerHTML=MONTHS.map((_,i)=>`<i class="${i+1===S.month?"now":i+1<S.month?"past":""}" style="background:${SCOL[SEASON(i+1)]}"></i>`).join("");
@@ -1063,10 +1271,10 @@ function openSettings(){SFX.click();modal(`<h3>Settings</h3>
  <button class="pb" onclick="closeModal()">Back</button>`)}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? Undiscovered</div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
-function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
-function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();closeOverlay();const war=S.month>=LAST_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
+function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();SC.room=null;SC.cast=[];setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
+function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();closeOverlay();SC.room=null;SC.cast=[];if(S.night&&S.night.reqDone){CS.season=SEASON(S.month);setPhase("night",CS.season);Music.play("night");render();return showNight()}const war=S.month>=LAST_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
 function title(){
- if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;
+ if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;SC.room=null;SC.cast=[];
  let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save2")}catch(e){}
  setCastle("title");Music.play("night");
  overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
