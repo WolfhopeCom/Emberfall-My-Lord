@@ -15,6 +15,9 @@ A pixel-art medieval story game. Your father is dead and the throne of **Emberfa
 - **Hidden unrest:** low favor or heavy taxes month after month brings a mob to the gate (`S.unrest`, `RIOT`).
 - **$1.99 full-year unlock:** spring (March–May) is free; the unlock screen appears at the end of May. Uses `@capgo/native-purchases` (product `emberfall_full_unlock`), like TypeMonkey; in a browser it's a demo unlock. Restore purchase is in Settings.
 - **Harder late game:** favor drifts down when it's high and after July; the battle and the council need more preparation; three late buildings (Watchtowers, Infirmary, Great Hall).
+- **Comfort:** first-time tips (night, Treasury, War Room, agents, reports), tap any resource for its monthly breakdown, text speed and larger text, vibration (`@capacitor/haptics`), a confirm before New Reign overwrites a save.
+- **Endings:** "Your reign in numbers" and memorable moments on every ending; hints for locked endings.
+- **Feel:** title, autumn and winter themes; the throne room shows lanterns after feasts, mourning drapes after the battle, Vex's banners while you're his vassal, and green fire while Morwen holds court.
 - **Grain market** in the Treasury: buy and sell grain with the Guild (cheap at harvest, dear in winter).
 - **16 characters, 19 endings:** 7 ways to lose your reign early, and 12 final endings decided by the Midwinter Council. Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
 - **Animated throne room:** visitors walk in through the great doors, talk with animated portraits and react with emotes and particles.
