@@ -615,7 +615,7 @@ const E=[
 {m:4,who:"tobin",text:"Father, let me ride with Brannoc's patrols this summer! I'm old enough. You were riding at my age, everyone says so.",
  choices:[{t:"Let him ride",go:()=>{set("tobinRides");fx({men:2});return "He whoops and runs for the stables. Elinor glares at you from across the hall."}},
   {t:"\"You'll study with Aldric.\"",go:()=>{set("tobinStudy");return "He sulks for an hour. Aldric says he has a gift for numbers."}}]},
-{m:4,who:"maren",req:()=>has("marenBetrothed")&&!has("marenLoves"),text:"You promised me to a stranger for a few spears. Did you even ask what I wanted?",
+{m:4,who:"maren",req:()=>has("marenBetrothed")&&!has("marenLoves")&&!has("marenBitter"),text:"You promised me to a stranger for a few spears. Did you even ask what I wanted?",
  choices:[{t:"\"It was for Emberfall.\"",go:()=>{set("marenBitter");return "\"Then Emberfall can love you. I won't.\""}},
   {t:"Break the betrothal",go:()=>{delete S.f.marenBetrothed;set("refusedHarwin");set("marenLoves");fx({favor:3});return "She throws her arms around you. Somewhere in the east, Harwin is insulted."}}]},
 {m:4,who:"maren",req:()=>has("marenChoice"),text:"I met Harwin's son, Edric. He reads poetry and is terrible at it. Father... I think I like him.",
@@ -634,11 +634,11 @@ const E=[
 {m:4,who:"vexenvoy",req:()=>!has("paidVex"),text:"Last chance, young lord. Kneel to Baron Vex as your liege, and Emberfall keeps its roofs.",
  choices:[{t:"Kneel",go:()=>{set("knelt");fx({favor:-20});note("Knelt to Baron Vex.");return "Your knee touches the stone. Your people will remember this."}},
   {t:"Refuse",go:()=>{set("defiedVex");return "Gerrit leaves. Brannoc begins sharpening blades."}}]},
-{m:4,who:"aldric",req:()=>has("letterClue")&&!has("spy"),text:"My lord, I matched your father's letter against the guard rosters. Only one man has held the postern keys since his death. Captain Brannoc.",
+{m:4,who:"aldric",req:()=>has("letterClue")&&!has("spy")&&!has("brannocJailed")&&!has("brannocTrap"),text:"My lord, I matched your father's letter against the guard rosters. Only one man has held the postern keys since his death. Captain Brannoc.",
  choices:[{t:"Arrest Brannoc",go:()=>{set("brannocJailed");fx({men:-4});note("Unmasked Brannoc with your father's letter.");return "Brannoc doesn't deny it. \"Vex pays better than a dead man's son.\""}},
   {t:"Feed him false plans",go:()=>{set("brannocTrap");note("Set a trap for Brannoc.");return "Aldric's mouth twitches. It might be a smile."}},
   {t:"\"Brannoc is loyal.\"",go:()=>"Aldric bows. \"As you say, my lord.\""}]},
-{m:4,who:"whisper",req:()=>has("spy"),text:"Your traitor is Captain Brannoc. He's been taking Vex's silver since your father's funeral. He'll open the postern gate when the Baron comes.",
+{m:4,who:"whisper",req:()=>has("spy")&&!has("brannocJailed")&&!has("brannocTrap"),text:"Your traitor is Captain Brannoc. He's been taking Vex's silver since your father's funeral. He'll open the postern gate when the Baron comes.",
  choices:[{t:"Arrest Brannoc",go:()=>{set("brannocJailed");fx({men:-4});note("Unmasked Brannoc as a traitor.");return "Brannoc doesn't deny it. \"Vex pays better than a dead man's son.\""}},
   {t:"Feed him false plans",go:()=>{set("brannocTrap");note("Set a trap for Brannoc.");return "The Whisper smiles. \"Oh, I like you.\""}},
   {t:"\"I don't believe you.\"",go:()=>"\"Believe it in July, then.\""}]},
@@ -816,29 +816,86 @@ const NIGHT_EVENTS=[
   choices:[{t:"Laugh it off",go:()=>{S.bond.tobin++;return "\"Grandfather did the same,\" you tell him. He grins through the hangover."}},{t:"Scold him",go:()=>{fx({favor:1});return "He sulks, but he's at his lessons at dawn."}}]},
  {room:"family",text:"Elinor can't sleep. \"I dreamed of fire on the river,\" she says. \"Promise me you have a plan.\"",
   choices:[{t:"Tell her everything",go:()=>{S.bond.elinor++;fx({favor:2});return "She listens, then fixes two of your mistakes."}},{t:"\"Go back to sleep, love.\"",go:()=>"She doesn't."}]},
+ {room:"treasury",text:"A travelling alchemist has talked his way into the treasury. \"Ten gold, my lord, and I'll turn a chest of lead into twenty!\"",
+  choices:[{t:"Try it",cost:{gold:10},go:()=>{fx({gold:-10});return "The lead turns gold. By morning, the paint is flaking. The alchemist is long gone."}},{t:"Throw him out",go:()=>"He curses you in three languages on his way down the stairs."}]},
+ {room:"war",text:"The armory smith shows you racks of rusted swords. \"Give me ten gold and I'll arm the old guard. Five more men who can actually fight.\"",
+  choices:[{t:"Pay the smith",cost:{gold:10},go:()=>{fx({gold:-10,men:5});return "Five grey-haired veterans join the garrison, grinning."}},{t:"Not now",go:()=>"The smith goes back to his grindstone, muttering."}]},
+ {room:"mason",text:"Hildra caught children from the city climbing the scaffolds at night. \"They'll break their necks, my lord.\"",
+  choices:[{t:"Build them a playground",cost:{gold:6},go:()=>{fx({gold:-6,favor:5});return "A rope swing and a wooden tower by the market. The scaffolds are left alone."}},{t:"Post a guard",go:()=>{fx({favor:-1});return "The children find somewhere else to climb. Probably somewhere worse."}}]},
+ {room:"family",text:"Maren and Tobin are shouting over the last honey cake in the kitchens.",
+  choices:[{t:"Split it fairly",go:()=>{S.bond.maren++;return "Two halves, exactly. Both of them complain anyway."}},{t:"Eat it yourself",go:()=>{S.bond.tobin++;return "They stare at you. Then Tobin laughs so hard he falls off the bench."}}]},
 ];
 /* story scenes at night: one per month, must be seen before sleeping */
-const STORY_NIGHTS={
- 1:{room:"family",who:"elinor",text:"Elinor is waiting in your chambers with a sealed letter. \"It was in your father's desk. His hand, the night before he died.\"\n\nIt reads: \"Trust Aldric. Pay Vex nothing. And watch the man who keeps the postern keys. He smiles too much when Vex is named.\"",
+/* Required night scenes. Each night, up to 3 that fit (month + your past choices) must be seen before sleeping.
+   m = months it can happen in (none = any month), when = condition, room = where it happens. Each happens once. */
+const SCENES=[
+ {id:"letter",m:[1],room:"family",who:"elinor",text:"Elinor is waiting in your chambers with a sealed letter. \"It was in your father's desk. His hand, the night before he died.\"\n\nIt reads: \"Trust Aldric. Pay Vex nothing. And watch the man who keeps the postern keys. He smiles too much when Vex is named.\"",
   choices:[{t:"Read it aloud to the court",go:()=>{fx({favor:4});set("letterRead");note("Read your father's last letter to the court.");return "The hall goes silent. Whoever keeps those keys now knows you are watching."}},
    {t:"Keep it secret and investigate",go:()=>{set("letterClue");note("Kept your father's letter secret.");return "You lock it in your desk. Aldric can match the hand against the guard rosters."}},
    {t:"Burn it. The dead shouldn't rule.",go:()=>{set("letterBurned");return "The wax hisses in the fire. Elinor says nothing, which says a great deal."}}]},
- 2:{room:"war",who:"brannoc",text:"Brannoc and Aldric are shouting over the map table.\n\nBrannoc: \"Vex has two hundred men! Pay him, smile, and buy a year.\"\nAldric: \"Your father never paid that man a copper. Nor should you.\"",
+ {id:"debts",m:[1],room:"treasury",who:"aldric",text:"Aldric opens a dusty ledger. \"Your father owed the abbey 20 gold, my lord. Brother Cuthbert is too polite to ask. The city is not too polite to gossip.\"",
+  choices:[{t:"Pay the debt",cost:{gold:20},go:()=>{fx({gold:-20,favor:5});set("debtPaid");return "Cuthbert blesses your name from the pulpit on Sunday."}},
+   {t:"Ask the abbey to forgive it",go:()=>{fx({favor:-2});return "Cuthbert agrees, sweetly. Everyone hears that you asked."}},
+   {t:"\"It was my father's debt, not mine.\"",go:()=>{fx({favor:-6});set("churchAngry");return "Aldric closes the ledger very slowly."}}]},
+ {id:"quarrel",m:[2],room:"war",who:"brannoc",text:"Brannoc and Aldric are shouting over the map table.\n\nBrannoc: \"Vex has two hundred men! Pay him, smile, and buy a year.\"\nAldric: \"Your father never paid that man a copper. Nor should you.\"",
   choices:[{t:"Side with Brannoc",go:()=>{set("trustBrannoc");return "Brannoc grins and claps your shoulder. Aldric leaves without a word."}},
    {t:"Side with Aldric",go:()=>{set("aldricTrusted");fx({favor:2});return "Aldric bows deeply. Brannoc's jaw tightens."}},
    {t:"Send Brannoc to hold the river fort",go:()=>{set("brannocAway");fx({men:-6});note("Sent Brannoc and six men to the river fort.");return "\"The fort? As you command.\" He takes six men and doesn't look back."}}]},
- 3:{room:"mason",who:"mason",text:"Hildra is covered in dust. \"My lord, we broke into a tunnel under the east wall, digging the new footings. It runs all the way to the river. Smugglers, I'd guess. Your grandfather's day.\"",
+ {id:"marenTears",m:[2,3],room:"family",who:"maren",when:()=>has("marenBetrothed")&&!has("marenLoves"),text:"You hear crying behind Maren's door. She opens it before you knock. \"Is this what I am? A bargain for spears?\"",
+  choices:[{t:"Sit with her until she sleeps",go:()=>{S.bond.maren++;return "You don't say much. You don't need to. She falls asleep holding your hand."}},
+   {t:"\"Daughters of lords marry for their houses.\"",go:()=>{set("marenBitter");return "She shuts the door. The lock turns."}},
+   {t:"Promise her a say in it",go:()=>{S.bond.maren+=2;set("marenLoves");return "\"You mean it?\" For the first time in weeks, she smiles."}}]},
+ {id:"marenLetters",m:[2,3],room:"family",who:"maren",when:()=>has("marenChoice"),text:"Maren has ink on her fingers. \"Edric, Lord Harwin's son, has written to me. May I write back?\"",
+  choices:[{t:"\"Write as much as you like.\"",go:()=>{S.bond.maren++;return "Letters fly east every week. Harwin's riders start calling at Emberfall."}},
+   {t:"\"Only if I read them first.\"",go:()=>"She rolls her eyes, but she brings you every letter."},
+   {t:"\"No. Not yet.\"",go:()=>{fx({favor:-1});return "\"You said I could decide!\""}}]},
+ {id:"grumble",m:[2,3],room:"war",who:"brannoc",when:()=>has("paidVex"),text:"\"The men are grumbling, my lord. They say a lord who pays Vex won't fight Vex. Some are talking about leaving.\"",
+  choices:[{t:"Double their rations",cost:{food:8},go:()=>{fx({food:-8});return "Full bellies, quieter mouths."}},
+   {t:"Speak to them yourself",go:()=>{fx({favor:2});return "You tell them the gold bought time, not peace. Most of them believe you."}},
+   {t:"Let the cowards go",go:()=>{fx({men:-5});return "Five men slip out before dawn."}}]},
+ {id:"quarry",m:[2,3],room:"mason",who:"mason",when:()=>has("masonWalls"),text:"Hildra slaps a map on the table. \"Your walls need stone, and the best quarry is on Thornby common land. The villagers graze their sheep there.\"",
+  choices:[{t:"Pay Thornby for the stone",cost:{gold:10},go:()=>{fx({gold:-10,favor:3});set("quarry");return "The villagers drive a hard bargain, and leave happy. (Walls cost 10 less.)"}},
+   {t:"Take it. The walls protect them too.",go:()=>{fx({favor:-5});set("quarry");return "The sheep are moved at spearpoint. Hob does not wave when you pass. (Walls cost 10 less.)"}},
+   {t:"Find stone elsewhere",go:()=>"\"Elsewhere costs more and takes longer, my lord.\""}]},
+ {id:"tunnel",m:[3],room:"mason",who:"mason",text:"Hildra is covered in dust. \"My lord, we broke into a tunnel under the east wall, digging new footings. It runs all the way to the river. Smugglers, I'd guess. Your grandfather's day.\"",
   choices:[{t:"Seal it with stone",go:()=>{set("tunnelSealed");note("Sealed the smugglers' tunnel.");return "\"No one comes in that way now, my lord. No one goes out, either.\""}},
    {t:"Keep it open, and secret",go:()=>{set("tunnel");note("Kept the smugglers' tunnel open in secret.");return "Hildra taps her nose. \"A back door is a fine thing to have.\""}}]},
- 4:{room:"treasury",who:"aldric",text:"Aldric sets a heavy chest on the table. \"Left at the gate at dusk. Vex's seal.\"\n\nInside: 60 gold, and a note. \"For your knee, young lord.\"",
+ {id:"fortRider",m:[3,4],room:"war",who:"aldric",when:()=>has("brannocAway")&&!has("brannocJailed"),text:"A rider from the river fort, soaked to the skin. \"Captain Brannoc meets men in Vex's colors at night, my lord. I saw it twice.\"",
+  choices:[{t:"Recall Brannoc in chains",go:()=>{set("brannocJailed");fx({men:6});note("Arrested Brannoc on a rider's word.");return "Brannoc is dragged back through the gate. The six men come home with him."}},
+   {t:"Let him think he's safe",go:()=>{set("brannocTrap");return "You send Brannoc a friendly letter, full of false plans."}},
+   {t:"\"Rumors. Ignore it.\"",go:()=>"The rider looks at you a long moment, then goes."}]},
+ {id:"witchWindow",m:[3,4],room:"family",who:"morwen",when:()=>has("witchPact"),text:"Something taps at the nursery window. Morwen is perched on the sill, three floors up. \"Only looking at what you love, little lord. Don't fret.\"",
+  choices:[{t:"Ask for her protection",go:()=>{set("witchCharm");note("Morwen hung a charm over your children's beds.");return "She hangs a knot of rowan and bone over the beds. \"Whatever happens, they'll live.\""}},
+   {t:"Bar the window",go:()=>{fx({favor:1});return "She laughs as the shutters close. The laughter stays a while."}}]},
+ {id:"loanAgent",m:[3],room:"treasury",who:"merchant",when:()=>has("loan"),text:"Osric himself, in your treasury, at night. \"Just checking on my investment, my lord. If July is... difficult, I could extend your loan to the harvest. 100 instead of 80.\"",
+  choices:[{t:"Accept the extension",go:()=>{delete S.f.loan;set("loanAutumn");note("Extended the Guild loan to the harvest (100 gold).");return "\"A pleasure. See you at harvest.\""}},
+   {t:"\"I'll pay in July as agreed.\"",go:()=>"\"Of course, of course.\" He counts your candlesticks on the way out."}]},
+ {id:"chest",m:[4],room:"treasury",who:"aldric",text:"Aldric sets a heavy chest on the table. \"Left at the gate at dusk. Vex's seal.\"\n\nInside: 60 gold, and a note. \"For your knee, young lord.\"",
   choices:[{t:"Keep the gold",go:()=>{fx({gold:60,favor:-10});set("tookBribe");note("Kept Baron Vex's gold.");return "The servants talk. By morning the whole city knows Vex's gold is in your vault."}},
    {t:"Give it to the people",go:()=>{fx({gold:10,favor:9});set("mockedVex");note("Gave Vex's gold to the city.");return "Vex's own coin buys bread in Thornby. They're singing rude songs about him in the taverns."}},
    {t:"Send it back across the river",go:()=>{fx({favor:3});return "Aldric seals the chest himself. \"Your father would have laughed.\""}}]},
-};
+ {id:"tobinWound",m:[4],room:"war",who:"tobin",when:()=>has("tobinRides"),text:"Tobin limps into the war room with a bloody bandage on his leg. \"A skirmish at the mill. It's nothing!\"\n\nIt's not nothing.",
+  choices:[{t:"Fetch the physician",cost:{gold:10},go:()=>{fx({gold:-10});return "Stitched and splinted. He'll ride again before July."}},
+   {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{S.bond.tobin++;return "By morning the wound is a pink scar. Tobin won't stop talking about it."}},
+   {t:"Make him rest",go:()=>{S.bond.tobin=0;delete S.f.tobinRides;set("tobinStudy");return "He'll heal, but he'll sit out the summer with Aldric's ledgers."}}]},
+ {id:"elinorFever",m:[4],room:"family",who:"elinor",when:()=>has("plague"),text:"The summer fever has crossed the castle walls. Elinor is burning hot and doesn't know your face.",
+  choices:[{t:"Bring the city physician",cost:{gold:15},go:()=>{fx({gold:-15});return "Three long nights. On the fourth morning she asks for bread. She'll live."}},
+   {t:"Send for Morwen",req:()=>has("witchPact")||has("witchWarned"),go:()=>{S.bond.elinor++;return "The witch sits by the bed until dawn. The fever breaks. Elinor remembers green eyes and nothing else."}},
+   {t:"Sit with her and pray",go:()=>{fx({favor:2});S.bond.elinor++;return "You don't leave her side. She lives, but she'll be weak all summer."}}]},
+ {id:"refugeeLand",m:[4],room:"mason",who:"aldric",when:()=>has("refugees"),text:"The refugees' leader, a broad farmer named Garrow, asks for land outside the walls. \"We'll farm it, and we'll fight for it.\"",
+  choices:[{t:"Grant them land",go:()=>{fx({men:4,food:-4});return "New houses rise along the river road. Four of Garrow's sons join the garrison."}},
+   {t:"Put them to work on the walls",go:()=>{set("refugeeMasons");return "Hildra gains forty strong backs. (Walls cost 10 less.)"}}]},
+ {id:"prisoner",room:"dungeon",who:"brannoc",when:()=>has("brannocJailed"),text:"Brannoc sits chained in the dark. \"So. The boy lord comes to gloat.\"",
+  choices:[{t:"Offer mercy for what he knows",go:()=>{set("intel");note("Brannoc traded Vex's plans for his life.");return "He talks for an hour: Vex's numbers, his signals, the night he plans to cross."}},
+   {t:"Hold him for the King's justice",go:()=>{fx({favor:3});return "\"The King's justice,\" Brannoc spits. \"You'll have to live long enough to see it.\""}},
+   {t:"Exile him across the river",go:()=>{set("brannocExiled");return "He's gone by dawn, back to Vex. At least he can't open any gates now."}}]},
+];
+const ROOMNAME={treasury:"Treasury",war:"War Room",mason:"Mason's Yard",family:"Family Quarters",dungeon:"Dungeon"};
 const HAMMER=bmp(["....kk..","...kssk.","..kssk..",".kbks...","kbk.....","bk......","........"],{k:"#2a1810",s:"#c8cdd6",b:"#8a5a2a"});
 const HAMMERURL=HAMMER.toDataURL();
-function ensureState(){S.tax=S.tax||"normal";S.bond=S.bond||{elinor:0,maren:0,tobin:0};S.night=S.night||{};S.done=S.done||[];S.b=S.b||{};S.usedR=S.usedR||[]}
-function leader(){return has("brannocJailed")?"Sergeant Wynn":"Captain Brannoc"}
+const KEYURL=bmp(["..YYY...",".Y...Y..",".Y...Y..","..YYY...","...Y....","...YY...","...Y....","...YY..."],{Y:"#c8cdd6"}).toDataURL();
+function ensureState(){S.doneScenes=S.doneScenes||[];S.tax=S.tax||"normal";S.bond=S.bond||{elinor:0,maren:0,tobin:0};S.night=S.night||{};S.done=S.done||[];S.b=S.b||{};S.usedR=S.usedR||[]}
+function leader(){return has("brannocJailed")||has("brannocExiled")?"Sergeant Wynn":"Captain Brannoc"}
 function chance(id,n){const M=MISSIONS[id];return Math.max(5,Math.min(95,M.base+n*M.per))}
 function ledgerRows(){ensureState();const b=S.b,se=SEASON(S.month),T=TAX[S.tax];
  const tax=Math.round((6+S.favor/5)*T.mult)+(b.market?8:0)-(has("guildEnemy")?4:0);
@@ -851,14 +908,17 @@ function endMonth(){
  if(S.month>=LAST_MONTH)return siege();
  const L=ledgerRows();LAST={};fx({gold:L.gold,food:L.food,favor:L.mood});render();
  S.lastLedger=L;S.night={};S.usedN=S.usedN||[];
- {const sr=STORY_NIGHTS[S.month]&&STORY_NIGHTS[S.month].room;const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>!S.usedN.includes(i)&&NIGHT_EVENTS[i].room!==sr);if(pool.length){const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.ev=i}}
+ S.night.req=SCENES.filter(sc=>(!sc.m||sc.m.includes(S.month))&&(!sc.when||sc.when())&&!S.doneScenes.includes(sc.id)).slice(0,3).map(sc=>sc.id);S.night.reqDone={};
+ const busy=new Set(S.night.req.map(id=>SCENES.find(x=>x.id===id).room));S.night.evs=[];S.night.evDone={};
+ const want=Math.random()<.5?1:2;for(let k=0;k<want;k++){const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>!S.usedN.includes(i)&&!busy.has(NIGHT_EVENTS[i].room));
+  if(!pool.length)break;const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.evs.push(i);busy.add(NIGHT_EVENTS[i].room)}
  const se=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();setCastle(se==="winter"?"snow":se);
  showNight("hub");
 }
 function resBar(){return `<div class="resbar">${["gold","food","men","favor"].map(k=>`<div><img class="px" src="${ICONURL[k]}" alt="">${S[k]}</div>`).join("")}</div>`}
 function money(v){return (v>=0?"+":"−")+Math.abs(v)}
 function showNight(view){
- const N=S.night,ST=STORY_NIGHTS[S.month],storyLeft=ST&&!N.storyDone,mis=S.mission,keep=view===S.nightView?$("overlay").scrollTop:0;S.nightView=view;
+ const N=S.night,req=(N.req||[]).map(id=>SCENES.find(x=>x.id===id)),left=req.filter(sc=>!N.reqDone[sc.id]),leftRooms=[...new Set(left.map(sc=>sc.room))],evs=N.evs||[],mis=S.mission,keep=view===S.nightView?$("overlay").scrollTop:0;S.nightView=view;
  let body="";
  if(view==="hub"){
   const tiles=[
@@ -866,10 +926,11 @@ function showNight(view){
    ["war",ICONURL.men,"War Room",mis?`${mis.n} soldiers out: ${MISSIONS[mis.id].n.toLowerCase()}.`:`${leader()} awaits orders.`,!!mis],
    ["mason",HAMMERURL,"Mason's Yard",N.built?`Building the ${BUILD[N.built].n}.`:"Hildra is ready to build.",!!N.built],
    ["family",ICONURL.favor,"Family Quarters",N.visited?`You spent the evening with ${C[N.visited].n.replace("Lady ","")}.`:"Your family is still awake.",!!N.visited]];
-  body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. Visit any room you like, or go straight to bed.</p>
-   <div class="rooms">${tiles.map(([id,ic,n,st,done])=>{const stHere=storyLeft&&ST.room===id,evHere=!stHere&&N.ev!=null&&NIGHT_EVENTS[N.ev].room===id&&!N.evDone;return `<button class="room${done?" done":""}${stHere?" story":evHere?" ev":""}" onclick="SFX.click();showNight('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${stHere?'<em class="bang gold">!</em>':evHere?'<em class="bang">!</em>':done?'<em>✓</em>':""}</span><small>${stHere?"<b class='must'>A matter that can't wait.</b>":evHere?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
+  if(has("brannocJailed"))tiles.push(["dungeon",KEYURL,"Dungeon","Brannoc waits in chains.",0]);
+  body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. ${req.length?`${["","One matter needs","Two matters need","Three matters need"][req.length]} you tonight. The rest of the castle is yours to wander.`:"Nothing urgent tonight. Visit any room you like, or go straight to bed."}</p>
+   <div class="rooms">${tiles.map(([id,ic,n,st,done])=>{const stHere=leftRooms.includes(id),evHere=!stHere&&evs.some(i=>NIGHT_EVENTS[i].room===id&&!N.evDone[i]);return `<button class="room${done?" done":""}${stHere?" story":evHere?" ev":""}" onclick="SFX.click();showNight('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${stHere?'<em class="bang gold">!</em>':evHere?'<em class="bang">!</em>':done?'<em>✓</em>':""}</span><small>${stHere?"<b class='must'>A matter that can't wait.</b>":evHere?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
    <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20?"There is muttering in the taverns.":S.month===4?"Scouts say Vex's army is on the march.":"Emberfall sleeps."}</p>
-   ${storyLeft?`<p class="must">You are needed in the ${({family:"Family Quarters",war:"War Room",mason:"Mason's Yard",treasury:"Treasury"})[ST.room]} before you sleep.</p>`:""}<button class="pb" id="nextBtn" ${storyLeft?"disabled":""}>Sleep until ${MONTHS[S.month]}</button>`;
+   ${left.length?`<p class="must">Before you sleep: ${leftRooms.map(r=>ROOMNAME[r]).join(", ")}.</p>`:""}<button class="pb" id="nextBtn" ${left.length?"disabled":""}>Sleep until ${MONTHS[S.month]}</button>`;
  }
  if(view==="treasury"){const L=S.lastLedger,P=ledgerRows();
   const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}" alt="">${l}</span><b>${money(v)}</b></div>`;
@@ -890,27 +951,32 @@ function showNight(view){
  }
  if(view==="mason"){
   body=`<h3>The Mason's Yard</h3><p class="dim" style="margin-top:0">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
-   Object.entries(BUILD).map(([k,o])=>{const cost=(k==="walls"&&has("masonWalls")?o.cost-10:o.cost)-(has("freeStone")?15:0);
+   Object.entries(BUILD).map(([k,o])=>{const cost=Math.max(5,(k==="walls"?o.cost-(has("masonWalls")?10:0)-(has("quarry")?10:0)-(has("refugeeMasons")?10:0):o.cost)-(has("freeStone")?15:0));
     return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built · ${o.d}</small></div></div>`:
     `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" alt="" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("");
  }
+ if(view==="dungeon"){body=`<h3>The Dungeon</h3><p class="dim" style="margin-top:0">Damp stone, one torch, and the drip of the river through the walls.</p>${N.reqDone.prisoner||S.doneScenes.includes("prisoner")?`<div class="famtxt"><p>Brannoc doesn't look up when you pass.</p></div>`:""}`}
  if(view==="family"){
   body=`<h3>Family Quarters</h3><p class="dim" style="margin-top:0">${N.visited?"The candles are burning low.":"Who will you spend the evening with?"}</p>
    ${N.visited?`<div class="famtxt"><p>${N.famLine}</p><p class="dim">${N.famEff}</p></div>`:
    `<div class="fam">${["elinor","maren","tobin"].map(k=>`<button class="famb" onclick="visit('${k}')"><canvas id="fp-${k}" width="32" height="32"></canvas><b>${C[k].n.replace("Lady ","")}</b></button>`).join("")}</div>`}`;
  }
- if(view!=="hub"&&ST&&ST.room===view){body=body.replace('</p>','</p>'+(N.storyDone?`<div class="evc story done"><p>${N.storyDone}</p></div>`:`<div class="evc story"><div class="sh"><canvas id="sp" width="32" height="32"></canvas><b>${C[ST.who].n}</b></div><p>${ST.text}</p>${ST.choices.map((c,i)=>`<button class="ch" onclick="storyChoice(${i})">${c.t}</button>`).join("")}</div>`))}
- if(view!=="hub"){const ev=N.ev!=null&&NIGHT_EVENTS[N.ev];if(ev&&ev.room===view)body=body.replace('</p>','</p>'+(N.evDone?`<div class="evc done"><p>${N.evDone}</p></div>`:`<div class="evc"><p>${ev.text}</p>${ev.choices.map((c,i)=>`<button class="ch" onclick="nightChoice(${i})" ${can(c)?"":"disabled"}>${c.t}</button>`).join("")}</div>`))}
+ if(view!=="hub"){let cards="";
+  req.filter(sc=>sc.room===view).forEach(sc=>{cards+=N.reqDone[sc.id]?`<div class="evc story done"><p>${N.reqDone[sc.id]}</p></div>`:
+   `<div class="evc story"><div class="sh"><canvas class="sp" data-who="${sc.who}" width="32" height="32"></canvas><b>${C[sc.who].n}</b></div><p>${sc.text}</p>${sc.choices.map((c,i)=>(!c.req||c.req())?`<button class="ch" onclick="sceneChoice('${sc.id}',${i})" ${can(c)?"":"disabled"}>${c.t}${c.cost?`<span class="cost">${Object.entries(c.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}" alt="">−${v}</span>`).join("")}</span>`:""}</button>`:"").join("")}</div>`});
+  evs.filter(i=>NIGHT_EVENTS[i].room===view).forEach(i=>{const ev=NIGHT_EVENTS[i];cards+=N.evDone[i]?`<div class="evc done"><p>${N.evDone[i]}</p></div>`:
+   `<div class="evc"><p>${ev.text}</p>${ev.choices.map((c,j)=>`<button class="ch" onclick="nightChoice(${i},${j})" ${can(c)?"":"disabled"}>${c.t}</button>`).join("")}</div>`});
+  body=body.replace('</p>','</p>'+cards)}
  const back=view==="hub"?"":`<button class="pb alt" onclick="SFX.click();showNight('hub')">Back to the castle</button>`;
  overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${body}${back}</div>`);
  $("overlay").scrollTop=keep;
- if($("sp"))drawPortrait($("sp").getContext("2d"),C[ST.who],{});
+ document.querySelectorAll("canvas.sp").forEach(cv=>drawPortrait(cv.getContext("2d"),C[cv.dataset.who],{}));
  if(view==="family"&&!N.visited)["elinor","maren","tobin"].forEach(k=>drawPortrait($("fp-"+k).getContext("2d"),C[k],{}));
- if(view==="hub")$("nextBtn").onclick=()=>{if(STORY_NIGHTS[S.month]&&!S.night.storyDone)return;SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
+ if(view==="hub")$("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id]))return;SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
   setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>missionReport(()=>{buildMonth();next()}))};
 }
-function nightChoice(i){const N=S.night,c=NIGHT_EVENTS[N.ev].choices[i];if(N.evDone||!can(c))return;SFX.click();LAST={};N.evDone=c.go();render();save();showNight(S.nightView)}
-function storyChoice(i){const N=S.night,ST=STORY_NIGHTS[S.month];if(N.storyDone)return;SFX.click();LAST={};N.storyDone=ST.choices[i].go();render();save();if(fail())return;showNight(S.nightView)}
+function nightChoice(i,j){const N=S.night,c=NIGHT_EVENTS[i].choices[j];if(N.evDone[i]||!can(c))return;SFX.click();LAST={};N.evDone[i]=c.go();render();save();if(fail())return;showNight(S.nightView)}
+function sceneChoice(id,i){const N=S.night,sc=SCENES.find(x=>x.id===id),c=sc.choices[i];if(N.reqDone[id]||!can(c))return;SFX.click();LAST={};N.reqDone[id]=c.go();S.doneScenes.push(id);render();save();if(fail())return;showNight(S.nightView)}
 function setTax(k){SFX.click();S.tax=k;save();showNight("treasury")}
 function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();showNight("war")}
 function missionReport(cb){
@@ -942,9 +1008,10 @@ function battle(){
  if(has("plan_parley")){if(has("kingFavor")&&S.favor>=50)return"peace";if(has("paidVex2"))return"vassal"}
  let p=S.men+(S.b.walls?20:0)+(has("intel")?15:0)+(has("vexRaided")?10:0)+((S.bond&&S.bond.tobin>=3)?8:0)+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
  if(has("harwinEnemy"))p-=10;if(has("tunnelSealed"))p+=10;if(has("tookBribe")&&!has("plan_parley"))p-=15;if(has("mockedVex"))p+=5;
- if(has("brannocTrap"))p+=30;else if(has("brannocAway")&&!has("brannocJailed"))p-=10;else if(!has("brannocJailed"))p-=(has("trustBrannoc")?45:35);
+ const brGone=has("brannocJailed")||has("brannocExiled");
+ if(has("brannocTrap"))p+=30;else if(has("brannocAway")&&!brGone)p-=10;else if(!brGone)p-=(has("trustBrannoc")?45:35);
  if(has("witchFire"))return p>30?"witchQueen":"witchFall";
- if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")?"lastStandSafe":"fallen"}
+ if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")||has("witchCharm")?"lastStandSafe":"fallen"}
 function siege(){
  const k=battle(),calm=["exile","vassal","peace"].includes(k);
  setCastle(calm?"night":"burn");Music.play(calm?"night":"battle");if(!calm)SFX.war();
