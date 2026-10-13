@@ -108,6 +108,10 @@ img.px{image-rendering:pixelated}
 .tx{font-family:var(--book);background:#2a1d2e;color:#f4e2c0;border:3px solid #000;box-shadow:inset 0 0 0 1px #5a4020;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
 .tx b{font-family:var(--display);color:#f2c14e}.tx small{font-size:13px;color:#b8a488;line-height:1.2}
 .tx.on{background:#5a2420;box-shadow:inset 0 0 0 2px #f2c14e}
+.bld .gain{color:#9ec88a!important}.btns.sq{display:grid!important;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.btns.sq button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 4px;font-family:var(--book);line-height:1.15}
+.btns.sq button b{font-family:var(--display);font-size:12px;color:#fff4dc}.btns.sq button span{font-size:13px;color:#f4d8c0}
+.btns.sq em{font-style:normal;font-size:12px;font-weight:700;margin-top:2px}.btns.sq em.good{color:#b8f0a0}.btns.sq em.ok{color:#f2d080}.btns.sq em.meh{color:#f0a860}.btns.sq em.bad{color:#ffb0a0}
 .bld.col{flex-direction:column;align-items:stretch}.bld .btns{display:flex;gap:6px;flex-wrap:wrap}
 .fam{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:420px;margin:8px 0}
 .famb{background:#2a1d2e;border:3px solid #000;box-shadow:inset 0 0 0 1px #5a4020,0 4px 0 #000;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#f2c14e;font-family:var(--display)}
@@ -1408,8 +1412,8 @@ function panelHTML(view){const N=S.night,mis=S.mission;
  if(view==="war"){const list=Object.entries(MISSIONS).filter(([id,M])=>S.month>=M.from&&S.month<=M.to&&!(M.once&&S.done.includes(id))&&(!M.when||M.when()));
   return `<h3>The War Room</h3><p class="dim">${leader()} leans over the map table.</p>
    ${mis?`<div class="bld done"><div><b>${MISSIONS[mis.id].n}</b><small>${mis.n} soldiers rode out tonight. Report next month.</small></div></div>`:
-   list.map(([id,M])=>`<div class="bld col"><div><b>${M.n}</b><small>${M.d}</small></div><div class="btns">${[5,10,20].map(n=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""}>Send ${n} · ${chance(id,n)}%</button>`).join("")}</div></div>`).join("")}
-   <p class="dim">You have ${S.men} soldiers. Soldiers on a mission are away until they report back. Keep at least 5 home.</p>`}
+   list.map(([id,M])=>`<div class="bld col"><div><b>${M.n}</b><small>${M.d}</small><small class="gain">If it goes well: ${REWARD[id]||"a good report"}</small></div><div class="btns sq">${[[5,"A few scouts"],[10,"A company"],[20,"A war party"]].map(([n,l])=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""}><b>${l}</b><span>${n} soldiers</span><em class="${oddsClass(chance(id,n))}">${S.men<n+5?"Not enough soldiers":oddsWord(chance(id,n))}</em></button>`).join("")}</div></div>`).join("")}
+   <p class="dim">You have ${S.men} soldiers at home. Whoever rides out is gone until next month's report, and not everyone may come back. ${agentFree("general")?"":"Your General is away, so missions are riskier."}</p>`}
  if(view==="mason")return `<h3>The Mason's Yard</h3><p class="dim">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
    Object.entries(BUILD).map(([k,o])=>{const cost=Math.max(5,(k==="walls"?o.cost-(has("masonWalls")?10:0)-(has("quarry")?10:0)-(has("refugeeMasons")?10:0):o.cost)-(has("freeStone")?15:0)-(has("hildraSteward")?10:0));
     return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built · ${o.d}</small></div></div>`:
@@ -1420,6 +1424,9 @@ function closePanel(){SFX.click();closeModal();roomIdle()}
 function grainPrice(){const se=SEASON(S.month);let buy={spring:14,summer:14,autumn:10,winter:18}[se],sell={spring:8,summer:8,autumn:6,winter:11}[se];if(has("guildEnemy")){buy+=6;sell-=3}return{buy,sell}}
 function tradeGrain(d){const pr=grainPrice();if(d>0&&S.gold<pr.buy||d<0&&S.food<10)return;LAST={};d>0?fx({gold:-pr.buy,food:10}):fx({gold:pr.sell,food:-10});SFX.coin();render();save();panel("treasury")}
 function setTax(k){SFX.click();S.tax=k;save();panel("treasury")}
+const REWARD={patrol:"+6 favor",hunt:"+16 grain",bandits:"+18 gold, +3 favor",caravan:"+24 gold",scout:"learn Vex's plans (helps in July)",raid:"+12 grain, and Vex marches hungry",harvest:"+20 grain",wolves:"+6 favor, +6 grain",vexHunt:"Baron Vex, dead",shadow:"proof Corvin's will is forged"};
+function oddsWord(c){return c>=90?"Almost certain":c>=75?"Very likely":c>=55?"Likely":c>=35?"Even odds":"Risky"}
+function oddsClass(c){return c>=75?"good":c>=55?"ok":c>=35?"meh":"bad"}
 function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();SC.emote={type:"bang",t:0};panel("war")}
 function missionReport(cb){
  const mis=S.mission;if(!mis)return cb();S.mission=null;const M=MISSIONS[mis.id];
