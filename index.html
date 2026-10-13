@@ -2177,10 +2177,14 @@ function toast(t){let el=$("toast");if(!el){el=document.createElement("div");el.
 async function unlockFull(after){const np=nativeStore();
  if(!np){setPro();SFX.fanfare();toast("Demo unlock: the full year is open. In the app this is the App Store purchase.");after&&after();return}
  toast("Opening the App Store…");
+ // ask the store for the item first: if it doesn't know it, say so plainly instead of failing silently
+ let found=null,why="";try{const r=await np.getProducts({productIdentifiers:[IAP_ID],productType:"inapp"});found=r&&r.products&&r.products.find(x=>(x.identifier||x.productIdentifier)===IAP_ID)}catch(e){why=String(e&&(e.message||e.code)||e)}
+ if(!found){storeProblem("The App Store doesn't have this unlock available yet.",why||"Product "+IAP_ID+" was not returned by the store.");return}
  try{const t=await np.purchaseProduct({productIdentifier:IAP_ID,productType:"inapp",quantity:1,autoAcknowledgePurchases:true});
   if(t&&(t.transactionId||t.productIdentifier===IAP_ID)||await storeCheck()){setPro();SFX.fanfare();toast("Thank you, my lord! The full year is yours.");after&&after()}}
  catch(e){const m=String(e&&(e.message||e.code)||e);if(await storeCheck()){toast("The full year is unlocked.");after&&after();return}
-  toast(/cancel/i.test(m)?"No problem. Nothing was charged.":"The purchase didn't go through. Please try again later.")}}
+  if(/cancel/i.test(m))toast("No problem. Nothing was charged.");else storeProblem("The purchase didn't go through. Please try again later.",m)}}
+function storeProblem(msg,detail){modal(`<h3>The Royal Treasury</h3><p>${msg}</p><p class="dim" style="font-size:12px;opacity:.6;word-break:break-word">${String(detail).replace(/[<>&]/g,"")}</p><button class="pb" onclick="closeModal()">Close</button>`)}
 async function restoreFull(after){const np=nativeStore();
  if(!np){toast(PRO?"Your purchase is already active.":"In the app this checks the App Store for your purchase.");return}
  toast("Checking your purchases…");try{await np.restorePurchases()}catch(e){}
