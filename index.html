@@ -82,6 +82,32 @@ img.px{image-rendering:pixelated}
 .bld b{font-family:var(--display);color:#f2c14e;font-size:16px}.bld small{display:block;color:#b8a488;font-size:13px}
 .bld button{font-family:var(--book);font-variant-numeric:lining-nums;font-size:16px;font-size:14px;font-weight:700;background:#a8322a;color:#fff4dc;border:2px solid #000;padding:6px 10px;cursor:pointer;white-space:nowrap}
 .bld button:disabled{opacity:.4}.bld.done{opacity:.55}
+.resbar{display:flex;justify-content:space-between;width:100%;max-width:420px;background:#1e1424;border:2px solid #000;box-shadow:inset 0 0 0 1px #5a4020;padding:8px 14px;margin:0 0 12px;position:sticky;top:0;z-index:2}
+.resbar div{display:flex;align-items:center;gap:6px;font-weight:800;font-size:20px;color:#f4e2c0;font-variant-numeric:lining-nums tabular-nums}
+.resbar img{width:20px;height:20px}
+.rooms{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin:6px 0}
+.room{font-family:var(--book);text-align:left;background:#2a1d2e;color:#f4e2c0;border:3px solid #000;box-shadow:inset 0 0 0 2px #5a4020,0 4px 0 #000;padding:10px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:100px;position:relative}
+.room:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #5a4020,0 1px 0 #000}
+.room .rh{display:flex;align-items:center;gap:8px}.room img{width:26px;height:26px}
+.room b{font-family:var(--display);color:#f2c14e;font-size:15px;line-height:1.1}
+.room small{color:#c8b498;font-size:15px;line-height:1.25}
+.room em{position:absolute;top:6px;right:8px;font-style:normal;color:#9ef08a;font-weight:800}
+.room em.bang{color:#fff4dc;background:#a8322a;border:2px solid #000;width:22px;height:22px;display:flex;align-items:center;justify-content:center;animation:bob 1s infinite alternate}
+.room.done{box-shadow:inset 0 0 0 2px #3e8a34,0 4px 0 #000}.room.ev{box-shadow:inset 0 0 0 2px #e0705a,0 4px 0 #000}
+@keyframes bob{to{transform:translateY(-3px)}}
+.ovb h3.sm{font-size:19px;margin:14px 0 6px}
+.ledger{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center}
+.taxes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:420px;margin-bottom:10px}
+.tx{font-family:var(--book);background:#2a1d2e;color:#f4e2c0;border:3px solid #000;box-shadow:inset 0 0 0 1px #5a4020;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.tx b{font-family:var(--display);color:#f2c14e}.tx small{font-size:13px;color:#b8a488;line-height:1.2}
+.tx.on{background:#5a2420;box-shadow:inset 0 0 0 2px #f2c14e}
+.bld.col{flex-direction:column;align-items:stretch}.bld .btns{display:flex;gap:6px;flex-wrap:wrap}
+.fam{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:420px;margin:8px 0}
+.famb{background:#2a1d2e;border:3px solid #000;box-shadow:inset 0 0 0 1px #5a4020,0 4px 0 #000;padding:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#f2c14e;font-family:var(--display)}
+.famb canvas{width:72px;height:72px;background:#1c1420}
+.famtxt,.evc{width:100%;max-width:420px;background:var(--parch);color:var(--ink);border:3px solid #000;box-shadow:inset 0 0 0 2px #c9a46a;padding:12px 14px;margin:6px 0 10px;text-align:left}
+.famtxt p,.evc p{color:var(--ink)!important;margin:0 0 8px}.famtxt .dim{color:#7a4a2a!important;font-style:italic;opacity:1}
+.evc .ch{width:100%;margin-top:8px}.evc.done{opacity:.85}
 .siege p{opacity:0;animation:appear 1s forwards}
 @keyframes appear{to{opacity:1}}
 #card{font-family:var(--pixel);position:absolute;inset:0;z-index:9;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(5,3,8,.85);color:var(--gold);pointer-events:none}
@@ -521,7 +547,7 @@ const MONTHS=["March","April","May","June","July","August","September","October"
 const SEASON=m=>["spring","spring","spring","summer","summer","summer","autumn","autumn","autumn","winter","winter","winter"][m-1];
 const SCOL={spring:"#6ac05a",summer:"#f2c14e",autumn:"#e07a20",winter:"#cfe0f0"};
 const LAST_MONTH=5; // Chapter One ends with the Vex battle in July. Autumn and winter come next.
-function fresh(){return{month:1,gold:60,food:60,men:20,favor:50,f:{},b:{},chron:[],queue:[],qi:0,usedR:[]}}
+function fresh(){return{month:1,gold:60,food:60,men:20,favor:50,f:{},b:{},chron:[],queue:[],qi:0,usedR:[],usedN:[],done:[],tax:"normal",bond:{elinor:0,maren:0,tobin:0},night:{},mission:null}}
 const has=f=>!!S.f[f],set=(f,v=1)=>S.f[f]=v,note=t=>S.chron.push(`${MONTHS[S.month-1]}: ${t}`);
 function fx(o){for(const k of["gold","food","men","favor"])if(o[k]){S[k]+=o[k];LAST[k]=(LAST[k]||0)+o[k];floatStat(k,o[k])}S.favor=Math.min(100,S.favor);for(const k of["gold","food","men"])S[k]=Math.max(-99,S[k])}
 const can=c=>!c.cost||Object.entries(c.cost).every(([k,v])=>S[k]>=v);
@@ -533,7 +559,7 @@ const can=c=>!c.cost||Object.entries(c.cost).every(([k,v])=>S[k]>=v);
    --------------------------------------------------------- */
 const E=[
 /* ---- MARCH ---- */
-{m:1,who:"aldric",text:"My lord. The snows are melting, your father is in the crypt, and the throne of Emberfall is yours.\n\nA lord is judged by his first year. Mind our gold, our grain, our soldiers... and the favor of the people. Baron Vex watches from across the river.",
+{m:1,who:"aldric",text:"My lord. The snows are melting, your father is in the crypt, and the throne of Emberfall is yours.\n\nA lord is judged by his first year. Mind our gold, our grain, our soldiers... and the favor of the people. Baron Vex watches from across the river.\n\nBy day you hear petitions. At night the castle is yours: the treasury, the war room, the mason's yard and your family.",
  choices:[{t:"\"Then let them in, Aldric.\"",go:()=>"\"Your father would be proud.\" He bows and opens the doors."},
   {t:"\"I never wanted this throne.\"",go:()=>{set("reluctant");return "\"None of the good ones do, my lord.\""}}]},
 {m:1,who:"peasant",text:"M'lord, the long winter ate Thornby's stores. We've no seed grain left for planting. No seed now means no harvest come autumn.",
@@ -726,32 +752,158 @@ function typeText(str,voice,done){
 function finishType(){if(!TY)return;clearTimeout(TY.to);$("txt").textContent=TY.str;SC.talk=false;const d=TY.done;TY=null;d&&d()}
 $("dialog").addEventListener("click",e=>{if(!e.target.closest("button"))finishType()});
 
-function ledgerRows(){const b=S.b,se=SEASON(S.month);
- const tax=Math.round(S.favor/5)+4+(b.market?8:0)-(has("guildEnemy")?4:0);
+/* =========================================================
+   NIGHT IN THE CASTLE: the month-end hub
+   Treasury · War Room · Mason's Yard · Family Quarters
+   ========================================================= */
+const TAX={low:{n:"Low",mult:.7,fav:3,d:"Less gold, +3 favor a month"},normal:{n:"Fair",mult:1,fav:0,d:"The old rate"},high:{n:"Heavy",mult:1.5,fav:-5,d:"More gold, −5 favor a month"}};
+const MISSIONS={
+ patrol:{n:"Patrol the villages",d:"Show the banner in Thornby and the farms.",base:70,per:2,from:1,to:5,
+  win:()=>{fx({favor:6});return "The villages cheer your riders. Nobody's goats go missing this month."},
+  lose:()=>{fx({favor:-2});return "The patrol got lost in the fen and came home wet and sulking."}},
+ hunt:{n:"Hunt in the Ashwood",d:"Venison and boar for the castle stores.",base:55,per:3,from:1,to:5,
+  win:()=>{fx({food:16});return "They return with three stags and a boar. The kitchens are singing."},
+  lose:()=>{fx({food:2});return "A wet week, a few rabbits, and one man gored by a boar."}},
+ bandits:{n:"Clear bandits from the east road",d:"Dangerous, but the merchants will pay well.",base:25,per:4,from:1,to:5,
+  win:()=>{fx({gold:18,favor:3});return "The bandit camp is burned. The merchants pay the promised bounty."},
+  lose:()=>"The bandits knew the woods better. The survivors limp home."},
+ caravan:{n:"Guard the salt caravan",d:"A month on the coast road for good coin.",base:40,per:3,from:2,to:5,
+  win:()=>{fx({gold:24});return "The salt arrives safe. The Guild pays in silver."},
+  lose:()=>{fx({gold:4});return "Raiders took half the wagons. The Guild pays a fraction."}},
+ scout:{n:"Scout Baron Vex's camp",d:"Learn his numbers before he comes. Once only.",base:30,per:3,from:2,to:4,once:1,
+  win:()=>{set("intel");note("Scouts mapped Vex's camp.");return "Your scouts return with a map of Vex's camp: his tents, his horses, his weak flank."},
+  lose:()=>"Vex's outriders caught them in the reeds. No map, and fewer scouts."},
+ raid:{n:"Raid Vex's supply wagons",d:"Strike his army before it marches. Once only.",base:15,per:3,from:4,to:4,once:1,
+  win:()=>{fx({food:12});set("vexRaided");note("Raided Vex's supply wagons.");return "Wagons burn on the Baron's road. His army will march hungry."},
+  lose:()=>"Vex was waiting for them. It was a trap."},
+};
+const FAMILY={
+ elinor:{lines:["Elinor pours two cups of wine. \"The ladies of the court are watching you. Smile more, my love. It costs nothing.\"",
+  "\"I've been answering letters in your name. The Guild wives think you're charming now.\"",
+  "She falls asleep against your shoulder by the fire. Outside, Emberfall is quiet."],
+  eff:()=>{fx({favor:3});return "+3 favor"}},
+ maren:{lines:["Maren is reading in the window seat. \"Did you know Grandfather wrote poems? Terrible ones.\" You laugh together for the first time in weeks.",
+  "She shows you a map she drew of the Marches. \"I want to see the world, Father. Not just this hall.\"",
+  "\"Whatever you decide about my future... thank you for asking me first.\""],
+  eff:()=>{S.bond.maren++;if(S.bond.maren>=2){set("marenLoves");return "Maren trusts you now"}return "Maren is warming to you"}},
+ tobin:{lines:["You spar with Tobin in the yard. He swings wild and lands on his back. He's grinning.",
+  "\"Again!\" He's quicker now. He nearly disarms you.",
+  "Tobin holds his guard like a soldier. \"When Vex comes, let me stand at the gate.\""],
+  eff:()=>{S.bond.tobin++;return S.bond.tobin>=3?"Tobin will fight well when Vex comes":"Tobin is getting stronger"}},
+};
+/* one surprise per night, in one room (marked "!"). Each happens once per reign. */
+const NIGHT_EVENTS=[
+ {room:"treasury",text:"Aldric found a forgotten coffer in the vaults, sealed with your grandfather's crest. Forty years of dust, and 25 gold inside.",
+  choices:[{t:"Keep it for the treasury",go:()=>{fx({gold:25});return "The coins go into the strongbox."}},{t:"Give it to Thornby's poor",go:()=>{fx({gold:5,favor:7});return "The story is all over the market by morning."}}]},
+ {room:"treasury",text:"A clerk's numbers don't add up. Aldric suspects someone has been skimming the tax money.",
+  choices:[{t:"Audit the books (5 gold)",cost:{gold:5},go:()=>{fx({gold:14});return "The skimmer is caught. The missing coin is returned."}},{t:"Let it go",go:()=>{fx({gold:-6});return "The leak goes on, quietly."}}]},
+ {room:"war",text:"A sellsword captain knocks at the war room door. His company of ten will fight for you for 20 gold.",
+  choices:[{t:"Hire the company",cost:{gold:20},go:()=>{fx({gold:-20,men:10});return "Ten hard-faced men join the garrison."}},{t:"Send him away",go:()=>"\"Your loss, my lord. Vex pays too.\""}]},
+ {room:"war",text:"A deserter from Vex's army is dragged in by the guards. He begs for shelter and offers what he knows.",
+  choices:[{t:"Shelter him and listen",go:()=>{set("intel");note("A deserter revealed Vex's plans.");return "He draws Vex's camp on the map table. Your captain takes careful notes."}},{t:"Send him back across the river",go:()=>{fx({favor:-2});return "He weeps all the way to the ford."}}]},
+ {room:"mason",text:"Hildra's crew found good cut stone in the ruins of the old watchtower. \"Free stone, my lord. Your next project costs less.\"",
+  choices:[{t:"\"Use it well.\"",go:()=>{set("freeStone");return "Your next building costs 15 gold less."}}]},
+ {room:"mason",text:"A mason fell from the scaffold. He'll live, but his family has no one else to earn for them.",
+  choices:[{t:"Pay his wages until he heals (8 gold)",cost:{gold:8},go:()=>{fx({gold:-8,favor:5});return "The crew works harder for a lord who looks after them."}},{t:"\"Work has risks.\"",go:()=>{fx({favor:-3});return "The crew goes quiet when you pass."}}]},
+ {room:"family",text:"Tobin snuck out to the tavern with the stable boys. The guards just carried him home, singing.",
+  choices:[{t:"Laugh it off",go:()=>{S.bond.tobin++;return "\"Grandfather did the same,\" you tell him. He grins through the hangover."}},{t:"Scold him",go:()=>{fx({favor:1});return "He sulks, but he's at his lessons at dawn."}}]},
+ {room:"family",text:"Elinor can't sleep. \"I dreamed of fire on the river,\" she says. \"Promise me you have a plan.\"",
+  choices:[{t:"Tell her everything",go:()=>{S.bond.elinor++;fx({favor:2});return "She listens, then fixes two of your mistakes."}},{t:"\"Go back to sleep, love.\"",go:()=>"She doesn't."}]},
+];
+const HAMMER=bmp(["....kk..","...kssk.","..kssk..",".kbks...","kbk.....","bk......","........"],{k:"#2a1810",s:"#c8cdd6",b:"#8a5a2a"});
+const HAMMERURL=HAMMER.toDataURL();
+function ensureState(){S.tax=S.tax||"normal";S.bond=S.bond||{elinor:0,maren:0,tobin:0};S.night=S.night||{};S.done=S.done||[];S.b=S.b||{};S.usedR=S.usedR||[]}
+function leader(){return has("brannocJailed")?"Sergeant Wynn":"Captain Brannoc"}
+function chance(id,n){const M=MISSIONS[id];return Math.max(5,Math.min(95,M.base+n*M.per))}
+function ledgerRows(){ensureState();const b=S.b,se=SEASON(S.month),T=TAX[S.tax];
+ const tax=Math.round((6+S.favor/5)*T.mult)+(b.market?8:0)-(has("guildEnemy")?4:0);
+ const wages=Math.ceil(S.men/10)*2;
  const crops={spring:4,summer:7,autumn:30,winter:0}[se]+(has("fedThornby")?3:has("halfThornby")?1:0)+(b.granary?5:0)-(has("witchCurse")?3:0);
- const eat=Math.ceil(S.men/6)+4,pray=b.chapel?2:0;return{tax,crops,eat,pray}}
+ const eat=Math.ceil(S.men/6)+4,mood=(b.chapel?2:0)+T.fav;
+ return{tax,wages,crops,eat,mood,gold:tax-wages,food:crops-eat}}
 function endMonth(){
+ ensureState();
  if(S.month>=LAST_MONTH)return siege();
- const L=ledgerRows();LAST={};fx({gold:L.tax,food:L.crops-L.eat,favor:L.pray});render();
+ const L=ledgerRows();LAST={};fx({gold:L.gold,food:L.food,favor:L.mood});render();
+ S.lastLedger=L;S.night={};S.usedN=S.usedN||[];
+ {const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>!S.usedN.includes(i));if(pool.length){const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.ev=i}}
  const se=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();setCastle(se==="winter"?"snow":se);
- S.built=false;showLedger(L);
+ showNight("hub");
 }
-function showLedger(L){
- const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}">${l}</span><b>${v>=0?"+":"−"}${Math.abs(v)}</b></div>`;
- const builds=Object.entries(BUILD).map(([k,o])=>{const cost=k==="walls"&&has("masonWalls")?o.cost-10:o.cost;
-  return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built</small></div></div>`:
-  `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${S.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("");
- overlay(`${castleHTML()}</div><div class="ovb"><h3>The end of ${MONTHS[S.month-1]}</h3>
-  ${row("gold","Taxes",L.tax)}${row("food","Fields &amp; stores",L.crops)}${row("food","The castle eats",-L.eat)}${L.pray?row("favor","Chapel",L.pray):""}
-  <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.favor<20?"There is muttering in the taverns.":S.month===4?"Scouts say Vex's army is on the march.":"Emberfall sleeps."}</p>
-  <h3 style="font-size:20px;margin-top:10px">Hildra's Works</h3><p class="dim" style="margin-top:0">${S.built?"The masons are busy until next month.":"Choose one thing to build this month."}</p>
-  ${builds}<br><button class="pb" id="nextBtn">Begin ${MONTHS[S.month]}</button></div>`);
- $("nextBtn").onclick=()=>{SFX.click();closeOverlay();if(fail())return;S.month++;S.built=false;const war=S.month>=LAST_MONTH;
-  setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>{buildMonth();next()})};
+function resBar(){return `<div class="resbar">${["gold","food","men","favor"].map(k=>`<div><img class="px" src="${ICONURL[k]}" alt="">${S[k]}</div>`).join("")}</div>`}
+function money(v){return (v>=0?"+":"−")+Math.abs(v)}
+function showNight(view){
+ const N=S.night,mis=S.mission,keep=view===S.nightView?$("overlay").scrollTop:0;S.nightView=view;
+ let body="";
+ if(view==="hub"){
+  const tiles=[
+   ["treasury",ICONURL.gold,"Treasury",`Taxes: ${TAX[S.tax].n}. Next month ${money(ledgerRows().gold)} gold.`,0],
+   ["war",ICONURL.men,"War Room",mis?`${mis.n} soldiers out: ${MISSIONS[mis.id].n.toLowerCase()}.`:`${leader()} awaits orders.`,!!mis],
+   ["mason",HAMMERURL,"Mason's Yard",N.built?`Building the ${BUILD[N.built].n}.`:"Hildra is ready to build.",!!N.built],
+   ["family",ICONURL.favor,"Family Quarters",N.visited?`You spent the evening with ${C[N.visited].n.replace("Lady ","")}.`:"Your family is still awake.",!!N.visited]];
+  body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. Visit any room you like, or go straight to bed.</p>
+   <div class="rooms">${tiles.map(([id,ic,n,st,done])=>{const evHere=N.ev!=null&&NIGHT_EVENTS[N.ev].room===id&&!N.evDone;return `<button class="room${done?" done":""}${evHere?" ev":""}" onclick="SFX.click();showNight('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${evHere?'<em class="bang">!</em>':done?'<em>✓</em>':""}</span><small>${evHere?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
+   <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20?"There is muttering in the taverns.":S.month===4?"Scouts say Vex's army is on the march.":"Emberfall sleeps."}</p>
+   <button class="pb" id="nextBtn">Sleep until ${MONTHS[S.month]}</button>`;
+ }
+ if(view==="treasury"){const L=S.lastLedger,P=ledgerRows();
+  const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}" alt="">${l}</span><b>${money(v)}</b></div>`;
+  body=`<h3>The Treasury</h3><p class="dim" style="margin-top:0">Aldric's ledger for ${MONTHS[S.month-1]}</p>
+   <div class="ledger">${row("gold","Taxes",L.tax)}${row("gold","Soldiers' wages",-L.wages)}${row("food","Fields &amp; stores",L.crops)}${row("food","The castle eats",-L.eat)}${L.mood?row("favor","The people's mood",L.mood):""}</div>
+   <h3 class="sm">Next month, if nothing changes</h3>
+   <div class="ledger">${row("gold","Gold",P.gold)}${row("food","Grain",P.food)}${P.mood?row("favor","Favor",P.mood):""}</div>
+   <p class="dim" style="margin-top:0">${P.food<0&&S.food+P.food*2<0?"At this rate the granary runs dry within two months.":P.gold<0?"The army costs more than the taxes bring in.":"The books balance, my lord."}</p>
+   <h3 class="sm">Set the tax rate</h3>
+   <div class="taxes">${Object.entries(TAX).map(([k,t])=>`<button class="tx${S.tax===k?" on":""}" onclick="setTax('${k}')"><b>${t.n}</b><small>${t.d}</small></button>`).join("")}</div>`;
+ }
+ if(view==="war"){
+  const list=Object.entries(MISSIONS).filter(([id,M])=>S.month>=M.from&&S.month<=M.to&&!(M.once&&S.done.includes(id)));
+  body=`<h3>The War Room</h3><p class="dim" style="margin-top:0">${leader()} leans over the map table. ${mis?"":`"Where do you want them, my lord? They'll report back next month."`}</p>
+   ${mis?`<div class="bld done"><div><b>${MISSIONS[mis.id].n}</b><small>${mis.n} soldiers rode out tonight. Report next month.</small></div></div>`:
+   list.map(([id,M])=>`<div class="bld col"><div><b>${M.n}</b><small>${M.d}</small></div><div class="btns">${[5,10,20].map(n=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""}>Send ${n} · ${chance(id,n)}%</button>`).join("")}</div></div>`).join("")}
+   <p class="dim">You have ${S.men} soldiers. Soldiers on a mission are away until they report back. Keep at least 5 home.</p>`;
+ }
+ if(view==="mason"){
+  body=`<h3>The Mason's Yard</h3><p class="dim" style="margin-top:0">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
+   Object.entries(BUILD).map(([k,o])=>{const cost=(k==="walls"&&has("masonWalls")?o.cost-10:o.cost)-(has("freeStone")?15:0);
+    return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built · ${o.d}</small></div></div>`:
+    `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" alt="" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("");
+ }
+ if(view==="family"){
+  body=`<h3>Family Quarters</h3><p class="dim" style="margin-top:0">${N.visited?"The candles are burning low.":"Who will you spend the evening with?"}</p>
+   ${N.visited?`<div class="famtxt"><p>${N.famLine}</p><p class="dim">${N.famEff}</p></div>`:
+   `<div class="fam">${["elinor","maren","tobin"].map(k=>`<button class="famb" onclick="visit('${k}')"><canvas id="fp-${k}" width="32" height="32"></canvas><b>${C[k].n.replace("Lady ","")}</b></button>`).join("")}</div>`}`;
+ }
+ if(view!=="hub"){const ev=N.ev!=null&&NIGHT_EVENTS[N.ev];if(ev&&ev.room===view)body=body.replace('</p>','</p>'+(N.evDone?`<div class="evc done"><p>${N.evDone}</p></div>`:`<div class="evc"><p>${ev.text}</p>${ev.choices.map((c,i)=>`<button class="ch" onclick="nightChoice(${i})" ${can(c)?"":"disabled"}>${c.t}</button>`).join("")}</div>`))}
+ const back=view==="hub"?"":`<button class="pb alt" onclick="SFX.click();showNight('hub')">Back to the castle</button>`;
+ overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${body}${back}</div>`);
+ $("overlay").scrollTop=keep;
+ if(view==="family"&&!N.visited)["elinor","maren","tobin"].forEach(k=>drawPortrait($("fp-"+k).getContext("2d"),C[k],{}));
+ if(view==="hub")$("nextBtn").onclick=()=>{SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month>=LAST_MONTH;
+  setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":"hall");monthCard(()=>missionReport(()=>{buildMonth();next()}))};
 }
-function build(k,cost){if(S.built||S.gold<cost)return;S.b[k]=1;S.built=true;LAST={};fx({gold:-cost});if(k==="barracks")fx({men:8});
- note(`Hildra's masons built the ${BUILD[k].n}.`);SFX.thud();SFX.coin();render();save();
- const sc=$("overlay").scrollTop;showLedger(ledgerRows());$("overlay").scrollTop=sc}
+function nightChoice(i){const N=S.night,c=NIGHT_EVENTS[N.ev].choices[i];if(N.evDone||!can(c))return;SFX.click();LAST={};N.evDone=c.go();render();save();showNight(S.nightView)}
+function setTax(k){SFX.click();S.tax=k;save();showNight("treasury")}
+function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();showNight("war")}
+function missionReport(cb){
+ const mis=S.mission;if(!mis)return cb();S.mission=null;const M=MISSIONS[mis.id];
+ const ok=Math.random()*100<chance(mis.id,mis.n);if(M.once)S.done.push(mis.id);
+ LAST={};const txt=ok?M.win():M.lose();
+ const lost=ok?Math.floor(Math.random()*Math.ceil(mis.n/8+.01)):Math.ceil(mis.n*(.25+Math.random()*.25));
+ fx({men:mis.n-lost});render();note(`${M.n}: ${ok?"success":"failed"}.`);
+ const gains=Object.entries(LAST).filter(([k,v])=>k!=="men"&&v).map(([k,v])=>`${money(v)} ${{gold:"gold",food:"grain",favor:"favor"}[k]}`);
+ ok?SFX.good():SFX.bad();
+ modal(`<h3>Report from the War Room</h3><p style="font-size:15px;color:#b8a488;margin:0">${leader()} · ${M.n}</p>
+  <p style="font-size:19px;line-height:1.4">${txt}</p>
+  <p style="color:${ok?"#9ef08a":"#ff8a7a"};font-weight:700">${ok?"Success":"Failure"}${gains.length?" · "+gains.join(", "):""} · ${lost?`${lost} soldier${lost>1?"s":""} lost`:"no one lost"}</p>
+  <button class="pb" id="repBtn">To the throne room</button>`);
+ let gone=false;$("repBtn").onclick=()=>{if(gone)return;gone=true;SFX.click();closeModal();if(fail())return;cb()};
+}
+function visit(k){if(S.night.visited)return;SFX.heart();const F=FAMILY[k];const i=Math.min(F.lines.length-1,S.bond[k]||0);
+ if(k==="elinor")S.bond.elinor++;S.night.visited=k;S.night.famLine=F.lines[i];LAST={};S.night.famEff=F.eff();render();save();showNight("family")}
+function build(k,cost){if(S.night.built||S.gold<cost)return;S.b[k]=1;S.night.built=k;LAST={};fx({gold:-cost});if(k==="barracks")fx({men:8});
+ delete S.f.freeStone;note(`Hildra's masons built the ${BUILD[k].n}.`);SFX.thud();SFX.coin();render();save();showNight("mason")}
+
 function monthCard(cb){render();const c=$("card"),se=SEASON(S.month);c.querySelector("b").textContent=MONTHS[S.month-1].toUpperCase();
  c.querySelector("b").style.color=SCOL[se];c.querySelector("span").textContent=S.month>=LAST_MONTH?"THE BANNERS COME":`${se.toUpperCase()} · MONTH ${S.month} OF 12`;
  $("pips").innerHTML=MONTHS.map((_,i)=>`<i class="${i+1===S.month?"now":i+1<S.month?"past":""}" style="background:${SCOL[SEASON(i+1)]}"></i>`).join("");
@@ -760,7 +912,7 @@ function fail(){if(S.food<0)return ending("famine");if(S.favor<=0)return ending(
 function battle(){
  if(has("plan_flee"))return"exile";if(has("knelt"))return"vassal";
  if(has("plan_parley")){if(has("kingFavor")&&S.favor>=50)return"peace";if(has("paidVex2"))return"vassal"}
- let p=S.men+(S.b.walls?20:0)+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
+ let p=S.men+(S.b.walls?20:0)+(has("intel")?15:0)+(has("vexRaided")?10:0)+((S.bond&&S.bond.tobin>=3)?8:0)+(has("harwinAlly")?40:0)+(has("refugees")?5:0)+(has("tunnelRaid")?10:0)+(has("plan_wall")?25:0)+(has("plan_attack")?(has("tobinProud")?15:5):0);
  if(has("harwinEnemy"))p-=10;if(has("brannocTrap"))p+=30;else if(!has("brannocJailed"))p-=35;
  if(has("witchFire"))return p>30?"witchQueen":"witchFall";
  if(p>=75)return has("kingFavor")?"crowned":"victory";if(p>=45)return"pyrrhic";return has("familySafe")?"lastStandSafe":"fallen"}
@@ -768,7 +920,7 @@ function siege(){
  const k=battle(),calm=["exile","vassal","peace"].includes(k);
  setCastle(calm?"night":"burn");Music.play(calm?"night":"battle");if(!calm)SFX.war();
  const plan=has("plan_flee")?"Torches gutter in the tunnel as Emberfall grows small behind you.":has("plan_parley")?"You ride out beneath a white banner to meet the Baron.":has("plan_attack")?"The gates swing wide. You lead the charge into the river.":(S.b.walls?"Arrows rain from Hildra's new stone walls.":"Arrows rain from the old walls of Emberfall.");
- const twist=has("brannocTrap")?"The postern gate opens... onto a wall of your spears. Brannoc's treachery becomes Vex's trap.":(!has("brannocJailed")&&!calm)?"Behind you, a postern gate swings open that should have been barred.":has("witchFire")?"Green fire crawls up out of the fen.":"";
+ const twist=has("intel")&&!has("brannocTrap")&&has("brannocJailed")?"Your scouts' map pays off: you hit Vex's weak flank first.":has("brannocTrap")?"The postern gate opens... onto a wall of your spears. Brannoc's treachery becomes Vex's trap.":(!has("brannocJailed")&&!calm)?"Behind you, a postern gate swings open that should have been barred.":has("witchFire")?"Green fire crawls up out of the fen.":"";
  overlay(`${castleHTML()}</div><div class="ovb siege"><h3>High Summer</h3><p style="animation-delay:.3s">Baron Vex's host crosses the ford at dusk.</p>
   <p style="animation-delay:1.3s">${plan}</p>${twist?`<p style="animation-delay:2.3s">${twist}</p>`:""}
   <button class="pb" style="opacity:0;animation:appear 1s ${FAST?0:3}s forwards" id="fateBtn">Face your fate</button></div>`);
@@ -805,7 +957,7 @@ function ending(k){
 function overlay(h){const o=$("overlay");o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
 function modal(h){const m=$("modal");m.innerHTML=`<div class="box">${h}</div>`;m.style.display="flex"}
-function closeModal(){$("modal").style.display="none"}
+function closeModal(){const m=$("modal");m.style.display="none";m.innerHTML=""}
 function openChron(){SFX.page();modal(`<h3>The Chronicle of Emberfall</h3><ul>${(S&&S.chron||[]).map(c=>`<li>${c}</li>`).join("")||"<li>Nothing yet written.</li>"}</ul><button class="pb" onclick="closeModal()">Close</button>`)}
 function savePrefs(){try{localStorage.setItem("ef_prefs",JSON.stringify({m:AU.musicOn,s:AU.sfxOn}))}catch(e){}}
 function openSettings(){SFX.click();modal(`<h3>Settings</h3>
@@ -816,7 +968,7 @@ function openSettings(){SFX.click();modal(`<h3>Settings</h3>
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? Undiscovered</div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
 function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
-function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;closeOverlay();const war=S.month>=LAST_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
+function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();closeOverlay();const war=S.month>=LAST_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":"hall");render();next()}
 function title(){
  if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;
  let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save2")}catch(e){}

@@ -6,6 +6,8 @@ A pixel-art medieval story game. Your father is dead and the throne of **Emberfa
 
 - **4 resources:** Gold, Grain, Army and Favor. Let any one collapse and your reign ends early (famine, revolt, or the Guild owns you).
 - **A year in 12 months** with seasons (spring rain, summer sun, autumn leaves, winter snow), a month-end ledger, and **Hildra's Works**: build a granary, market, chapel, barracks or stone walls.
+- **Night in the castle** at each month's end (every room is optional): the **Treasury** (ledger, next-month forecast, tax rate), the **War Room** (send 5/10/20 soldiers on missions; they report back next month), the **Mason's Yard** (one building a month) and **Family Quarters** (an evening with Elinor, Maren or Tobin changes the story). One surprise event happens in a random room each night.
+- **Soldiers cost gold wages and grain**, so a bigger army needs a healthy treasury.
 - **Chapter One is playable now:** March to July, ending with the Vex battle. Autumn and winter are next.
 - **15 characters, 13 endings so far.** Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
 - **Animated throne room:** visitors walk in through the great doors, talk with animated portraits and react with emotes and particles.
