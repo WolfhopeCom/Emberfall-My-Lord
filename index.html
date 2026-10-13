@@ -185,8 +185,11 @@ img.px{image-rendering:pixelated}
  #overlay.ts .logo h1{font-size:min(9vw,76px)}#overlay.ts .logo h2{font-size:20px}
  #overlay.ts .ovb{position:absolute;left:0;right:0;bottom:0;height:auto;overflow:visible;flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 12px;
   padding:40px max(18px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 16px) max(18px,env(safe-area-inset-left));background:linear-gradient(rgba(5,3,8,0),rgba(5,3,8,.85) 45%)}
- #overlay.ts .ovb p.dim{flex-basis:100%;margin:0 0 4px;font-size:15px;opacity:.85;text-shadow:0 2px 0 #000}
- #overlay.ts .pb{min-width:0;margin:0;padding:10px 18px}
+ #overlay.ts .ovb p.dim{flex-basis:auto;width:100%;margin:0 0 10px;font-size:15px;opacity:.85;text-shadow:0 2px 0 #000;text-align:center}
+ #overlay.ts .pb{min-width:0;width:auto;margin:0;padding:10px 18px;flex:0 0 auto}
+ #overlay.ts .ovb{flex-direction:column!important;flex-wrap:nowrap!important;align-items:center!important}
+ #overlay.ts .tbtns{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 12px;width:100%}
+ #overlay.ts .tbtns:has(>.pb:nth-child(4)) .pb{padding:9px 12px;font-size:14.5px}
  /* story screens: the scene fills the screen, the text sits in a box over it */
  #overlay.fb .ovb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,86vw);height:auto;max-height:88%;overflow-y:auto;
   background:rgba(14,9,18,.86);border:3px solid #000;box-shadow:inset 0 0 0 2px #5a4020,0 10px 40px rgba(0,0,0,.6);padding:16px 22px 18px;animation:none}
@@ -1900,9 +1903,9 @@ function showTitle(){
  setCastle("title");Music.play("title");
  overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
   <p class="dim">The throne is yours. So is everything that follows.</p>
-  ${hasSave?'<button class="pb" onclick="cont()">Continue Reign</button>':""}<button class="pb ${hasSave?"alt":""}" onclick="${hasSave?"confirmNew()":"newGame()"}">New Reign</button>
+  <div class="tbtns">${hasSave?'<button class="pb" onclick="cont()">Continue Reign</button>':""}<button class="pb ${hasSave?"alt":""}" onclick="${hasSave?"confirmNew()":"newGame()"}">New Reign</button>
   <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
-  <button class="pb alt" onclick="openSettings()">Settings</button></div>`)}
+  <button class="pb alt" onclick="openSettings()">Settings</button></div></div>`)}
 
 storeInit().then(()=>{if(document.querySelector(".logo"))showTitle()});
 applyPrefs();buildStats();S=fresh();render();setPhase("day","spring");showTitle();loop();
