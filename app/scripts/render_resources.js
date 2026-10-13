@@ -54,6 +54,7 @@ function crest(x, sky){
   await s.evaluate(() => document.fonts.ready); await s.waitForTimeout(2500);
   await s.screenshot({ path: path.join(SHOTS, '01-title.png') });
   await s.evaluate(() => { Math.random = (() => { let q = 3; return () => (q = q * 16807 % 2147483647) / 2147483647 })(); newGame(); });
+  await s.waitForSelector('#plSkip'); await s.click('#plSkip');
   const waitChoices = async () => { await s.waitForSelector('#choices .ch', { timeout: 30000 }); await s.waitForTimeout(400); };
   const pick = async (text) => { await s.locator('#choices .ch', { hasText: text }).first().click(); };
   const cont = async () => { await s.waitForSelector('#choices .go'); await s.click('#choices .go'); };
@@ -74,10 +75,10 @@ function crest(x, sky){
   const ip = await b.newPage();
   await ip.goto('file://' + path.join(ROOT, 'index.html') + '?fast');
   const iconUrl = await ip.evaluate((js) => { eval(js);
- const src=document.createElement('canvas');src.width=160;src.height=120;const sx=src.getContext('2d');
+ const src=document.createElement('canvas');src.width=320;src.height=240;const sx=src.getContext('2d');sx.setTransform(2,0,0,2,0,0);sx.imageSmoothingEnabled=false;
  CS.mode='title';CS.parts=[];CS.t=0;for(let i=0;i<260;i++)drawCastle(sx);
  const ic=document.createElement('canvas');ic.width=128;ic.height=128;const x=ic.getContext('2d');x.imageSmoothingEnabled=false;
- x.fillStyle='#140c26';x.fillRect(0,0,128,10);x.drawImage(src,14,0,128,120,0,8,128,120);
+ x.fillStyle='#140c26';x.fillRect(0,0,128,10);x.drawImage(src,28,0,256,240,0,8,128,120);
  // warm glow behind the crown
  const r=x.createRadialGradient(64,36,2,64,36,58);r.addColorStop(0,'rgba(255,170,70,.55)');r.addColorStop(1,'rgba(255,120,40,0)');x.globalCompositeOperation='lighter';x.fillStyle=r;x.fillRect(0,0,128,90);x.globalCompositeOperation='source-over';
  // crest at 2x, centered, with a dark outline for contrast
