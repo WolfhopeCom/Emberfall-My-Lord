@@ -136,7 +136,7 @@ img.px{image-rendering:pixelated}
 /* ---------- Landscape: the hall fills the screen, a text box runs along the bottom with the choices on its right ---------- */
 #sceneWide{display:none}
 @media (orientation:landscape) and (min-aspect-ratio:5/4){
- #app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 37%}
+ #app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 34%}
  #hud{grid-row:1;grid-column:1;display:flex;align-items:center;gap:20px;padding:calc(env(safe-area-inset-top) + 5px) max(14px,env(safe-area-inset-right)) 5px max(14px,env(safe-area-inset-left))}
  #stats{flex:1;justify-content:flex-start;gap:clamp(14px,3vw,34px)}
  .stat{min-width:0}.stat img{width:22px;height:22px}.stat b{font-size:20px}
@@ -168,7 +168,6 @@ img.px{image-rendering:pixelated}
  .bigtext #txt{font-size:19.5px}.bigtext .ch{font-size:17.5px}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
- #app{grid-template-rows:auto minmax(0,1fr) 41%}
  #sceneWide{height:calc(100% + 24px)}
  #dialog{padding:8px 12px;grid-template-columns:auto minmax(0,1.3fr) minmax(205px,1fr)}
  #pbox{width:42px;height:42px}#portrait{width:36px;height:36px}
@@ -201,15 +200,6 @@ img.px{image-rendering:pixelated}
  #overlay.fb .summary{max-width:none}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4){
- .setgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:4px 0 8px}.setgrid .pb{min-width:0;margin:0;width:100%}.setgrid p{grid-column:1/-1;margin:2px 0}
- /* panels: two columns, Done always visible */
- #modal .box{display:flex;flex-direction:column}
- #modal .box .panel{columns:2;column-gap:22px;overflow-y:auto;min-height:0;flex:1 1 auto;text-align:left}
- #modal .box .panel>h3:first-child,#modal .box .panel>h3:first-child+p{column-span:all;text-align:center}
- #modal .box .panel>*{break-inside:avoid}#modal .box .panel .bld{margin:0 0 6px}
- #modal .box .panel .ledger,#modal .box .panel .taxes{max-width:none}
- #modal .box>.pb{flex:none;align-self:center;margin-top:8px}
- #modal .box:has(.panel){width:min(860px,94vw);max-width:none}
  /* night map: map on the left, a compact list of rooms on the right, Sleep always on screen */
  #overlay.nt .cwrap{flex:1.15 1 0}
  #overlay.nt .ovb{padding:10px max(14px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) 14px;display:flex;flex-direction:column;align-items:stretch}
@@ -224,7 +214,7 @@ img.px{image-rendering:pixelated}
  #overlay.nt .must{font-size:13.5px!important;margin:2px 0!important}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
- #app{grid-template-rows:auto minmax(0,1fr) 46%}
+ #app{grid-template-rows:auto minmax(0,1fr) 43%}
  .ch{padding:5px 8px 5px 22px;font-size:14.5px}#choices{gap:5px}
  #overlay.fb .ovb p{font-size:14.5px}#overlay.fb .ovb h3{font-size:19px}#overlay.fb .nums b{font-size:18px}#overlay.fb .summary ul{font-size:13px}
  #overlay.nt .ovb>p.dim:not(.must){display:none}
@@ -234,12 +224,10 @@ img.px{image-rendering:pixelated}
  #overlay.nt .council{display:none}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4){
- .setgrid{grid-template-columns:repeat(3,1fr);gap:6px 8px}.setgrid .pb{font-size:13.5px;padding:8px 6px;letter-spacing:.3px}
- #modal .box:has(.setgrid){width:min(720px,94vw);max-width:none;padding:12px 16px}#modal .box:has(.setgrid) h3{margin:0 0 6px}
  #overlay.nt .rooms{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px){
- #app{grid-template-rows:auto minmax(0,1fr) 49%}
+ #app{grid-template-rows:auto minmax(0,1fr) 46%}
  #txt{font-size:14.5px;line-height:1.26}
  .ch{font-size:14px;padding:5px 8px 5px 22px}
 }
@@ -247,6 +235,93 @@ img.px{image-rendering:pixelated}
  #txt{font-size:13.5px;line-height:1.22}
  #overlay.nt .rooms{gap:4px}
  #overlay.nt .ovb h3{margin:0 0 2px}
+}
+/* ---------- panels & settings: header with Done, sections laid out side by side, no scrolling in landscape ---------- */
+#modal .box.pnl{width:min(920px,96vw);max-width:none;max-height:94%;padding:0;display:flex;flex-direction:column;text-align:left;overflow:hidden}
+.phead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px 8px 18px;border-bottom:2px solid #000;box-shadow:0 1px 0 #5a4020;background:linear-gradient(#2c1e33,#1e1424);flex:none}
+.phead h3{margin:0;font-size:22px;text-align:left;line-height:1.1}
+.phead p{margin:2px 0 0;font-size:14px;color:#b8a488;font-style:italic;line-height:1.2}
+.pb.done{min-width:0;margin:0;padding:7px 20px;font-size:15px;flex:none}
+.pbody{display:grid;gap:10px;padding:10px 12px 12px;overflow-y:auto;min-height:0;align-content:start}
+.pbody.t3{grid-template-columns:repeat(3,minmax(0,1fr))}.pbody.t2{grid-template-columns:repeat(2,minmax(0,1fr))}.pbody.t1{grid-template-columns:1fr}
+.pbody section,.mis,.bcard{background:#170f1c;border:2px solid #000;box-shadow:inset 0 0 0 1px #3e2c1c;padding:8px 10px;min-width:0}
+.pbody section{display:flex;flex-direction:column;gap:3px}
+.pbody h4{font-family:var(--display);color:var(--gold);font-size:12.5px;letter-spacing:1.5px;text-transform:uppercase;margin:0 0 3px;border-bottom:1px solid #3e2c1c;padding-bottom:3px}
+.pbody section h4:not(:first-child){margin-top:8px}
+.lrow{display:flex;justify-content:space-between;align-items:center;font-size:15px;line-height:1.3}
+.lrow img{width:14px;height:14px;margin-right:6px;vertical-align:-2px}
+.lrow b{font-variant-numeric:lining-nums tabular-nums;font-weight:800}.lrow b.pos{color:#a8e08a}.lrow b.neg{color:#ff9a8a}
+.note{font-size:13px;color:#b8a488;font-style:italic;margin:3px 0 0;line-height:1.3}
+.lbl{font-size:13px;color:#b8a488;margin:0}
+.seg{display:flex;border:2px solid #000;background:#000;gap:2px;margin:2px 0 4px}
+.seg button{flex:1;font-family:var(--display);font-size:13px;padding:7px 2px;background:#2e2234;color:#d8c8b0;border:0;cursor:pointer;box-shadow:inset 0 0 0 1px #4a3a50}
+.seg button.on{background:#a8322a;color:#fff4dc;box-shadow:inset 0 0 0 1px #e0705a}
+.trade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
+.trade button,.mb button,.bcard button,.act{font-family:var(--book);background:#a8322a;color:#fff4dc;border:2px solid #000;box-shadow:inset 0 0 0 1px #e0705a,0 3px 0 #000;cursor:pointer;padding:6px;display:flex;flex-direction:column;align-items:center;gap:1px}
+.trade button:active,.mb button:active,.bcard button:active,.act:active,.tg:active{transform:translateY(2px);box-shadow:inset 0 0 0 1px #e0705a,0 1px 0 #000}
+.trade b{font-family:var(--display);font-size:14px}.trade span{font-size:15px;font-variant-numeric:lining-nums;font-weight:700}.trade img{width:13px;height:13px;vertical-align:-2px}
+.pnl button:disabled{opacity:.38;filter:grayscale(.6);cursor:default}
+.mis{display:flex;flex-direction:column;gap:5px;padding:6px 8px}
+.mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mh b{font-family:var(--display);color:var(--gold);font-size:13.5px;line-height:1.15}
+.mh small{font-size:12px;color:#9ec88a;text-align:right;max-width:48%;line-height:1.15}
+.mis.sent{text-align:center;padding:16px}.mis.sent b{font-family:var(--display);color:var(--gold);font-size:18px}.mis.sent small{color:#c8b498;font-size:15px}
+.mb{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.mb button{padding:4px 2px}
+.mb b{font-family:var(--display);font-size:11.5px;letter-spacing:.2px;white-space:nowrap}
+.mb em{font-style:normal;font-size:12.5px;font-weight:700}.mb em.good{color:#b8f0a0}.mb em.ok{color:#f2d080}.mb em.meh{color:#f0a860}.mb em.bad{color:#ffb0a0}
+.bcard{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 8px 6px 10px}
+.bcard b{font-family:var(--display);color:var(--gold);font-size:14px}.bcard small{display:block;font-size:12.5px;color:#b8a488;line-height:1.2}
+.bcard button{flex-direction:row;gap:5px;font-weight:800;font-size:15px;padding:6px 12px;font-variant-numeric:lining-nums;flex:none}.bcard button img{width:13px;height:13px}
+.bcard.done{opacity:.6}.bcard .built{font-family:var(--display);color:#9ec88a;font-size:13px;flex:none}
+.tg{display:flex;justify-content:space-between;align-items:center;background:#2a1d2e;border:2px solid #000;box-shadow:inset 0 0 0 1px #4a3a50;color:#f4e2c0;font-family:var(--book);font-size:15.5px;padding:7px 10px;cursor:pointer;margin:1px 0}
+.tg i{width:36px;height:18px;background:#120b16;border:2px solid #000;position:relative;box-shadow:inset 0 0 0 1px #4a3a50;flex:none}
+.tg i::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:10px;background:#6a5a70;transition:left .15s}
+.tg.on i{background:#3e6a2c;box-shadow:inset 0 0 0 1px #7ac060}.tg.on i::after{left:18px;background:#f4e2c0}
+.act{flex-direction:row;justify-content:center;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.5px;padding:8px;margin:2px 0;background:#3a2c40;box-shadow:inset 0 0 0 1px #6a5070,0 3px 0 #000}
+.act.gold{background:#a8322a;box-shadow:inset 0 0 0 1px #e0705a,0 3px 0 #000}
+@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.pbody.t3,.pbody.t2{grid-template-columns:1fr}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+ .phead{padding:6px 10px 6px 14px}.phead h3{font-size:19px}.phead p{font-size:12.5px}.pb.done{padding:6px 16px;font-size:14px}
+ .pbody{padding:8px 10px 10px;gap:8px}.pbody section{padding:6px 8px}.lrow{font-size:14px;line-height:1.25}.note{font-size:12px}
+ .tg{padding:5px 9px;font-size:14.5px}.seg button{padding:5px 2px;font-size:12.5px}.act{padding:6px;font-size:13px}
+ .mis{padding:5px 7px;gap:4px}.mb button{padding:3px 2px}.mb em{font-size:12px}.bcard{padding:5px 8px}.bcard small{font-size:12px}
+}
+@media (orientation:landscape) and (min-aspect-ratio:5/4){
+ #dialog.many{grid-template-columns:auto minmax(0,1fr) minmax(0,1.25fr)}
+ #dialog.many #choices{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:6px}
+ #dialog.many .ch{padding-right:6px}
+ #dialog.many .ch.go{grid-column:1/-1}
+}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px){
+ .pbody.wr{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+ .wr .mh{flex-direction:column;align-items:flex-start;gap:1px}.wr .mh small{max-width:none;text-align:left}
+ .wr .mh b{font-size:12.5px}.wr .mb b{font-size:12px}.wr .mb em{font-size:11.5px;white-space:nowrap}.wr .mb button{padding:3px 1px}.wr .mis{gap:3px}
+}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px) and (max-height:440px){
+ .wr .mis{padding:4px 6px}.wr .mh b{font-size:12px;line-height:1.08}.wr .mh small{font-size:11.5px;line-height:1.1}
+ .wr .mb b{font-size:11px}.wr .mb em{font-size:11px}.wr .mb button{padding:2px 1px}
+}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:800px){.pbody.wr{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4){#modal:has(.pnl){padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}#modal .box.pnl{max-height:100%}}
+/* prologue: the vista fills the screen, the story runs along the bottom */
+#overlay.pl{display:block;overflow:hidden}
+#overlay.pl .cwrap{position:absolute;inset:0;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#05030a}
+#overlay.pl #castle{width:max(100%,calc(100dvh * 4 / 3));height:auto;flex:none;animation:plzoom 14s ease-out forwards}
+@keyframes plzoom{from{transform:scale(1.08)}to{transform:scale(1)}}
+#overlay.pl .ovb{position:absolute;left:0;right:0;bottom:0;height:auto;max-height:none;overflow:visible;flex-direction:row;align-items:flex-end;justify-content:space-between;gap:18px;
+ padding:56px max(22px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 16px) max(22px,env(safe-area-inset-left));background:linear-gradient(rgba(5,3,8,0),rgba(5,3,8,.82) 38%,rgba(5,3,8,.94));text-align:left;animation:none}
+#overlay.pl .pl-in{flex:1;min-width:0;max-width:760px;animation:fade 1s}
+#overlay.pl .pl-k{font-family:var(--pixel);font-size:12px;letter-spacing:3px;color:#c8a46a;text-transform:uppercase}
+#overlay.pl h3{text-align:left;margin:2px 0 4px;font-size:26px}
+#overlay.pl p{max-width:none;margin:0;font-size:18px;line-height:1.42;color:#f4e2c0;text-shadow:0 2px 0 #000}
+#overlay.pl .pl-btns{display:flex;flex-direction:column;gap:8px;flex:none}
+#overlay.pl .pb{min-width:0;margin:0;padding:9px 18px;font-size:15px}
+.pl-faces{display:flex;gap:12px;margin:2px 0 8px}.pl-faces figure{margin:0;text-align:center}.pl-faces canvas{width:52px;height:52px;background:#2a1d2e;border:2px solid #000;box-shadow:inset 0 0 0 1px #6a4a2a}
+.pl-faces figcaption{font-family:var(--display);font-size:12px;color:var(--gold);margin-top:2px}
+@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){#overlay.pl .ovb{flex-direction:column;align-items:stretch}#overlay.pl .pl-btns{flex-direction:row-reverse;justify-content:space-between}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+ #overlay.pl .ovb{padding-top:40px;padding-bottom:calc(env(safe-area-inset-bottom) + 12px)}#overlay.pl h3{font-size:21px}#overlay.pl p{font-size:15.5px;line-height:1.36}
+ .pl-faces canvas{width:40px;height:40px}.pl-faces{margin:0 0 4px}
 }
 </style>
 </head>
@@ -501,8 +576,21 @@ const Music={cur:null,want:null,ptr:0,events:[],
   else if(e.k==="arp")INST[T.arp](e.n,t,T.arpVol,d,this.spb);
   else if(e.k==="drum")INST.drum(t,e.v,d);else if(e.k==="tick")INST.tick(t,e.v,d)}
 };
-document.addEventListener("pointerdown",()=>AU.init(),{capture:true});
-document.addEventListener("visibilitychange",()=>{if(!AU.ctx)return;document.hidden?AU.ctx.suspend():AU.ctx.resume()});
+/* iOS suspends or "interrupts" Web Audio when the app goes to the background. When the player comes back we
+   resume it, and if iOS refuses, rebuild the audio graph from scratch on the next touch and restart the track. */
+AU.rebuild=function(){const track=Music.cur||Music.want;try{this.ctx&&this.ctx.close()}catch(e){}this.ctx=null;
+ Music.cur=null;Music.events=[];this.init();if(track&&this.ctx)Music.play(track)};
+AU.wake=function(){if(!this.ctx)return this.init();const x=this.ctx;
+ const resync=()=>{if(Music.events.length){Music.ptr=0;Music.loopStart=x.currentTime+.1}};
+ if(x.state==="running"){resync();return}
+ let p;try{p=x.resume()}catch(e){return this.rebuild()}
+ Promise.resolve(p).then(()=>{if(x.state!=="running")this.rebuild();else resync()}).catch(()=>this.rebuild());
+ setTimeout(()=>{if(this.ctx===x&&x.state!=="running")this.rebuild()},600)};
+document.addEventListener("pointerdown",()=>{AU.ctx?AU.wake():AU.init()},{capture:true});
+document.addEventListener("touchend",()=>{if(AU.ctx&&AU.ctx.state!=="running")AU.wake()},{capture:true});
+document.addEventListener("visibilitychange",()=>{if(!AU.ctx)return;if(document.hidden){try{AU.ctx.suspend()}catch(e){}}else AU.wake()});
+window.addEventListener("pageshow",()=>AU.ctx&&AU.wake());
+window.addEventListener("focus",()=>AU.ctx&&AU.wake());
 
 /* =========================================================
    THRONE ROOM SCENE
@@ -852,6 +940,8 @@ function mapTap(e){const cv=e.currentTarget,r=cv.getBoundingClientRect(),px=(e.c
 /* =========================================================
    MAIN LOOP
    ========================================================= */
+/* lots of choices: in landscape they spread into two columns instead of scrolling */
+new MutationObserver(()=>{const n=$("choices").children.length;$("dialog").classList.toggle("many",n>3)}).observe($("choices"),{childList:true});
 const pctx=$("portrait").getContext("2d");let PCHAR=null;
 const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4)");
 /* ---------------- Wide stage for landscape: the hall is extended to fill the screen ---------------- */
@@ -1242,6 +1332,7 @@ function buildMonth(){
  S.queue=E.map((e,i)=>i).filter(i=>E[i].m===S.month);
  if(S.month!==BATTLE_MONTH&&S.month!==12){const se=SEASON(S.month);const pool=R.map((r,i)=>i).filter(i=>(R[i].s===se||R[i].s==="any")&&!S.usedR.includes(i));
   for(let k=0;k<(S.month===3||S.month>=8?1:2)&&pool.length;k++){const j=pool.splice(Math.floor(Math.random()*pool.length),1)[0];S.usedR.push(j);S.queue.splice(1+k*2,0,"r"+j)}}
+ {const isAg=q=>typeof q==="number"&&WHO_AGENT[E[q].who];S.queue=[...S.queue.filter(isAg),...S.queue.filter(q=>!isAg(q))]}
  if((S.unrest||0)>=2&&S.month!==BATTLE_MONTH)S.queue.unshift("riot");
  S.qi=0}
 function current(){const q=S.queue[S.qi];return q==="riot"?RIOT:typeof q==="string"?R[+q.slice(1)]:E[q]}
@@ -1261,7 +1352,7 @@ function present(e){
   e.choices.filter(o=>(!o.req||o.req())&&(!o.agent||agentKnown(o.agent))).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>choose(e,o))))});
 }
 function choose(e,o){
- SFX.click();$("choices").innerHTML="";LAST={};const reply=o.go();render();react();countChoice();
+ if(!can(o))return;SFX.click();$("choices").innerHTML="";LAST={};const reply=o.go();render();react();countChoice();
  typeText(reply,C[e.who].voice,()=>{const b=document.createElement("button");b.className="ch go";b.textContent="Continue";
   b.onclick=()=>{SFX.click();$("choices").innerHTML="";if(fail())return;S.qi++;PCHAR=null;$("txt").className="wait";$("txt").textContent="";$("who").textContent="";$("role").textContent="";SC.exit(next)};
   $("choices").appendChild(b)});
@@ -1504,9 +1595,9 @@ function endMonth(){
  const L=ledgerRows();LAST={};fx({gold:L.gold,food:L.food,favor:L.mood});render();
  S.unrest=Math.max(0,Math.min(3,(S.unrest||0)+(S.favor<30?1:-1)+(S.tax==="high"?1:0)));
  S.lastLedger=L;S.night={};S.usedN=S.usedN||[];
- S.night.req=SCENES.filter(sc=>(!sc.m||sc.m.includes(S.month))&&(!sc.when||sc.when())&&!S.doneScenes.includes(sc.id)).slice(0,3).map(sc=>sc.id);S.night.reqDone={};
+ S.night.req=SCENES.filter(sc=>(!sc.m||sc.m.includes(S.month))&&(!sc.when||sc.when())&&!speakerAway(sc.who)&&!S.doneScenes.includes(sc.id)).slice(0,3).map(sc=>sc.id);S.night.reqDone={};
  const busy=new Set(S.night.req.map(id=>SCENES.find(x=>x.id===id).room));S.night.evs=[];S.night.evDone={};
- const want=Math.random()<.5?1:2;for(let k=0;k<want;k++){const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>(!NIGHT_EVENTS[i].when||NIGHT_EVENTS[i].when())&&!S.usedN.includes(i)&&!busy.has(NIGHT_EVENTS[i].room));
+ const want=Math.random()<.5?1:2;for(let k=0;k<want;k++){const pool=NIGHT_EVENTS.map((_,i)=>i).filter(i=>(!NIGHT_EVENTS[i].when||NIGHT_EVENTS[i].when())&&!speakerAway(NIGHT_EVENTS[i].who)&&!S.usedN.includes(i)&&!busy.has(NIGHT_EVENTS[i].room));
   if(!pool.length)break;const i=pool[Math.floor(Math.random()*pool.length)];S.usedN.push(i);S.night.evs.push(i);busy.add(NIGHT_EVENTS[i].room)}
  CS.season=SEASON(S.month);setPhase("night");Music.play("night");SFX.toll();
  showNight("hub");
@@ -1586,33 +1677,33 @@ function leaveRoom(){clearDialog();$("txt").className="wait";$("txt").textConten
  const w=SC.walker;if(!w)return showNight();w.dir=-1;w.target=14;w.arrive=()=>{SC.doorT=0;SFX.thud();setTimeout(()=>showNight(),FAST?0:200)}}
 /* treasury ledger, war-room missions and the mason's plans open over the room */
 function panelHTML(view){const N=S.night,mis=S.mission;
- if(view==="treasury"){const L=S.lastLedger,P=ledgerRows();
-  const row=(ic,l,v)=>`<div class="sumrow"><span><img class="px" src="${ICONURL[ic]}" alt="">${l}</span><b>${money(v)}</b></div>`;
-  return `<h3>The Treasury</h3><p class="dim">Aldric's ledger for ${MONTHS[S.month-1]}</p>
-   <div class="ledger">${row("gold","Taxes",L.tax)}${L.lands?row("gold","Vex's old lands",L.lands):""}${L.tithe?row("gold","Vex's tithe",-L.tithe):""}${L.wood?row("gold","Firewood",-L.wood):""}${L.fox?row("gold","The Fox's blockade",-L.fox):""}${row("gold","Soldiers' wages",-L.wages)}${row("food","Fields &amp; stores",L.crops)}${row("food","The castle eats",-L.eat)}${L.mood?row("favor","The people's mood",L.mood):""}</div>
-   <h3 class="sm">Next month, if nothing changes</h3>
-   <div class="ledger">${row("gold","Gold",P.gold)}${row("food","Grain",P.food)}${P.mood?row("favor","Favor",P.mood):""}</div>
-   <p class="dim">${P.food<0&&S.food+P.food*2<0?"At this rate the granary runs dry within two months.":P.gold<0?"The army costs more than the taxes bring in.":"The books balance, my lord."}</p>
-   <h3 class="sm">Set the tax rate</h3>
-   <div class="taxes">${Object.entries(TAX).map(([k,t])=>`<button class="tx${S.tax===k?" on":""}" onclick="setTax('${k}')"><b>${t.n}</b><small>${t.d}</small></button>`).join("")}</div>
-   <h3 class="sm">Trade grain with the Guild</h3>${(()=>{const pr=grainPrice();return `<div class="taxes" style="grid-template-columns:1fr 1fr"><button class="tx" onclick="tradeGrain(1)" ${S.gold<pr.buy?"disabled":""}><b>Buy 10 grain</b><small>${pr.buy} gold</small></button><button class="tx" onclick="tradeGrain(-1)" ${S.food<10?"disabled":""}><b>Sell 10 grain</b><small>${pr.sell} gold</small></button></div><p class="dim">${has("guildEnemy")?"The Guild remembers your debt. Its prices are cruel.":SEASON(S.month)==="winter"?"Grain is dear in winter.":SEASON(S.month)==="autumn"?"Grain is cheap at harvest.":"The Guild's usual prices."}</p>`})()}`}
+ const ic=k=>`<img class="px" src="${ICONURL[k]}" alt="">`;
+ if(view==="treasury"){const L=S.lastLedger,P=ledgerRows(),pr=grainPrice();
+  const row=(k,l,v)=>`<div class="lrow"><span>${ic(k)}${l}</span><b class="${v<0?"neg":v>0?"pos":""}">${money(v)}</b></div>`;
+  const status=P.food<0&&S.food+P.food*2<0?"At this rate the granary runs dry within two months.":P.gold<0?"The army costs more than the taxes bring in.":"The books balance, my lord.";
+  return {title:"The Treasury",sub:`Aldric's ledger for ${MONTHS[S.month-1]}`,cls:"t3",body:`
+   <section><h4>This month</h4>${row("gold","Taxes",L.tax)}${L.lands?row("gold","Vex's old lands",L.lands):""}${L.tithe?row("gold","Vex's tithe",-L.tithe):""}${L.wood?row("gold","Firewood",-L.wood):""}${L.fox?row("gold","The Fox's blockade",-L.fox):""}${row("gold","Soldiers' wages",-L.wages)}${row("food","Fields &amp; stores",L.crops)}${row("food","The castle eats",-L.eat)}${L.mood?row("favor","The people's mood",L.mood):""}</section>
+   <section><h4>Next month</h4>${row("gold","Gold",P.gold)}${row("food","Grain",P.food)}${P.mood?row("favor","Favor",P.mood):""}<p class="note">${status}</p>
+    <h4>Tax rate</h4><div class="seg">${Object.entries(TAX).map(([k,t])=>`<button class="${S.tax===k?"on":""}" onclick="setTax('${k}')"><b>${t.n}</b></button>`).join("")}</div><p class="note">${TAX[S.tax].d}</p></section>
+   <section><h4>The Guild's grain</h4><div class="trade"><button onclick="tradeGrain(1)" ${S.gold<pr.buy?"disabled":""}><b>Buy 10 ${ic("food")}</b><span>${pr.buy} ${ic("gold")}</span></button><button onclick="tradeGrain(-1)" ${S.food<10?"disabled":""}><b>Sell 10 ${ic("food")}</b><span>${pr.sell} ${ic("gold")}</span></button></div>
+    <p class="note">${has("guildEnemy")?"The Guild remembers your debt. Its prices are cruel.":SEASON(S.month)==="winter"?"Grain is dear in winter.":SEASON(S.month)==="autumn"?"Grain is cheap at harvest.":"The Guild's usual prices."}</p></section>`}}
  if(view==="war"){const list=Object.entries(MISSIONS).filter(([id,M])=>S.month>=M.from&&S.month<=M.to&&!(M.once&&S.done.includes(id))&&(!M.when||M.when()));
-  return `<h3>The War Room</h3><p class="dim">${leader()} leans over the map table.</p>
-   ${mis?`<div class="bld done"><div><b>${MISSIONS[mis.id].n}</b><small>${mis.n} soldiers rode out tonight. Report next month.</small></div></div>`:
-   list.map(([id,M])=>`<div class="bld col"><div><b>${M.n}</b><small>${M.d}</small><small class="gain">If it goes well: ${REWARD[id]||"a good report"}</small></div><div class="btns sq">${[[5,"A few scouts"],[10,"A company"],[20,"A war party"]].map(([n,l])=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""}><b>${l}</b><span>${n} soldiers</span><em class="${oddsClass(chance(id,n))}">${S.men<n+5?"Not enough soldiers":oddsWord(chance(id,n))}</em></button>`).join("")}</div></div>`).join("")}
-   <p class="dim">You have ${S.men} soldiers at home. Whoever rides out is gone until next month's report, and not everyone may come back. ${agentFree("general")?"":"Your General is away, so missions are riskier."}</p>`}
- if(view==="mason")return `<h3>The Mason's Yard</h3><p class="dim">${N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\""}</p>`+
+  const sub=`${S.men} soldiers at home${agentFree("general")?"":" · the General is away, so missions are riskier"}`;
+  if(mis)return {title:"The War Room",sub,cls:"t1",body:`<div class="mis sent"><b>${MISSIONS[mis.id].n}</b><small>${mis.n} soldiers rode out tonight. ${leader()} will report next month.</small></div>`};
+  return {title:"The War Room",sub,cls:"t2 wr",body:list.map(([id,M])=>`<div class="mis"><div class="mh"><b>${M.n}</b><small>${REWARD[id]||"a good report"}</small></div>
+   <div class="mb">${[[5,"Scouts"],[10,"Company"],[20,"War party"]].map(([n,l])=>`<button onclick="sendMission('${id}',${n})" ${S.men<n+5?"disabled":""} title="${l}"><b>${n} men</b><em class="${S.men<n+5?"":oddsClass(chance(id,n))}">${S.men<n+5?"Too few":oddsWord(chance(id,n))}</em></button>`).join("")}</div></div>`).join("")}}
+ if(view==="mason")return {title:"The Mason's Yard",sub:N.built?"Hildra's crew is already at work. One project a month.":"\"One project a month, my lord. Stone won't be hurried.\"",cls:"t2",body:
    Object.entries(BUILD).filter(([k,o])=>!o.from||S.month>=o.from||S.b[k]).map(([k,o])=>{const cost=Math.max(5,(k==="walls"?o.cost-(has("masonWalls")?10:0)-(has("quarry")?10:0)-(has("refugeeMasons")?10:0):o.cost)-(has("freeStone")?15:0)-(has("hildraSteward")?10:0));
-    return S.b[k]?`<div class="bld done"><div><b>${o.n}</b><small>Built · ${o.d}</small></div></div>`:
-    `<div class="bld"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}><img class="px" src="${ICONURL.gold}" alt="" style="width:12px;height:12px;vertical-align:-1px"> ${cost}</button></div>`}).join("")}
-function panel(view){setTimeout(()=>showTip(view),200);const keep=$("modal").style.display==="flex"&&$("modal").querySelector(".box")?$("modal").querySelector(".box").scrollTop:0;
- modal(`<div class="panel">${panelHTML(view)}</div><button class="pb" onclick="closePanel()">Done</button>`);$("modal").querySelector(".box").scrollTop=keep}
+    return S.b[k]?`<div class="bcard done"><div><b>${o.n}</b><small>${o.d}</small></div><span class="built">Built</span></div>`:
+    `<div class="bcard"><div><b>${o.n}</b><small>${o.d}</small></div><button onclick="build('${k}',${cost})" ${N.built||S.gold<cost?"disabled":""}>${ic("gold")} ${cost}</button></div>`}).join("")}}
+function panel(view){setTimeout(()=>showTip(view),200);const P=panelHTML(view);
+ modal(`<div class="phead"><div><h3>${P.title}</h3><p>${P.sub}</p></div><button class="pb done" onclick="closePanel()">Done</button></div><div class="pbody ${P.cls}">${P.body}</div>`,"pnl")}
 function closePanel(){SFX.click();closeModal();roomIdle()}
 function grainPrice(){const se=SEASON(S.month);let buy={spring:14,summer:14,autumn:10,winter:18}[se],sell={spring:8,summer:8,autumn:6,winter:11}[se];if(has("guildEnemy")){buy+=6;sell-=3}return{buy,sell}}
 function tradeGrain(d){const pr=grainPrice();if(d>0&&S.gold<pr.buy||d<0&&S.food<10)return;LAST={};d>0?fx({gold:-pr.buy,food:10}):fx({gold:pr.sell,food:-10});SFX.coin();render();save();panel("treasury")}
 function setTax(k){SFX.click();S.tax=k;save();panel("treasury")}
 const REWARD={patrol:"+6 favor",hunt:"+16 grain",bandits:"+18 gold, +3 favor",caravan:"+24 gold",scout:"learn Vex's plans (helps in July)",raid:"+12 grain, and Vex marches hungry",harvest:"+20 grain",wolves:"+6 favor, +6 grain",vexHunt:"Baron Vex, dead",shadow:"proof Corvin's will is forged"};
-function oddsWord(c){return c>=90?"Almost certain":c>=75?"Very likely":c>=55?"Likely":c>=35?"Even odds":"Risky"}
+function oddsWord(c){return c>=90?"Certain":c>=75?"Very likely":c>=55?"Likely":c>=35?"Even odds":"Risky"}
 function oddsClass(c){return c>=75?"good":c>=55?"ok":c>=35?"meh":"bad"}
 function sendMission(id,n){if(S.mission||S.men<n+5)return;SFX.war();S.mission={id,n};LAST={};fx({men:-n});render();save();SC.emote={type:"bang",t:0};panel("war")}
 function missionReport(cb){
@@ -1707,6 +1798,8 @@ const AGENTS={
  witch:{role:"Witch",known:()=>(has("witchPact")||has("witchWarned")||has("morwenCourt")||has("witchCourt"))&&!has("morwenBanished"),name:()=>"Morwen"},
 };
 function agentKnown(a){return AGENTS[a].known()}
+const WHO_AGENT={whisper:"spy",morwen:"witch"};
+function speakerAway(who){const a=WHO_AGENT[who];return !!a&&agentKnown(a)&&!agentFree(a)}
 function agentFree(a){S.away=S.away||{};return agentKnown(a)&&!((S.away[a]||0)>S.month)}
 function send(a,months=1){S.away=S.away||{};S.away[a]=S.month+months;note(`Sent ${AGENTS[a].name()} away on your business.`)}
 function roll(p){return Math.random()<p}
@@ -1765,7 +1858,7 @@ const PREF={speed:"normal",big:false,haptics:true};
 try{const q=JSON.parse(localStorage.getItem("ef_prefs")||"{}");if(q.sp)PREF.speed=q.sp;if(q.bt)PREF.big=true;if(q.hp===false)PREF.haptics=false}catch(e){}
 const SPEEDS={slow:1.7,normal:1,fast:.45,instant:0},SPEEDNAME={slow:"Slow",normal:"Normal",fast:"Fast",instant:"Instant"};
 function applyPrefs(){document.body.classList.toggle("bigtext",PREF.big)}
-function cycleSpeed(){const k=Object.keys(SPEEDS);PREF.speed=k[(k.indexOf(PREF.speed)+1)%k.length];savePrefs();openSettings()}
+function cycleSpeed(){const k=Object.keys(SPEEDS);setSpeed(k[(k.indexOf(PREF.speed)+1)%k.length])}
 let TIPS=[];try{TIPS=JSON.parse(localStorage.getItem("ef_tips")||"[]")}catch(e){}
 const TIP={
  start:["Welcome, my lord","Petitioners walk up the carpet one at a time. Read what they want, then choose. Most choices cost or earn <b>gold</b>, <b>grain</b>, <b>soldiers</b> or the people's <b>favor</b>, shown at the top. Let any of them collapse and your reign ends early.<br><br>Tap any resource at the top to see what's raising or draining it."],
@@ -1876,26 +1969,53 @@ function ending(k){
   <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
   <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="showTitle()">Title Screen</button></div>`);
  return true}
-function overlay(h){const o=$("overlay");o.className=/class="rooms"/.test(h)?"nt":/class="logo"/.test(h)?"ts":/class="ovb (siege|ending)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
+function overlay(h){const o=$("overlay");o.className=/class="rooms"/.test(h)?"nt":/class="logo"/.test(h)?"ts":/class="ovb prolog/.test(h)?"pl":/class="ovb (siege|ending)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
-function modal(h){const m=$("modal");m.innerHTML=`<div class="box">${h}</div>`;m.style.display="flex"}
+function modal(h,cls=""){const m=$("modal");m.innerHTML=`<div class="box ${cls}">${h}</div>`;m.style.display="flex"}
 function closeModal(){const m=$("modal");m.style.display="none";m.innerHTML=""}
 function openChron(){SFX.page();modal(`<h3>The Chronicle of Emberfall</h3><ul>${(S&&S.chron||[]).map(c=>`<li>${c}</li>`).join("")||"<li>Nothing yet written.</li>"}</ul><button class="pb" onclick="closeModal()">Close</button>`)}
 function savePrefs(){try{localStorage.setItem("ef_prefs",JSON.stringify({m:AU.musicOn,s:AU.sfxOn,sp:PREF.speed,bt:PREF.big,hp:PREF.haptics}))}catch(e){}applyPrefs()}
-function openSettings(){SFX.click();modal(`<h3>Settings</h3><div class="setgrid">
- <button class="pb alt" onclick="AU.musicOn=!AU.musicOn;if(AU.mg)AU.mg.gain.value=AU.musicOn?.5:0;savePrefs();openSettings()">Music: ${AU.musicOn?"On":"Off"}</button>
- <button class="pb alt" onclick="cycleSpeed()">Text speed: ${SPEEDNAME[PREF.speed]}</button>
- <button class="pb alt" onclick="PREF.big=!PREF.big;savePrefs();openSettings()">Larger text: ${PREF.big?"On":"Off"}</button>
- <button class="pb alt" onclick="PREF.haptics=!PREF.haptics;savePrefs();openSettings()">Vibration: ${PREF.haptics?"On":"Off"}</button>
- <button class="pb alt" onclick="AU.sfxOn=!AU.sfxOn;if(AU.sg)AU.sg.gain.value=AU.sfxOn?.6:0;savePrefs();openSettings()">Sound: ${AU.sfxOn?"On":"Off"}</button>
- ${PRO?'<p class="dim">The full year is unlocked. Thank you!</p>':`<button class="pb" onclick="closeModal();unlockFull()">Unlock the full year · ${STORE.price}</button>`}
- <button class="pb alt" onclick="restoreFull()">Restore purchase</button>
- <button class="pb alt" onclick="resetTips()">Show tips again</button>
- <button class="pb alt" onclick="closeModal();showTitle()">Save &amp; Quit to Title</button>
- </div><button class="pb" onclick="closeModal()">Back</button>`)}
+function tg(label,on,fn){return `<button class="tg ${on?"on":""}" onclick="${fn};openSettings(true)"><span>${label}</span><i></i></button>`}
+function setSpeed(k){PREF.speed=k;savePrefs();openSettings(true)}
+function openSettings(quiet){if(!quiet)SFX.click();else SFX.blip&&SFX.blip(700);modal(`<div class="phead"><div><h3>Settings</h3></div><button class="pb done" onclick="closeModal()">Back</button></div>
+ <div class="pbody t3 set">
+ <section><h4>Sound</h4>
+  ${tg("Music",AU.musicOn,"AU.musicOn=!AU.musicOn;if(AU.mg)AU.mg.gain.value=AU.musicOn?.5:0;savePrefs()")}
+  ${tg("Sound effects",AU.sfxOn,"AU.sfxOn=!AU.sfxOn;if(AU.sg)AU.sg.gain.value=AU.sfxOn?.6:0;savePrefs()")}
+  ${tg("Vibration",PREF.haptics,"PREF.haptics=!PREF.haptics;savePrefs()")}</section>
+ <section><h4>Reading</h4><p class="lbl">Text speed</p>
+  <div class="seg">${Object.keys(SPEEDS).map(k=>`<button class="${PREF.speed===k?"on":""}" onclick="setSpeed('${k}')"><b>${SPEEDNAME[k]}</b></button>`).join("")}</div>
+  ${tg("Larger text",PREF.big,"PREF.big=!PREF.big;savePrefs()")}</section>
+ <section><h4>Your reign</h4>
+  <button class="act" onclick="resetTips()">Show tips again</button>
+  ${S&&!document.querySelector("#overlay .logo")?`<button class="act" onclick="closeModal();showTitle()">Save &amp; quit to title</button>`:""}
+  ${PRO?'<p class="note">The full year is unlocked. Thank you!</p>':`<button class="act gold" onclick="closeModal();unlockFull()">Unlock the full year · ${STORE.price}</button>`}
+  <button class="act" onclick="restoreFull()">Restore purchase</button></section>
+ </div>`,"pnl")}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? <small>Hint: ${HINTS[k]||"Keep ruling."}</small></div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 function save(){try{localStorage.setItem("ef_save2",JSON.stringify(S))}catch(e){}}
-function newGame(){AU.init();SFX.click();closeModal();S=fresh();closeOverlay();SC.room=null;SC.cast=[];setPhase("day","spring");SC.walker=null;Music.play("hall");monthCard(()=>{buildMonth();next()})}
+/* ---------------- Prologue: who you are, what happened, and who is coming ---------------- */
+const PROLOGUE=[
+ {mode:"title",h:"Emberfall",t:"A proud little city on the river Ember, at the far edge of King Osmund's realm. Its old stone ford is the only crossing for fifty miles. Whoever holds Emberfall holds the road east."},
+ {mode:"snow",h:"The Old Lord Is Dead",t:"This winter your father, Lord Roderick, died in his sleep. The villages loved him and the lords across the river feared him. He left you a cracked wall, a thin treasury, and a hall full of people who aren't sure you're ready."},
+ {mode:"burn",h:"Baron Vex",t:"Across the river waits Baron Vex. For twenty years he has wanted the ford, and only your father kept him on his own bank. Now Vex smells weakness. He is gathering men, and by midsummer he will come."},
+ {mode:"spring",h:"Your Family",faces:["elinor","maren","tobin"],t:"You don't rule alone. Lady Elinor, your wife, sharp and steady. Maren, your eldest, old enough to be married off for an alliance. Young Tobin, who dreams of becoming a knight. Every choice you make, they will feel."},
+ {mode:"dawn",h:"Your First Year",t:"Each day, petitioners will climb the carpet to your throne. Each night, you may walk the castle. Keep the gold, the grain, the army and the people's favor from collapsing, and in the deep of winter the great lords will meet to judge your reign."},
+];
+function prologue(done,i=0){
+ const P=PROLOGUE[i];if(!P){closeOverlay();return done()}
+ setCastle(P.mode);if(i===0)Music.play("title");SFX.page();
+ overlay(`${castleHTML()}</div><div class="ovb prolog"><div class="pl-in">
+  <div class="pl-k">Prologue · ${i+1} of ${PROLOGUE.length}</div><h3>${P.h}</h3>
+  ${P.faces?`<div class="pl-faces">${P.faces.map(k=>`<figure><canvas width="32" height="32" data-k="${k}"></canvas><figcaption>${C[k].n.replace("Lady ","")}</figcaption></figure>`).join("")}</div>`:""}
+  <p>${P.t}</p></div>
+  <div class="pl-btns">${i<PROLOGUE.length-1?'<button class="pb alt" id="plSkip">Skip</button>':""}<button class="pb" id="plNext">${i===PROLOGUE.length-1?"Take the throne":"Continue"}</button></div></div>`);
+ document.querySelectorAll(".pl-faces canvas").forEach(c=>drawPortrait(c.getContext("2d"),C[c.dataset.k],{}));
+ $("plNext").onclick=()=>{SFX.click();prologue(done,i+1)};
+ if($("plSkip"))$("plSkip").onclick=()=>{SFX.click();closeOverlay();done()};
+}
+function newGame(){AU.init();SFX.click();closeModal();S=fresh();SC.room=null;SC.cast=[];setPhase("day","spring");SC.walker=null;render();
+ prologue(()=>{Music.play("hall");monthCard(()=>{buildMonth();next()})})}
 function cont(){AU.init();SFX.click();let s=null;try{s=JSON.parse(localStorage.getItem("ef_save2"))}catch(e){}if(!s)return newGame();if(!s.month)return newGame();S=s;ensureState();if(S.month>FREE_MONTHS&&!PRO){return paywall(()=>cont())}closeOverlay();SC.room=null;SC.cast=[];if(S.night&&S.night.reqDone){CS.season=SEASON(S.month);setPhase("night",CS.season);Music.play("night");render();return showNight()}const war=S.month===BATTLE_MONTH;setPhase(war?"dusk":"day",SEASON(S.month));SC.walker=null;Music.play(war?"battle":dayTrack());render();next()}
 function showTitle(){
  if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;SC.room=null;SC.cast=[];
