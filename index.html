@@ -923,6 +923,7 @@ function drawThrone(x,w){
  drawBody(x,C.lord,174,79,-1,{seated:1,bob:bobOf(2),blink:blinkOf(2)});
  x.fillStyle="#c99a3a";x.fillRect(160,64,4,8);x.fillStyle="#e8c860";x.fillRect(160,64,4,1);
  const wag=Math.floor(SC.t/(SC.walker?6:14))%2,br=bobOf(5);hound(x,140,92,wag,br);
+ if(SC.court)SC.court.forEach(([k,cx,d],i)=>drawBody(x,C[k],cx,97,d,{bob:bobOf(i+20),blink:blinkOf(i+21)}));
  drawWalker(x,w,true);
 }
 function drawWalker(x,w,talks){
@@ -2429,7 +2430,7 @@ function drawGateDuel(x){const LW=WIDE.LW,t=++BT.t,E=WIDE.E;
 /* ---------------- the beats ---------------- */
 let BSCORE=0;
 function bSay(title,who,text,choices,after){
- $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:"The Battle of the Ford";PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
+ $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:(BT.on?"The Battle of the Ford":"The Midwinter Council");PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
  $("txt").className="";$("choices").innerHTML="";
  typeText(text,who?C[who].voice:150,()=>{const ch=$("choices");
   choices.filter(o=>!o.req||o.req()).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};const r=o.go();render();save();
@@ -2513,6 +2514,7 @@ function finale(){
  if(!has("corvinFight")||(has("vassal")&&!has("freed"))){
   const lines=has("vassal")&&!has("freed")?"Sir Gerrit sits at the head of the council table. The lords look at him, not at you.":has("corvinPact")?"Corvin sits at your right hand, smiling, his son beside Maren. There is no vote. There doesn't need to be.":"The lords eat your bread, drink your wine and argue about the King. Then, one by one, they raise their cups to you.";
   return bSay("The Midwinter Council",null,"The snow breaks. Eleven lords ride through your gate for the Midwinter Council.\n\n"+lines,[{t:"The end of your first year",go:()=>""}],()=>ending(finalEnding()))}
+ SC.court=[["rhun",44,1],["ysolde",57,1],["anselm",84,1],["garrick",97,1],["teague",128,-1]];
  SC.enter("corvin",()=>bSay("The Midwinter Council","corvin",`The great hall is packed: eleven lords, their households, half the city in the gallery. Corvin unrolls the will one last time.\n\n"My lords. Roderick named me his heir, in his own hand, under his own seal. His son has had a year. You've all seen what kind of year. I ask you to choose the steadier hand."`,
   [{t:"\"I accuse Lord Corvin of my father's murder.\"",req:()=>clueCount()>=3,go:()=>{if(strongCase()){set("corvinExposed");return "You lay it out piece by piece: "+(S.clues||[]).map(k=>CLUES[k][0].toLowerCase()).join("; ")+".\n\n"+(hasClue("apothecary")?"Master Ulric stands up in the gallery, shaking, and swears to it. ":"")+(hasClue("brannoc")?"Brannoc's confession is read aloud. ":"")+"The hall goes silent. Corvin's smile finally slips."}
     set("accuseFailed");return "You lay out what you have. It's not enough. The lords mutter: grief, suspicion, a young lord desperate to keep his chair. Corvin looks wounded, and very patient."}},
@@ -2649,7 +2651,7 @@ function paywall(after){
  setCastle("dawn");SFX.toll();
  overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE END OF CHAPTER ONE —</div><h3>The summer is over</h3>
   <p>The battle at the ford is decided, and Emberfall will remember it. But your first year is only half done. The harvest is coming, a rival will claim your throne, and the great lords ride in for the Midwinter Council.</p>
-  <p>Unlock Chapter Two to finish your reign: autumn and winter, Lord Corvin's claim, the King's war, the Midwinter Council, and all 19 endings.</p>
+  <p>Unlock Chapter Two to finish your reign: Lord Corvin's claim to your throne, the hunt for your father's killer, the King's war, the Midwinter Council, and all 20 endings.</p>
   <button class="pb" id="buyBtn">Unlock the full year · ${STORE.price}</button>
   <p class="dim" style="font-size:14px">One purchase, yours forever. No ads, no subscriptions.</p>
   <button class="pb alt" id="restoreBtn">Restore purchase</button><button class="pb alt" id="laterBtn">Not now</button></div>`);
@@ -2747,7 +2749,7 @@ const ENDINGS={
 };
 const GOOD=["emberCrown","brokenChain","twoBanks","kingsHand","twoHouses","emberLord","longYear"],BAD=["revolt","fallen","witchFall","debt","chained","usurped"];
 function gotEndings(){try{return JSON.parse(localStorage.getItem("ef_end")||"[]").filter(k=>ENDINGS[k])}catch(e){return[]}}
-function ending(k){
+function ending(k){SC.court=null;
  const[t,d]=ENDINGS[k];const got=gotEndings();if(!got.includes(k))got.push(k);
  try{localStorage.setItem("ef_end",JSON.stringify(got));localStorage.removeItem("ef_save3")}catch(e){}
  setCastle(k==="famine"?"snow":GOOD.includes(k)?"dawn":BAD.includes(k)?"burn":"night");

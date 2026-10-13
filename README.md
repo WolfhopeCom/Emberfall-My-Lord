@@ -19,7 +19,9 @@ A pixel-art medieval story game. Your father is dead and the throne of **Emberfa
 - **Endings:** "Your reign in numbers" and memorable moments on every ending; hints for locked endings.
 - **Feel:** title, autumn and winter themes; the throne room shows lanterns after feasts, mourning drapes after the battle, Vex's banners while you're his vassal, and green fire while Morwen holds court.
 - **Grain market** in the Treasury: buy and sell grain with the Guild (cheap at harvest, dear in winter).
-- **16 characters, 19 endings:** 7 ways to lose your reign early, and 12 final endings decided by the Midwinter Council. Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
+- **The mystery:** your father was poisoned. Clues all year (the letter, the vial, Brannoc's confession, Vex's letters, the poisoned cup, the forger, the apothecary) build the case you can bring to the Midwinter Council.
+- **The eleven lords** (Journal → The Council) vote on Corvin's claim; each can be won a different way.
+- **20+ characters, 20 endings:** 7 ways to lose your reign early, and 12 final endings decided by the Midwinter Council. Choices carry forward: a marriage brings an ally, a broken pact brings a curse, the spy you pay unmasks a traitor, your son finds a tunnel.
 - **Animated throne room:** visitors walk in through the great doors, talk with animated portraits and react with emotes and particles.
 - **Synthesized music and sound:** an original medieval theme played on lute by day, bells at month's end and war drums when Vex comes; footsteps, doors, coins, bells and a babble "voice" for each character. No audio files.
 - **Animated castle vistas** for the title, each night and every ending (dawn, moonlight, fire, snow).
