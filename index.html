@@ -30,7 +30,7 @@ img.px{image-rendering:pixelated}
 #hudrow{display:flex;justify-content:space-between;align-items:center;margin-top:5px}
 #daylbl{font-family:var(--pixel);color:var(--gold);font-size:14px;letter-spacing:2px;line-height:1.15}#daylbl small{display:block;color:#ff8a6a;font-size:11px;letter-spacing:1px}
 .council{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;width:100%;max-width:420px;margin:-4px 0 10px}.council span{font-size:13px;color:#c8b498;background:#1e1424;border:2px solid #000;padding:3px 8px}.council b{font-family:var(--display);color:#f2c14e;font-size:12px;margin-right:4px}.council span.away{opacity:.5}
-.ch .cost.agent{color:#3a5a8a}
+.ch .cost.agent{color:#3a5a8a}.ch .cost.sub{color:#8a2a5a;font-style:italic}
 .hb{font-family:var(--pixel);background:#2e2234;color:#f4e2c0;border:2px solid #000;box-shadow:inset 0 0 0 1px #5a4020;font-size:13px;padding:3px 9px;margin-left:6px;cursor:pointer}
 /* scene */
 #scene{display:none}
@@ -255,6 +255,7 @@ img.px{image-rendering:pixelated}
 .lbl{font-size:13px;color:#b8a488;margin:0}
 .seg{display:flex;border:2px solid #000;background:#000;gap:2px;margin:2px 0 4px}
 .seg button{flex:1;font-family:var(--display);font-size:13px;padding:7px 2px;background:#2e2234;color:#d8c8b0;border:0;cursor:pointer;box-shadow:inset 0 0 0 1px #4a3a50}
+.seg.sp{display:grid;grid-template-columns:1fr 1fr;gap:4px;border:0;background:none}.seg.sp button{font-size:14px;padding:7px 4px;border:2px solid #000;white-space:nowrap}
 .seg button.on{background:#a8322a;color:#fff4dc;box-shadow:inset 0 0 0 1px #e0705a}
 .trade{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:2px}
 .trade button,.mb button,.bcard button,.act{font-family:var(--book);background:#a8322a;color:#fff4dc;border:2px solid #000;box-shadow:inset 0 0 0 1px #e0705a,0 3px 0 #000;cursor:pointer;padding:6px;display:flex;flex-direction:column;align-items:center;gap:1px}
@@ -330,6 +331,14 @@ img.px{image-rendering:pixelated}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){#pbox{width:78px;height:78px}#portrait{width:72px;height:72px}}
 #pbox{background:radial-gradient(circle at 60% 35%,#4a3450,#1e1424 75%)}
 #txt.tight{font-size:calc(1em - 1.5px)!important;line-height:1.2!important}#txt.tight2{font-size:calc(1em - 3px)!important}
+@media (orientation:landscape) and (min-aspect-ratio:5/4){
+#dialog.ftW{grid-template-columns:auto minmax(0,1fr) minmax(0,1.5fr)!important}
+#dialog.ftP{grid-template-columns:0 minmax(0,1fr) minmax(0,1.8fr)!important;column-gap:10px}#dialog.ftP #pbox{display:none}}
+#dialog.many2 #choices{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:5px}#dialog.many2 .ch.go{grid-column:1/-1}
+#dialog.ftB .ch{font-size:13px!important;line-height:1.15!important;padding:4px 6px 4px 20px!important}#dialog.ftB .ch::before{left:6px}#dialog.ftB .ch .cost{font-size:11px}
+#dialog.ftB .ch .cost{display:inline-flex;margin:0 0 0 6px;vertical-align:baseline}#dialog.ftB #choices{padding-bottom:2px}
+#dialog.ft3 #choices{grid-template-columns:1fr 1fr 1fr!important}
+#dialog.ftC .ch{font-size:12px!important;padding:3px 5px 3px 18px!important}#dialog.ftC #choices{gap:3px!important}
 #choices.tight{gap:4px!important}#choices.tight .ch{padding-top:4px;padding-bottom:4px;font-size:13.5px}
 #txt.more::after{content:" ▼";color:#a03020;font-size:.8em;display:inline-block;animation:bob .6s infinite alternate}
 #dialog{cursor:pointer}
@@ -345,6 +354,8 @@ img.px{image-rendering:pixelated}
 }
 /* small labels in a clear serif with lining numbers, not the pixel font */
 #daylbl{font-family:var(--display)!important;font-weight:700;letter-spacing:1.5px!important;font-variant-numeric:lining-nums}
+#daylbl,#daylbl small{white-space:nowrap}#hudrow>div:last-child{display:flex;gap:6px}
+@media (max-width:760px){#daylbl .se{display:none}#stats{gap:14px!important}#hud{gap:12px!important}.hb{margin-left:0}}
 #daylbl small{font-family:var(--display);font-weight:700;font-size:11.5px!important;letter-spacing:.8px!important;font-variant-numeric:lining-nums;margin-top:1px}
 #card span{font-family:var(--display);font-weight:700;font-variant-numeric:lining-nums;letter-spacing:3px}
 #card span em{font-family:var(--display);letter-spacing:1.5px}
@@ -391,6 +402,75 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.seat canvas{width:40px;height:40px}.seat em{font-size:10.5px}}
 @media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.seats{grid-template-columns:repeat(3,1fr)}}
 @media (orientation:landscape) and (min-aspect-ratio:5/4){#dialog.lots{grid-template-columns:auto minmax(0,.8fr) minmax(0,1.5fr)}#dialog.lots #choices{grid-template-columns:1fr 1fr 1fr}#dialog.lots .ch{font-size:13.5px;padding:5px 5px 5px 20px}#dialog.lots .ch::before{left:7px}}
+
+/* ---------- the night map: the castle fills the screen, rooms are tapped where they're painted ---------- */
+#overlay.nm{display:block;overflow:hidden;background:linear-gradient(#03051a 50%,#120a08 50%);padding:0}
+#overlay.nm .nmwrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#nmap{display:block;width:100%;height:100%;image-rendering:pixelated}
+#overlay.nm .rooms{position:absolute;inset:0;display:block;margin:0;max-width:none;width:auto}
+#overlay.nm .room{position:absolute;min-height:0;padding:0;margin:0;background:transparent;border:0;box-shadow:none;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#overlay.nm .room::after{content:"";position:absolute;inset:0;border:2px solid transparent;transition:border-color .15s,background .15s}
+#overlay.nm .room:active::after{border-color:#f2c14e;background:rgba(242,193,78,.12)}
+#overlay.nm .plq{position:absolute;left:50%;top:0;transform:translate(-50%,-62%);white-space:nowrap;font-family:var(--display);font-weight:700;font-size:12.5px;letter-spacing:.4px;color:#f4e2c0;
+ background:rgba(16,10,20,.9);border:2px solid #000;box-shadow:inset 0 0 0 1px #6a4a2a,0 2px 0 #000;padding:1px 8px 2px;display:flex;gap:5px;align-items:center;line-height:1.2;pointer-events:none}
+#overlay.nm .room.req .plq{color:#2a1810;background:#f2c14e;box-shadow:inset 0 0 0 1px #fff0b0,0 2px 0 #000;animation:plq 1.2s ease-in-out infinite}
+#overlay.nm .room.ev .plq{background:#8a2a22;box-shadow:inset 0 0 0 1px #e0705a,0 2px 0 #000}
+#overlay.nm .room.done .plq{opacity:.72}
+#overlay.nm .room.nudge .plq{animation:nudge .5s 2}
+@keyframes plq{50%{transform:translate(-50%,-78%)}}
+@keyframes nudge{25%{transform:translate(-56%,-62%)}75%{transform:translate(-44%,-62%)}}
+#overlay.nm em.bang{font-style:normal;display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:#c8382a;color:#fff4dc;font-size:11px;border:1px solid #000;position:static;margin:0}
+#overlay.nm .room.req em.bang{background:#2a1810;color:#f2c14e}
+#overlay.nm em.ok{font-style:normal;color:#8ad07a;font-size:12px;position:static}
+#overlay.nm .nhud{position:absolute;left:0;right:0;top:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top) + 6px) max(10px,env(safe-area-inset-right)) 0 max(10px,env(safe-area-inset-left));pointer-events:none;
+ background:linear-gradient(rgba(3,2,8,.7),rgba(3,2,8,0));padding-bottom:18px}
+#overlay.nm .nhud>*{pointer-events:auto}
+#overlay.nm .ntitle{display:flex;flex-direction:column;gap:1px;min-width:0;text-shadow:0 2px 0 #000}
+#overlay.nm .ntitle b{font-family:var(--display);color:var(--gold);font-size:17px;letter-spacing:.5px;white-space:nowrap}
+#overlay.nm .ntitle span{font-size:13px;font-style:italic;color:#d8c8b0}
+#overlay.nm .ntitle i{font-style:normal;color:#f2c14e;font-weight:800}
+#overlay.nm .nright{display:flex;align-items:center;gap:8px;flex:none}
+#overlay.nm .resbar{margin:0;padding:3px 10px;gap:12px;width:auto;max-width:none;position:static;background:rgba(16,10,20,.88)}
+#overlay.nm .resbar div{font-size:15px;display:flex;align-items:center;gap:4px}#overlay.nm .resbar img{width:15px;height:15px}
+#overlay.nm .nbtns{display:flex;gap:5px}#overlay.nm .nbtns .hb{margin:0;padding:4px 9px;font-size:13px}
+#overlay.nm #nextBtn{position:absolute;right:max(12px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 10px);min-width:0;width:auto;margin:0;padding:9px 20px;font-size:15px;display:flex;gap:8px;align-items:center}
+#overlay.nm #nextBtn.wait{background:#2a1e30;color:#f2c14e;box-shadow:inset 0 0 0 2px #8a6a2a,0 4px 0 #000;font-size:14px}
+#overlay.nm #nextBtn.wait em.bang{background:#f2c14e;color:#2a1810}
+@media (max-width:760px){#overlay.nm .resbar{gap:8px;padding:3px 7px}#overlay.nm .resbar div{font-size:13.5px}#overlay.nm .ntitle b{font-size:15px}#overlay.nm .ntitle span{font-size:12px}#overlay.nm .plq{font-size:11.5px;padding:1px 6px}}
+
+/* ---------- the River Country map ---------- */
+#overlay.wm{display:block;overflow:hidden;background:#24384e;padding:0}
+#overlay.wm .wmwrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#wmap{display:block;width:100%;height:100%;image-rendering:pixelated}
+#overlay.wm .wpls{position:absolute;inset:0}
+.wpl{position:absolute;transform:translate(-50%,0);font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.2px;color:#2a1810;background:rgba(244,226,192,.9);border:1px solid #2a1810;padding:0 5px 1px;white-space:nowrap;cursor:pointer;display:flex;gap:3px;align-items:center;line-height:1.3;box-shadow:0 2px 0 rgba(0,0,0,.45)}
+.wpl.home{font-size:13px;background:#c8382a;color:#fff4dc;border-color:#000}.wpl.on{outline:2px solid #f2c14e;outline-offset:1px}
+.wpl i{font-style:normal;font-size:10px;font-weight:900}
+.wpl i.y,.wcard em.sy,#overlay.wm .ntitle i.y{color:#2a8a2a}.wpl i.n,.wcard em.sn{color:#b8222a}.wpl i.u,.wcard em.su{color:#8a6a2a}#overlay.wm .ntitle i.y{color:#9ae08a}
+#overlay.wm .whud{position:absolute;left:0;right:0;top:0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:calc(env(safe-area-inset-top) + 6px) max(10px,env(safe-area-inset-right)) 18px max(10px,env(safe-area-inset-left));background:linear-gradient(rgba(10,6,14,.82),rgba(10,6,14,0));pointer-events:none}
+#overlay.wm .whud>*{pointer-events:auto}
+#overlay.wm .ntitle{display:flex;flex-direction:column;gap:1px;text-shadow:0 2px 0 #000}#overlay.wm .ntitle b{font-family:var(--display);color:var(--gold);font-size:18px}#overlay.wm .ntitle span{font-size:13px;color:#e8dcc4;font-style:italic}#overlay.wm .ntitle i{font-style:normal;font-weight:800}
+#overlay.wm .wcard{position:absolute;left:max(12px,env(safe-area-inset-left));bottom:calc(env(safe-area-inset-bottom) + 10px);width:min(380px,46%);background:#f4e2c0;color:var(--ink);border:3px solid #000;box-shadow:inset 0 0 0 2px #c8a870,0 6px 0 rgba(0,0,0,.5);padding:8px 12px;animation:fade .25s}
+#overlay.wm .wcard>b{font-family:var(--display);font-size:16px;color:#7a1a1a;margin-right:8px}#overlay.wm .wcard .wl{font-size:13px;font-weight:700}#overlay.wm .wcard em{font-style:normal}
+#overlay.wm .wcard p{margin:3px 0 0;font-size:13.5px;line-height:1.3}#overlay.wm .wcard p i{color:#5a3a2a}#overlay.wm .wcard .warn{color:#a8222a}
+#overlay.wm .wmtext{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 8px);transform:translateX(-50%);width:min(760px,88%);height:auto;background:rgba(14,9,18,.88);border:3px solid #000;box-shadow:inset 0 0 0 2px #5a4020;padding:8px 14px;text-align:left;display:flex;flex-direction:row;align-items:center;gap:14px;overflow:visible}#overlay.wm .wmtext .dim{font-size:12px;letter-spacing:1.5px}
+#overlay.wm .wmtext p{font-size:14.5px;margin:2px 0 0;line-height:1.3;text-align:left}#overlay.wm .wmtext .pb{min-width:0;margin:0;padding:8px 16px;flex:none;white-space:nowrap}
+@media (max-width:760px){.wpl{font-size:10px;padding:0 3px}.wpl.home{font-size:11.5px}#overlay.wm .ntitle b{font-size:15px}#overlay.wm .ntitle span{font-size:11.5px}}
+
+/* ---------- finish: paper grain, gilded corners, gentle transitions ---------- */
+#dialog{background-color:var(--parch);background-image:radial-gradient(ellipse at 50% 40%,rgba(255,248,225,.55),rgba(255,248,225,0) 70%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .12 0 0 0 .22 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+#dialog::before,#dialog::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:3;
+ background:linear-gradient(45deg,transparent 42%,#b8862a 42%,#f2c14e 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,#b8862a 42%,#f2c14e 58%,transparent 58%);opacity:.85}
+#dialog::before{left:3px;top:3px}#dialog::after{right:3px;bottom:3px}
+#overlay{animation:ovIn .35s ease-out}
+#overlay.nm .nmwrap,#overlay.wm .wmwrap{animation:ovZoom .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes ovIn{from{opacity:0}}
+@keyframes ovZoom{from{opacity:0;transform:translate(-50%,-50%) scale(1.04)}}
+#modal .box{animation:popIn .22s cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes popIn{from{opacity:0;transform:scale(.94)}}
+.ch{transition:transform .08s,box-shadow .08s,background-color .15s}
+@media (hover:hover){.ch:not([disabled]):hover{background-color:#fffaf0}}
+.hb:active{transform:translateY(2px)}
 </style>
 </head>
 <body>
@@ -1175,7 +1255,9 @@ function castleBase(mode){if(CBASE[mode])return CBASE[mode];const M=CM[mode],c=d
  for(let y=103;y<CH;y++)cfill(x,`rgba(0,0,0,${(y-103)/80})`,0,y,CW,1);
  return CBASE[mode]=enhance(c)}
 const CLOUDS=Array.from({length:7},(_,i)=>({x:i*31,y:8+((i*13)%30),w:22+((i*17)%18),s:.04+((i*7)%5)*.012}));
-function drawCastle(x){
+function drawWorldView(x){const k=CS.mode.split(":")[1],P=PLACES[k]||PLACES.emberfall,tx=Math.max(0,Math.min(WW-CW,P.x-CW/2)),ty=Math.max(-10,P.y-46);
+ if(CS.wox===undefined){CS.wox=tx;CS.woy=ty}CS.wox+=(tx-CS.wox)*.04;CS.woy+=(ty-CS.woy)*.04;cfill(x,"#14100c",0,0,CW,CH);x.save();x.translate(-CS.wox,-CS.woy);drawWorld(x,{focus:[P.x,P.y]});x.restore()}
+function drawCastle(x){if(CS.mode.startsWith("world"))return drawWorldView(x);
  const M=CM[CS.mode],t=++CS.t;x.imageSmoothingEnabled=false;
  x.drawImage(castleBase(CS.mode),0,0,CW,CH);
  if(M.stars)STARS.forEach((s,i)=>{const a=.35+.65*Math.abs(Math.sin(t/40+s.p));x.globalAlpha=a;cfill(x,"#fff",s.x,s.y,i%5?.5:1,i%5?.5:1)});x.globalAlpha=1;
@@ -1222,70 +1304,343 @@ function drawCastle(x){
 }
 function castleHTML(){return `<div class="cwrap"><canvas id="castle" width="${CW*2}" height="${CH*2}"></canvas>`}
 function setCastle(m){if(CS.mode!==m){CS.mode=m;CS.parts=[]}}
-/* the night hub: a cut-away of the castle. Tap a room to go there. */
-const MAPR={family:[16,28,42,22],treasury:[62,28,42,22],war:[16,56,42,22],mason:[120,60,38,40],dungeon:[36,106,48,11]};
-function fig(x,px,base,robe,hair,skin){cfill(x,hair,px,base-7,2,1);cfill(x,skin||"#e8c39e",px,base-6,2,2);cfill(x,robe,px,base-4,2,4)}
-function mapBadge(x,bx,by,kind){const bg=kind==="req"?"#f2c14e":kind==="ev"?"#c8382a":"#3e8a34",fg=kind==="req"?"#2a1810":"#fff4dc";
- cfill(x,"#000",bx-1,by-1,9,10);cfill(x,bg,bx,by,7,8);
- if(kind==="done"){cfill(x,fg,bx+1,by+4,1,1);cfill(x,fg,bx+2,by+5,1,1);cfill(x,fg,bx+3,by+4,1,1);cfill(x,fg,bx+4,by+3,1,1);cfill(x,fg,bx+5,by+2,1,1)}
- else{cfill(x,fg,bx+3,by+1,1,4);cfill(x,fg,bx+3,by+6,1,1)}}
-function drawMap(x){
- const t=++CS.t,se=CS.season||"spring",M=CM.night,fl=(t>>3)%2,jailed=has("brannocJailed")&&!has("brannocExiled");
- M.sky.forEach((c,i)=>cfill(x,c,0,i*17,CW,17));
- STARS.forEach(s=>{x.globalAlpha=.4+.6*Math.abs(Math.sin(t/40+s.p));cfill(x,"#fff",s.x,s.y,1,1)});x.globalAlpha=1;
- for(let i=-5;i<=5;i++)for(let j=-5;j<=5;j++)if(i*i+j*j<=25)cfill(x,i*i+j*j>16?"#d8d0b0":"#f0ead0",146+i,12+j,1,1);
- mtn(x,MT2,M.m2);
- cfill(x,"#1e140e",0,100,CW,20);cfill(x,se==="winter"?"#c8d0dc":shade(LAND[se],-.55),0,99,CW,2);for(let i=0;i<24;i++)cfill(x,"#2a1c14",(i*37)%CW,103+(i*7)%15,3,1);
- const st="#4a4256",sd="#3a3446";
- for(const tx of[4,106]){cfill(x,st,tx,14,12,86);for(let yy=18;yy<100;yy+=4)cfill(x,sd,tx,yy,12,1);roof(x,"#5a1a24",tx+6,1,13);if(se==="winter")cfill(x,"#e8eef6",tx+5,1,2,3);
-  x.globalAlpha=.6+.4*Math.abs(Math.sin(t/30+tx));cfill(x,"#ffcf6a",tx+5,24,2,3);cfill(x,"#ffcf6a",tx+5,64,2,3);x.globalAlpha=1}
- cfill(x,st,14,22,94,78);
- for(let yy=25;yy<100;yy+=4){cfill(x,sd,14,yy,94,1);for(let xx=14+((yy>>2)%2)*4;xx<108;xx+=8)cfill(x,sd,xx,yy+1,1,3)}
- for(let px=14;px<108;px+=6){cfill(x,st,px,18,3,4);if(se==="winter")cfill(x,"#e8eef6",px,18,3,1)}
- cfill(x,"#6a4a2a",60,4,1,14);cfill(x,"#9a1f1f",61,4+fl,5,2);cfill(x,"#9a1f1f",61,6,4,1);
- arch(x,52,86,16,14,"#140c10");for(let i=0;i<5;i++)cfill(x,"#3a3036",54+i*3,88,1,12);cfill(x,"#3a3036",53,93,14,1);
- for(const[a,b]of[[24,88],[36,88],[80,88],[92,88]]){x.globalAlpha=.7+.3*Math.abs(Math.sin(t/25+a));cfill(x,"#ffcf6a",a,b,2,3);x.globalAlpha=1}
- cfill(x,"#140c10",88,100,3,6);
- const room=(id,[rx,ry,rw,rh])=>{cfill(x,"#1a1218",rx-1,ry-1,rw+2,rh+2);for(let i=0;i<rh;i++)cfill(x,lerpCol("#2e2020","#5a3c28",i/rh),rx,ry+i,rw,1);const fb=ry+rh-2;cfill(x,"#2a1a12",rx,fb,rw,2);return fb};
- let fb=room("family",MAPR.family),[rx,ry,rw]=MAPR.family;
- cfill(x,"#22325c",rx+19,ry+3,4,7);cfill(x,"#141c44",rx+20,ry+4,2,5);
- cfill(x,"#5a3418",rx+3,fb-13,1,13);cfill(x,"#5a3418",rx+15,fb-13,1,13);cfill(x,"#8a1f2a",rx+2,fb-14,15,2);cfill(x,"#e8dcc4",rx+4,fb-5,11,2);cfill(x,"#2f6e44",rx+7,fb-5,8,3);cfill(x,"#5a3418",rx+3,fb-3,13,3);
- cfill(x,"#6a6070",rx+rw-11,fb-10,9,10);cfill(x,"#140c0c",rx+rw-9,fb-6,5,6);cfill(x,"#f08020",rx+rw-8,fb-3-fl,3,3+fl);cfill(x,"#ffd060",rx+rw-7,fb-2,1,2);
- fig(x,rx+21,fb,"#2f6e44","#a8401c","#f1cfae");fig(x,rx+25,fb,"#3a62a0","#e8bf5a","#f3d4b5");fig(x,rx+28,fb,"#9a2a2a","#3a2618","#f0cba6");
- fb=room("treasury",MAPR.treasury);[rx,ry,rw]=MAPR.treasury;
- cfill(x,"#3a2010",rx+3,ry+3,14,12);for(const sy of[7,11,15])cfill(x,"#7a4a24",rx+3,ry+sy,14,1);for(let i=0;i<6;i++){cfill(x,["#8a2a2a","#2a4a7a","#c99a3a"][i%3],rx+4+i*2,ry+4,1,3);cfill(x,"#c99a3a",rx+4+i*2,ry+9,1,2)}
- for(const cx of[rx+20,rx+28]){cfill(x,"#6a3a1a",cx,fb-5,7,5);cfill(x,"#c99a3a",cx,fb-3,7,1);cfill(x,"#f2c14e",cx+1,fb-6,5,1)}
- cfill(x,"#f2c14e",rx+35,fb-2,5,2);cfill(x,"#f2c14e",rx+36,fb-3,3,1);if((t>>4)%4===0)cfill(x,"#fff",rx+37,fb-3,1,1);
- fig(x,rx+13,fb,"#5b4128","#c8c8c8");
- fb=room("war",MAPR.war);[rx,ry,rw]=MAPR.war;
- for(let i=0;i<4;i++){cfill(x,"#6a4a2a",rx+3+i*2,ry+5,1,15);cfill(x,"#c8cdd6",rx+3+i*2,ry+4,1,1)}cfill(x,"#8a1f2a",rx+rw-7,ry+6,5,6);cfill(x,"#e0b040",rx+rw-5,ry+8,1,2);
- cfill(x,"#5a3418",rx+13,fb-5,18,2);cfill(x,"#d8c090",rx+14,fb-6,16,1);cfill(x,"#6a9a4a",rx+16,fb-6,4,1);cfill(x,"#9a1f1f",rx+26,fb-7,1,1);cfill(x,"#3a2010",rx+14,fb-3,1,3);cfill(x,"#3a2010",rx+29,fb-3,1,3);
- fig(x,rx+34,fb,"#5c6470","#8e95a3");
- fb=room("hall",[62,56,42,22]);
- cfill(x,"#8c2232",65,fb-1,30,1);cfill(x,"#c99a3a",96,fb-9,5,9);cfill(x,"#6a1a34",97,fb-8,3,5);for(const bx of[70,80,90])cfill(x,"#8c2232",bx,59,3,8);
- fig(x,74,fb,"#5c6470","#8e95a3");fig(x,88,fb,"#5c6470","#8e95a3");cfill(x,"rgba(0,0,0,.35)",62,56,42,22);
- [rx,ry,rw]=MAPR.dungeon;const rh=MAPR.dungeon[3];cfill(x,"#0e0a0c",rx-1,ry-1,rw+2,rh+2);cfill(x,"#22202c",rx,ry,rw,rh);cfill(x,"#18141c",rx,ry+rh-1,rw,1);
- cfill(x,"#3a3030",rx+8,ry+4,1,3);cfill(x,fl?"#ffd060":"#f08020",rx+7,ry+2,3,2);
- if(jailed)fig(x,rx+rw-10,ry+rh-1,"#5c6470","#2a1a10","#b07a52");
- for(let px=rx+rw-18;px<rx+rw;px+=3)cfill(x,"#6a6a78",px,ry+1,1,rh-2);
- if(!jailed)cfill(x,"rgba(0,0,0,.45)",rx,ry,rw,rh);
- for(let i=0;i<4;i++){const h=24-i*5;cfill(x,"#5a5268",122+i*8,99-h,8,h);for(let yy=99-h+3;yy<99;yy+=3)cfill(x,"#46405a",122+i*8,yy,8,1);if(se==="winter")cfill(x,"#e8eef6",122+i*8,99-h,8,1)}
- cfill(x,"#7a5030",124,66,1,34);cfill(x,"#7a5030",140,72,1,28);cfill(x,"#8a6040",121,78,24,1);cfill(x,"#8a6040",121,88,24,1);
- cfill(x,"#6a4428",155,62,1,37);cfill(x,"#6a4428",142,62,14,1);const sw=Math.round(Math.sin(t/30));cfill(x,"#c8b898",144+sw,63,1,8);cfill(x,"#8a8494",142+sw,71,4,3);
- cfill(x,"#8a8494",126,96,5,3);cfill(x,"#8a8494",131,97,4,2);cfill(x,"#3a3036",146,95,5,2);cfill(x,fl?"#ffd060":"#f08020",147,93-fl,3,2+fl);
- fig(x,137,99,"#7a6a50","#b84a20","#c8906a");
- for(const[id,[bx,by,bw,bh]]of Object.entries(MAPR)){if(id==="dungeon"&&!jailed)continue;const k=roomStatus(id);
-  if(k==="req"){x.globalAlpha=.55+.45*Math.sin(t/8);cfill(x,"#f2c14e",bx-1,by-1,bw+2,1);cfill(x,"#f2c14e",bx-1,by+bh,bw+2,1);cfill(x,"#f2c14e",bx-1,by-1,1,bh+2);cfill(x,"#f2c14e",bx+bw,by-1,1,bh+2);x.globalAlpha=1}
-  if(k)mapBadge(x,bx+Math.floor(bw/2)-3,(id==="dungeon"?by-10:by+1)+(k==="done"?0:(t>>4)%2),k)}
-}
-function mapTap(e){const cv=e.currentTarget,r=cv.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*CW,py=(e.clientY-r.top)/r.height*CH;
- for(const[id,[a,b,c,d]]of Object.entries(MAPR)){if(id==="dungeon"&&!has("brannocJailed"))continue;if(px>=a-3&&px<a+c+3&&py>=b-3&&py<b+d+3)return enterRoom(id)}}
+/* =========================================================
+   THE NIGHT MAP: the whole castle, cut away, filling the screen.
+   Tap a room to walk there. A ! marks where you are needed.
+   ========================================================= */
+const NM={t:0,key:"",base:null,LW:240,parts:[],stars:null,wins:[]};
+function nmLayout(LW){const kx=Math.round(LW/2)-93,c=[kx+4,kx+49,kx+94],r1=31,r2=62;
+ return{kx,G:92,c,r1,r2,yard:kx+158,
+  rooms:{family:[c[0],r1,42,25],council:[c[1],r1,42,25],treasury:[c[2],r1,42,25],war:[c[0],r2,42,25],gate:[c[1],r2,42,25],hall:[c[2],r2,42,25],
+   mason:[kx+158,54,42,38],dungeon:[c[1]-4,98,50,15]}}}
+function nmRand(s){return()=>(s=(s*16807)%2147483647)/2147483647}
+/* the painting: sky, hills, town, castle walls and every room's furniture. Cached and upscaled. */
+function nmPaint(LW,se){const c=document.createElement("canvas");c.width=LW;c.height=120;const x=c.getContext("2d");const L=nmLayout(LW),{kx,G}=L,R=L.rooms,r=nmRand(11);
+ const win=se==="winter",aut=se==="autumn",spr=se==="spring";NM.wins=[];
+ const sky=["#03051a","#070d28","#0b1534","#111d40","#18284e","#22335c"];
+ for(let y=0;y<G;y++){const t=Math.min(1,y/92),i=Math.min(4,Math.floor(t*5));x.fillStyle=lerpCol(sky[i],sky[i+1],t*5-i);x.fillRect(0,y,LW,1)}
+ // the moon, high on the right
+ const mx=Math.round(LW*.8),my=16;for(let i=-6;i<=6;i++)for(let j=-6;j<=6;j++){const d=i*i+j*j;if(d<=36)cfill(x,d>27?"#cfc6a4":"#efe8cc",mx+i,my+j,1,1)}
+ cfill(x,"#d6ceae",mx-3,my-1,2,2);cfill(x,"#d6ceae",mx+1,my+2,3,1);cfill(x,"#dcd4b4",mx+2,my-3,1,1);
+ // far mountains, then near hills
+ let h=58;for(let px=0;px<LW;px++){h+=(r()-.5)*3;h=Math.max(44,Math.min(68,h));const hh=Math.round(h);x.fillStyle="#18203e";x.fillRect(px,hh,1,G-hh);if(hh<52){cfill(x,win?"#c8d0e0":"#2a3456",px,hh,1,win?2:1)}}
+ h=74;for(let px=0;px<LW;px++){h+=(r()-.5)*1.8;h=Math.max(66,Math.min(82,h));const hh=Math.round(h);x.fillStyle="#101830";x.fillRect(px,hh,1,G-hh)}
+ // pines along the hills
+ for(let px=2;px<LW;px+=3+Math.floor(r()*4)){const th=6+Math.floor(r()*6),by=84+Math.floor(r()*4);for(let k=0;k<th;k++){const w=Math.max(1,Math.floor(k/2)+1);cfill(x,k%3===2?"#0a1426":"#0e1a2c",px-Math.floor(w/2),by-th+k,w,1)}if(win)cfill(x,"#b8c4d6",px,by-th,1,1)}
+ // the ground
+ const grass=win?"#d4dce8":aut?"#5a4420":spr?"#2e5a26":"#285020";
+ for(let y=G;y<120;y++){x.fillStyle=lerpCol("#2e2016","#120a08",(y-G)/28);x.fillRect(0,y,LW,1)}
+ cfill(x,grass,0,G,LW,2);cfill(x,win?"#a8b4c4":shade(grass,-.3),0,G+2,LW,1);
+ for(let i=0;i<LW*.6;i++){const sx=Math.floor(r()*LW),sy=G+4+Math.floor(r()*24);cfill(x,r()<.5?"#3a2a1e":"#1e140e",sx,sy,1+Math.floor(r()*2),1)}
+ for(let i=0;i<10;i++){const sx=Math.floor(r()*LW);let yy=G+3;for(let k=0;k<5;k++){cfill(x,"#24180e",sx+Math.round(Math.sin(k+i)),yy,1,2);yy+=2}}
+ // the town, to the left of the walls
+ for(let hx=kx-20;hx>-14;){const hw=9+Math.floor(r()*6),hh=8+Math.floor(r()*5),hy=G-hh,wc=r()<.5?"#2c2434":"#342a3a";
+  cfill(x,"#0a0610",hx-1,hy-1,hw+2,hh+1);cfill(x,wc,hx,hy,hw,hh);cfill(x,shade(wc,.12),hx,hy,1,hh);
+  for(let i=0;i<6;i++){const ww=hw+2-i*2;if(ww<1)break;cfill(x,i===0?"#1a0e14":"#4a1c22",hx-1+i,hy-1-i,ww,1)}if(win)for(let i=0;i<4;i++)cfill(x,"#e0e8f2",hx+i,hy-2-i,hw-i*2>0?1:0,1);
+  const wx=hx+2+Math.floor(r()*(hw-5)),wy=hy+3;cfill(x,"#3a2a18",wx,wy,3,3);NM.wins.push([wx+1,wy+1,1]);
+  if(r()<.5){cfill(x,"#1a1218",hx+hw-3,hy-7,2,4);NM.wins.push([hx+hw-2,hy-8,0])}
+  hx-=hw+2+Math.floor(r()*4)}
+ // trees beyond the yard
+ for(let px=L.yard+48;px<LW+4;px+=7+Math.floor(r()*5)){const th=12+Math.floor(r()*8);for(let k=0;k<th;k++){const w=Math.max(1,Math.floor(k*.55)+1);cfill(x,k%4===3?"#0c1a14":"#12261a",px-Math.floor(w/2),G-th+k,w,1)}cfill(x,"#2a1a10",px,G-2,1,2);if(win)for(let k=0;k<th;k+=4)cfill(x,"#d8e0ec",px-Math.floor(k*.27),G-th+k,Math.max(1,Math.floor(k*.55)),1)}
+ // the castle: towers, curtain wall, keep tower
+ const st="#4c4458",sd="#3a3446",sl="#5e566c";
+ const stone=(sx,sy,sw,shh)=>{cfill(x,st,sx,sy,sw,shh);for(let yy=sy+2;yy<sy+shh;yy+=4){cfill(x,sd,sx,yy,sw,1);for(let xx=sx+((yy>>2)%2)*4;xx<sx+sw;xx+=8)cfill(x,sd,xx,yy+1,1,3)}cfill(x,sl,sx,sy,1,shh)};
+ for(const tx of[kx-12,kx+140]){cfill(x,"#0a0610",tx-1,11,14,G-11);stone(tx,12,12,G-12);for(let px=tx;px<tx+12;px+=3)cfill(x,st,px,9,2,3);
+  for(let i=0;i<10;i++){const w=i+3;cfill(x,i%2?"#5a1a24":"#6a2230",tx+6-Math.floor(w/2),-1+i,w,1)}cfill(x,"#2a0a10",tx-1,9,14,1);
+  if(win){cfill(x,"#e8eef6",tx+5,-1,2,3);for(let px=tx;px<tx+12;px+=3)cfill(x,"#e8eef6",px,9,2,1)}
+  for(const sy of[22,44,70]){cfill(x,"#0a0610",tx+5,sy,2,4);NM.wins.push([tx+5,sy,2])}}
+ cfill(x,"#0a0610",kx-1,23,142,G-23);stone(kx,24,140,G-24);
+ for(let px=kx;px<kx+140;px+=6){cfill(x,"#0a0610",px-1,19,5,5);cfill(x,st,px,20,3,4);cfill(x,sl,px,20,3,1);if(win)cfill(x,"#e8eef6",px,20,3,1)}
+ const tk=L.c[1]-3;cfill(x,"#0a0610",tk-1,7,50,18);stone(tk,8,48,17);for(let px=tk;px<tk+48;px+=5){cfill(x,"#0a0610",px-1,4,4,4);cfill(x,st,px,5,3,3);if(win)cfill(x,"#e8eef6",px,5,3,1)}
+ cfill(x,"#3a2a1a",tk+23,-6,1,12);
+ for(const sx of[tk+8,tk+38]){arch(x,sx,12,4,7,"#0a0610");NM.wins.push([sx+1,15,2])}
+ // floors between storeys: stone and timber
+ cfill(x,"#2a2230",kx+2,57,136,4);cfill(x,"#3a2a1a",kx+2,57,136,1);for(let px=kx+6;px<kx+136;px+=10)cfill(x,"#4a3420",px,58,3,2);
+ // the rooms
+ const wall=(k,a,b)=>{const[rx,ry,rw,rh]=R[k];cfill(x,"#08050a",rx-1,ry-1,rw+2,rh+2);for(let i=0;i<rh;i++){x.fillStyle=lerpCol(a,b,i/rh);x.fillRect(rx,ry+i,rw,1)}
+  for(let yy=ry+4;yy<ry+rh-4;yy+=5)for(let xx=rx+((yy/5)%2?3:0);xx<rx+rw;xx+=7)cfill(x,shade(a,-.12),xx,yy,5,1);
+  const fb=ry+rh-3;cfill(x,"#2a1a10",rx,fb,rw,3);cfill(x,"#5a3a22",rx,fb,rw,1);for(let xx=rx+3;xx<rx+rw;xx+=6)cfill(x,"#1e120a",xx,fb+1,1,2);
+  return[rx,ry,rw,rh,fb]};
+ const shadeRoom=k=>{const[rx,ry,rw,rh]=R[k];x.fillStyle="rgba(0,0,0,.32)";x.fillRect(rx,ry,rw,2);x.fillRect(rx,ry,2,rh);x.fillRect(rx+rw-2,ry,2,rh)};
+ const win2=(wx,wy,ww,wh)=>{arch(x,wx-1,wy-1,ww+2,wh+2,"#2a1e18");arch(x,wx,wy,ww,wh,(t)=>lerpCol("#16244e","#2c4478",t));cfill(x,"#2a1e18",wx+Math.floor(ww/2),wy,1,wh);cfill(x,"#2a1e18",wx,wy+Math.floor(wh/2),ww,1);cfill(x,"#4a3a2c",wx-1,wy+wh,ww+2,1)};
+ let rx,ry,rw,rh,fb;
+ // family quarters: canopy bed, window, rug, hearth
+ [rx,ry,rw,rh,fb]=wall("family","#4a2a26","#5e3a2a");
+ win2(rx+18,ry+4,6,8);
+ cfill(x,"#3a2010",rx+2,fb-14,1,14);cfill(x,"#3a2010",rx+14,fb-14,1,14);cfill(x,"#7a1a24",rx+1,fb-15,15,2);cfill(x,"#9a2a30",rx+1,fb-15,15,1);cfill(x,"#6a1620",rx+2,fb-13,2,6);cfill(x,"#6a1620",rx+13,fb-13,2,6);
+ cfill(x,"#5a3418",rx+2,fb-4,13,4);cfill(x,"#e8dcc4",rx+3,fb-6,3,2);cfill(x,"#2f6e44",rx+6,fb-6,8,3);cfill(x,"#3e8a54",rx+6,fb-6,8,1);
+ cfill(x,"#8a2a2a",rx+17,fb,13,1);cfill(x,"#c99a3a",rx+18,fb,11,.5);
+ cfill(x,"#5a5262",rx+31,fb-12,10,12);cfill(x,"#6a6274",rx+30,fb-13,12,2);cfill(x,"#140a0a",rx+33,fb-8,6,8);cfill(x,"#3a2a2a",rx+33,fb-1,6,1);
+ shadeRoom("family");
+ // council table: banner, high windows, long table and five chairs
+ [rx,ry,rw,rh,fb]=wall("council","#3a2c40","#4a3850");
+ win2(rx+4,ry+4,4,8);win2(rx+34,ry+4,4,8);
+ cfill(x,"#0a0610",rx+17,ry+2,8,12);cfill(x,"#8a1f2a",rx+18,ry+2,6,10);cfill(x,"#8a1f2a",rx+18,ry+12,2,1);cfill(x,"#8a1f2a",rx+22,ry+12,2,1);cfill(x,"#f2c14e",rx+20,ry+5,2,3);cfill(x,"#f2c14e",rx+19,ry+6,4,1);
+ for(const [k,cx2] of [[0,8],[1,14],[2,20],[3,27],[4,33]]){const tall=k===2;cfill(x,"#2a1608",rx+cx2,fb-(tall?12:10),4,tall?6:4);cfill(x,tall?"#8a1f2a":"#5a1a24",rx+cx2+1,fb-(tall?11:9),2,tall?4:2)}
+ cfill(x,"#0a0610",rx+5,fb-7,32,3);cfill(x,"#5a3418",rx+6,fb-7,30,2);cfill(x,"#7a4a24",rx+6,fb-7,30,1);cfill(x,"#8a1f2a",rx+8,fb-5,26,2);cfill(x,"#c99a3a",rx+8,fb-4,26,.5);
+ cfill(x,"#2a1608",rx+7,fb-5,1,5);cfill(x,"#2a1608",rx+34,fb-5,1,5);
+ cfill(x,"#e8dcc4",rx+11,fb-8,4,1);cfill(x,"#c8bca8",rx+27,fb-8,3,1);cfill(x,"#c99a3a",rx+20,fb-9,2,2);
+ shadeRoom("council");
+ // treasury: ledgers, strongboxes and a pile of coin
+ [rx,ry,rw,rh,fb]=wall("treasury","#3e2a1e","#54381e");
+ cfill(x,"#2a1608",rx+2,ry+3,13,fb-ry-3);for(const sy of[0,6,12])cfill(x,"#6a4220",rx+2,ry+8+sy,13,1);
+ for(let s=0;s<3;s++)for(let i=0;i<5;i++){const col=["#8a2a2a","#2a4a7a","#c99a3a","#3a6a3a","#6a3a7a"][(i+s*2)%5];cfill(x,col,rx+3+i*2+(s%2),ry+4+s*6,2,4);cfill(x,shade(col,.3),rx+3+i*2+(s%2),ry+4+s*6,2,1)}
+ for(const cx2 of[rx+19,rx+28]){cfill(x,"#0a0610",cx2-1,fb-7,10,7);cfill(x,"#6a3a1a",cx2,fb-6,8,6);cfill(x,"#8a5a2a",cx2,fb-6,8,1);cfill(x,"#9a9aa8",cx2,fb-4,8,1);cfill(x,"#c99a3a",cx2+3,fb-4,2,2)}
+ cfill(x,"#c99a3a",rx+36,fb-3,5,3);cfill(x,"#f2c14e",rx+37,fb-4,3,1);cfill(x,"#f2c14e",rx+36,fb-2,1,1);cfill(x,"#fff0a0",rx+38,fb-4,1,1);
+ shadeRoom("treasury");
+ // war room: spears, shields, the map table
+ [rx,ry,rw,rh,fb]=wall("war","#34303c","#463e48");
+ for(let i=0;i<4;i++){cfill(x,"#5a3a1e",rx+3+i*2,ry+4,1,fb-ry-4);cfill(x,"#c8cdd6",rx+3+i*2,ry+3,1,2)}cfill(x,"#3a2410",rx+2,fb-8,9,1);
+ for(const [sx,col] of [[rx+30,"#8a1f2a"],[rx+36,"#2a4a7a"]]){cfill(x,"#0a0610",sx-1,ry+4,6,8);cfill(x,col,sx,ry+5,4,6);cfill(x,"#c99a3a",sx+1,ry+7,2,2)}
+ cfill(x,"#0a0610",rx+12,fb-8,20,3);cfill(x,"#5a3418",rx+13,fb-7,18,2);cfill(x,"#d8c090",rx+14,fb-8,16,1);cfill(x,"#6a9a4a",rx+16,fb-8,5,1);cfill(x,"#4a7ab8",rx+22,fb-8,1,1);cfill(x,"#2a1608",rx+14,fb-5,1,5);cfill(x,"#2a1608",rx+29,fb-5,1,5);
+ shadeRoom("war");
+ // the gate passage: a great arch and its portcullis
+ [rx,ry,rw,rh,fb]=wall("gate","#2e2a36","#3a3442");
+ arch(x,rx+11,ry+5,20,fb-ry-5,"#06040a");for(let i=0;i<6;i++)cfill(x,"#4a4450",rx+13+i*3,ry+8,1,fb-ry-12);cfill(x,"#4a4450",rx+12,ry+12,18,1);cfill(x,"#4a4450",rx+12,ry+17,18,1);
+ for(let i=0;i<6;i++)cfill(x,"#8a8494",rx+13+i*3,fb-4,1,1);
+ shadeRoom("gate");
+ // the great hall at night: banners, throne, a strip of carpet
+ [rx,ry,rw,rh,fb]=wall("hall","#3a1e24","#4a2a2e");
+ for(const bx of[rx+5,rx+17,rx+29]){cfill(x,"#0a0610",bx-1,ry+2,6,11);cfill(x,"#8c2232",bx,ry+2,4,9);cfill(x,"#8c2232",bx,ry+11,1,1);cfill(x,"#8c2232",bx+3,ry+11,1,1);cfill(x,"#e0b040",bx+1,ry+5,2,2)}
+ cfill(x,"#0a0610",rx+33,fb-13,8,13);cfill(x,"#c99a3a",rx+34,fb-12,6,12);cfill(x,"#7a1a34",rx+35,fb-10,4,6);cfill(x,"#f2c14e",rx+34,fb-13,6,1);
+ cfill(x,"#8c2232",rx+2,fb,30,1);
+ shadeRoom("hall");
+ // the dungeon, under the earth
+ [rx,ry,rw,rh]=R.dungeon;cfill(x,"#06040a",rx-2,ry-2,rw+4,rh+4);for(let i=0;i<rh;i++){x.fillStyle=lerpCol("#22202c","#2c2a36",i/rh);x.fillRect(rx,ry+i,rw,1)}
+ for(let yy=ry+2;yy<ry+rh;yy+=4)for(let xx=rx+((yy/4)%2?2:0);xx<rx+rw;xx+=6)cfill(x,"#1a1822",xx,yy,5,1);
+ cfill(x,"#8a7a3a",rx+28,ry+rh-2,18,2);cfill(x,"#6a5a2a",rx+30,ry+rh-1,14,1);
+ for(let px=rx+26;px<rx+rw;px+=3)cfill(x,"#6a6a78",px,ry+1,1,rh-1);cfill(x,"#6a6a78",rx+26,ry+3,rw-26,1);
+ cfill(x,"#4a4a58",rx+12,ry+3,1,6);cfill(x,"#4a4a58",rx+11,ry+9,3,1);
+ // a stair shaft from the gate down to the cells
+ for(let i=0;i<4;i++)cfill(x,"#1a1420",R.gate[0]+2+i*2,G+i,3,1);
+ // the mason's yard: half-built wall, scaffold, crane, cut stone
+ const yx=L.yard;
+ for(let i=0;i<4;i++){const hh=22-i*5;stone(yx+4+i*8,G-hh,8,hh);if(win)cfill(x,"#e8eef6",yx+4+i*8,G-hh,8,1)}
+ cfill(x,"#7a5030",yx+6,G-30,1,30);cfill(x,"#7a5030",yx+22,G-24,1,24);cfill(x,"#9a7048",yx+3,G-18,24,1);cfill(x,"#9a7048",yx+3,G-9,24,1);
+ cfill(x,"#6a4428",yx+36,G-38,1,38);cfill(x,"#6a4428",yx+22,G-38,15,1);cfill(x,"#6a4428",yx+33,G-35,3,1);
+ cfill(x,"#8a8494",yx+8,G-3,6,3);cfill(x,"#9a94a4",yx+8,G-3,6,1);cfill(x,"#8a8494",yx+15,G-2,4,2);cfill(x,"#3a3036",yx+28,G-2,6,2);
+ cfill(x,"#2a1a10",yx+26,G-1,9,1);
+ return enhance(c)}
+/* a little figure, drawn at double resolution so faces and hems stay crisp */
+function nmFig(x,px,fy,c,o={}){const t=NM.t,b=o.still?0:Math.round(Math.sin(t/22+px*.7)*.6)*.5,top=fy-9.5+b,dir=o.dir||1;
+ const robe=c.robe||"#5c6470",skin=c.skin||"#e8c39e",hair=c.hair||"#3a2618",dk=shade(robe,-.4);
+ x.globalAlpha=.4;cfill(x,"#000",px-2,fy-.5,5,1);x.globalAlpha=1;
+ if(o.seated){cfill(x,"#000",px-1.5,top+3,4,4);cfill(x,robe,px-1,top+3.5,3,3.5);cfill(x,shade(robe,.25),px-1,top+3.5,.5,3)}
+ else if(c.dress||c.robeLong){cfill(x,"#000",px-2,top+3,5,fy-top-3);cfill(x,robe,px-1.5,top+3.5,4,fy-top-4);cfill(x,shade(robe,.25),px-1.5,top+3.5,.5,fy-top-4);cfill(x,dk,px-1.5,fy-1.5,4,1)}
+ else{cfill(x,"#000",px-1.5,top+3,4,fy-top-3);cfill(x,robe,px-1,top+3.5,3,3.5);cfill(x,shade(robe,.25),px-1,top+3.5,.5,3);cfill(x,dk,px-1,top+7,1,fy-top-7.5);cfill(x,dk,px+1,top+7,1,fy-top-7.5);if(c.tabard)cfill(x,c.tabard,px-.5,top+4,2,3)}
+ cfill(x,"#000",px-1.5,top-.5,4,4);cfill(x,skin,px-1,top,3,3);
+ if(c.acc==="helm"){cfill(x,"#9aa0ae",px-1,top-.5,3,1.5);cfill(x,"#c8cdd6",px-1,top-.5,3,.5)}
+ else if(c.acc==="hood"){cfill(x,robe,px-1.5,top-.5,4,1.5);cfill(x,robe,px+(dir>0?-1.5:2),top,1,3)}
+ else{cfill(x,hair,px-1,top-.5,3,1.2);if(c.long)cfill(x,hair,px+(dir>0?-1.5:1.5),top,1,4.5);else cfill(x,hair,px+(dir>0?-1:1.5),top,.5,1.5)}
+ cfill(x,"#1a0e0a",px+(dir>0?.5:-.5),top+1,.5,.5);
+ if(o.crown||c.acc==="circlet")cfill(x,"#f2c14e",px-1,top-1,3,.5);
+ if(c.beard)cfill(x,hair,px-.5,top+2.5,2,1)}
+function nmGlow(x,gx,gy,rad,col,a){const g=x.createRadialGradient(gx,gy,0,gx,gy,rad);g.addColorStop(0,`rgba(${col},${a})`);g.addColorStop(1,`rgba(${col},0)`);x.fillStyle=g;x.fillRect(gx-rad,gy-rad,rad*2,rad*2)}
+function nmFlame(x,fx,fy,s=1){const t=NM.t,f=Math.sin(t/3+fx)*.5;cfill(x,"#e04010",fx-1*s,fy-1.5*s,2*s,1.5*s);cfill(x,"#ff9a30",fx-.5*s+f*.5,fy-2.5*s,1.5*s,2*s);cfill(x,"#ffe080",fx-.25*s,fy-1.5*s,.75*s,1*s)}
+function nmLayoutNow(){return nmLayout(NM.LW)}
+function drawNightMap(x){const t=++NM.t,LW=NM.LW,L=nmLayoutNow(),R=L.rooms,G=L.G,se=SEASON(S.month),N=S.night||{};
+ const key=LW+se;if(NM.key!==key){NM.key=key;NM.base=nmPaint(LW,se);NM.parts=[];seed=31;NM.stars=Array.from({length:Math.round(LW/3)},()=>({x:rnd()*LW,y:rnd()*58,p:rnd()*6,s:rnd()<.2?1:.5}))}
+ x.drawImage(NM.base,0,0,LW,120);
+ NM.stars.forEach(s=>{x.globalAlpha=.3+.7*Math.abs(Math.sin(t/45+s.p));cfill(x,s.s>.5?"#fff6e0":"#ffffff",s.x,s.y,s.s,s.s)});x.globalAlpha=1;
+ x.globalCompositeOperation="lighter";
+ const mx=Math.round(LW*.8);nmGlow(x,mx,16,26,"230,220,190",.16);
+ // every lit window breathes
+ NM.wins.forEach(([wx,wy,k],i)=>{const f=.55+.45*Math.abs(Math.sin(t/(30+i*3)+i));nmGlow(x,wx+.5,wy+1,k===2?5:4,"255,170,80",.32*f)});
+ // room light: hearths, candles and torches
+ const rr=k=>R[k];const fl=k=>.8+.2*Math.sin(t/4+k)+.08*Math.sin(t/1.7+k*3);
+ {const[rx,,,,]=rr("family"),fb=rr("family")[1]+22;nmGlow(x,rx+36,fb-4,16,"255,130,50",.38*fl(1));}
+ {const[rx,ry]=rr("council");nmGlow(x,rx+21,ry+14,15,"255,190,100",.3*fl(2))}
+ {const[rx,ry]=rr("treasury");nmGlow(x,rx+26,ry+12,13,"255,190,100",.26*fl(3))}
+ {const[rx,ry]=rr("war");nmGlow(x,rx+22,ry+10,14,"255,170,90",.26*fl(4))}
+ {const[rx,ry]=rr("gate");nmGlow(x,rx+7,ry+10,9,"255,150,60",.3*fl(5));nmGlow(x,rx+35,ry+10,9,"255,150,60",.3*fl(6))}
+ {const[rx,ry]=rr("dungeon");nmGlow(x,rx+12,ry+5,10,"255,150,60",.28*fl(7))}
+ {const yx=L.yard;nmGlow(x,yx+31,G-3,14,"255,140,60",.38*fl(8))}
+ x.globalCompositeOperation="source-over";
+ // flames
+ {const[rx,ry]=rr("family"),fb=ry+22;nmFlame(x,rx+36,fb,1.4)}
+ {const[rx,ry]=rr("council"),fb=ry+22;nmFlame(x,rx+21,fb-9,.6);cfill(x,"#e8dcc4",rx+20.5,fb-9,1,1)}
+ {const[rx,ry]=rr("treasury"),fb=ry+22;cfill(x,"#5a3418",rx+24,fb-8,5,1);cfill(x,"#e8dcc4",rx+26,fb-10,1,2);nmFlame(x,rx+26.5,fb-10,.5)}
+ {const[rx,ry]=rr("war");cfill(x,"#5a3a1e",rx+40,ry+8,1,3);nmFlame(x,rx+40.5,ry+8,.6)}
+ {const[rx,ry]=rr("gate");for(const tx of[rx+7,rx+35]){cfill(x,"#5a3a1e",tx,ry+10,1,3);nmFlame(x,tx+.5,ry+10,.7)}}
+ {const[rx,ry]=rr("dungeon");nmFlame(x,rx+12.5,ry+3,.6)}
+ {const yx=L.yard;cfill(x,"#3a2418",yx+28,G-1.5,6,1.5);nmFlame(x,yx+31,G-1,1.3)}
+ // the banner on the keep
+ {const tk=L.c[1]-3;for(let i=0;i<10;i++){const yy=-5+Math.round(Math.sin(t/8+i*.6)*1.2*(i/10)*2)/2;cfill(x,i%4<2?"#9a1f1f":"#b42a2a",tk+24+i*.5,yy,.5,3)}cfill(x,"#f2c14e",tk+25.5,-4+Math.round(Math.sin(t/8+3)*.6)/2,1,1)}
+ // people
+ const fam=["elinor","maren","tobin"].filter(famHere);
+ {const[rx,ry]=rr("family"),fb=ry+22;if(N.visited){nmFig(x,rx+23,fb,C.lord,{crown:1});nmFig(x,rx+27,fb,C[N.visited],{dir:-1})}else fam.forEach((k,i)=>nmFig(x,rx+20+i*4,fb,C[k],{dir:i?-1:1}))}
+ {const[rx,ry]=rr("council"),fb=ry+22,T=tbl();const who={steward:T.steward,marshal:T.marshal==="brannoc"&&has("brannocAway")?"wynn":T.marshal,spymaster:T.spymaster,treasurer:T.treasurer,ferry:T.ferry};
+  [["marshal",9.5],["steward",15.5],["spymaster",28.5],["treasurer",34.5]].forEach(([k,px])=>{const c=who[k]&&C[who[k]];if(c)nmFig(x,rx+px,fb-5,c,{seated:1,dir:px<21?1:-1})});
+  if(who.ferry&&C[who.ferry])nmFig(x,rx+39,fb,C[who.ferry],{dir:-1})}
+ {const[rx,ry]=rr("treasury"),fb=ry+22;nmFig(x,rx+17,fb,C.aldric||{robe:"#5b4128"})}
+ {const[rx,ry]=rr("war"),fb=ry+22,h=warHost();const c=C[h]||C.brannoc;if(S.mission){x.globalAlpha=.9;nmFig(x,rx+34,fb,c,{dir:-1});x.globalAlpha=1}else{nmFig(x,rx+34,fb,c,{dir:-1});nmFig(x,rx+38,fb,{robe:"#5c6470",tabard:"#8a1f2a",acc:"helm",skin:"#d9a67a"},{dir:-1})}
+  if(t%120<60)cfill(x,"#ff4030",rx+19,ry+14,1,1);if(S.mission){cfill(x,"#f2c14e",rx+25,ry+14,1,1)}}
+ {const[rx,ry]=rr("gate"),fb=ry+22;nmFig(x,rx+6,fb,{robe:"#5c6470",tabard:"#8a1f2a",acc:"helm",skin:"#d9a67a"},{still:1});nmFig(x,rx+37,fb,{robe:"#5c6470",tabard:"#8a1f2a",acc:"helm",skin:"#c8906a"},{still:1,dir:-1})}
+ {const[rx,ry]=rr("hall");x.globalCompositeOperation="lighter";x.globalAlpha=.08+.03*Math.sin(t/60);x.fillStyle="#a0b8ff";x.beginPath();x.moveTo(rx+12,ry);x.lineTo(rx+18,ry);x.lineTo(rx+28,ry+22);x.lineTo(rx+16,ry+22);x.fill();x.globalAlpha=1;x.globalCompositeOperation="source-over"}
+ {const[rx,ry,rw,rh]=rr("dungeon");if(has("brannocJailed")&&!has("brannocExiled"))nmFig(x,rx+38,ry+rh-1,C.brannoc,{dir:-1,still:1});}
+ {const yx=L.yard;nmFig(x,yx+25,G,C.mason||{robe:"#7a6a50"},{dir:1});const s=Math.round(Math.sin(t/40)*2)/2;cfill(x,"#c8b898",yx+24+s,G-37,.5,9);cfill(x,"#0a0610",yx+22.5+s,G-28.5,4,3);cfill(x,"#8a8494",yx+23+s,G-28,3,2);
+  if(N.built){cfill(x,"#f2c14e",yx+9,G-25,1,1)}}
+ // the matters of the night: a slow golden pulse on rooms that need you, a red one on surprises
+ for(const id of["family","council","treasury","war","mason","dungeon"]){if(id==="dungeon"&&!has("brannocJailed"))continue;const k=roomStatus(id);if(k!=="req"&&k!=="ev")continue;
+  const[bx,by,bw,bh]=R[id],a=.45+.4*Math.sin(t/9),col=k==="req"?"#f2c14e":"#ff7060";x.globalAlpha=a;
+  cfill(x,col,bx-1,by-1,bw+2,.5);cfill(x,col,bx-1,by+bh+.5,bw+2,.5);cfill(x,col,bx-1,by-1,.5,bh+2);cfill(x,col,bx+bw+.5,by-1,.5,bh+2);x.globalAlpha=1;
+  x.globalCompositeOperation="lighter";nmGlow(x,bx+bw/2,by+bh/2,bw*.7,k==="req"?"255,200,80":"255,110,90",.10+.06*Math.sin(t/9));x.globalCompositeOperation="source-over"}
+ // weather and life
+ const P=NM.parts;
+ if(se==="winter"&&Math.random()<.7)P.push({x:Math.random()*LW,y:-2,vx:(Math.random()-.5)*.15,vy:.25+Math.random()*.25,life:520,col:"#ffffff",sz:Math.random()<.4?1:.5});
+ if(se==="autumn"&&Math.random()<.08)P.push({x:Math.random()*LW,y:-2,vx:.25,vy:.2+Math.random()*.2,life:600,col:Math.random()<.5?"#e07a20":"#c8401a",sz:1,sway:1});
+ if((se==="summer"||se==="spring")&&Math.random()<.05)P.push({x:Math.random()*LW,y:70+Math.random()*20,vx:(Math.random()-.5)*.15,vy:-.04,life:200,col:"#e8f080",sz:.5,fly:1});
+ if(t%7===0)P.push({x:L.yard+31+(Math.random()-.5)*2,y:G-4,vx:(Math.random()-.5)*.1,vy:-.25-Math.random()*.2,life:70,col:Math.random()<.5?"#ffb040":"#ff6a20",sz:.5,emb:1});
+ if(t%11===0){const w=NM.wins.filter(v=>v[2]===0);if(w.length){const c=w[Math.floor(Math.random()*w.length)];P.push({x:c[0],y:c[1],vx:.04,vy:-.1,life:120,col:"#6a6a80",sz:1.5,smoke:1})}}
+ for(let i=P.length-1;i>=0;i--){const p=P[i];p.x+=p.vx+(p.sway?Math.sin((t+i)/14)*.2:0)+(p.fly?Math.sin((t+i*7)/20)*.1:0);p.y+=p.vy+(p.fly?Math.cos((t+i)/17)*.08:0);p.life--;if(p.smoke)p.sz+=.01;
+  if(p.life<=0||p.y>(p.col==="#ffffff"?G+1:122)){P.splice(i,1);continue}
+  x.globalAlpha=p.smoke?.22*(p.life/120):p.fly?(.5+.5*Math.sin(t/6+i)):Math.min(1,p.life/40);if(p.emb||p.fly)x.globalCompositeOperation="lighter";cfill(x,p.col,p.x,p.y,p.sz,p.sz);x.globalCompositeOperation="source-over"}
+ x.globalAlpha=1;
+ // a soft vignette
+ if(!NM.vig||NM.vig.width!==LW){const v=document.createElement("canvas");v.width=LW;v.height=120;const vx=v.getContext("2d");const g=vx.createRadialGradient(LW/2,64,40,LW/2,64,LW*.62);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.55)");vx.fillStyle=g;vx.fillRect(0,0,LW,120);NM.vig=v}
+ x.imageSmoothingEnabled=true;x.drawImage(NM.vig,0,0,LW,120);x.imageSmoothingEnabled=false}
+function nmSize(){const o=$("overlay"),w=o.clientWidth||innerWidth,h=o.clientHeight||innerHeight;NM.LW=Math.max(200,Math.min(300,Math.round(120*w/h)))}
+addEventListener("resize",()=>{if($("nmap")){const old=NM.LW;nmSize();if(NM.LW!==old)showNight()}});
+
+/* =========================================================
+   THE RIVER COUNTRY: a painted map of the whole realm.
+   The lords' seats show where each one stands; armies and your
+   own soldiers move across it as the year goes on.
+   ========================================================= */
+const WW=240,WH=120;
+const PLACES={
+ emberfall:{n:"Emberfall",x:121,y:57,k:"home",d:"Your city, and the only ford across the Ember for fifty miles. Whoever holds it holds the road east."},
+ king:{n:"Kingsreach",x:121,y:9,k:"crown",d:"King Osmund's city, beyond the mountains. His heralds ride down the North Road when he wants soldiers or silver."},
+ vex:{n:"Blackmoor",x:146,y:94,k:"dark",d:"The seat of Baron Vex, across the river. For twenty years he has wanted your ford."},
+ greymarch:{n:"Greymarch",x:40,y:80,k:"grey",d:"Seat of your cousin, Lord Corvin. Grey stone, green glass, and old ambitions."},
+ harwin:{n:"The Eastern Marches",x:178,y:42,k:"seat",lord:"harwin",d:"Lord Harwin's horse country. His riders are the fastest on the river."},
+ anselm:{n:"Abbey of Saint Ember",x:142,y:38,k:"abbey",lord:"anselm",d:"Bishop Anselm's abbey on the hill, where your father is buried."},
+ osric:{n:"Embermouth",x:210,y:92,k:"port",lord:"osric",d:"The Merchant Guild's harbor, where the Ember meets the sea. Guildmaster Osric counts every coin that passes."},
+ ysolde:{n:"Saltmere",x:189,y:20,k:"port",lord:"ysolde",d:"Lady Ysolde's harbor on the north coast. Raiders come from the sea."},
+ bram:{n:"Highfield",x:86,y:34,k:"seat",lord:"bram",d:"Lord Bram's wheat country. If the farmers love you, so does he."},
+ orla:{n:"The Downs",x:72,y:104,k:"seat",lord:"orla",d:"Lady Orla's sheep hills, south of the river and close to Vex."},
+ pell:{n:"Ashford",x:80,y:62,k:"seat",lord:"pell",d:"Lord Pell's little river town. He likes good wine and being asked."},
+ teague:{n:"The Coast Road",x:200,y:60,k:"seat",lord:"teague",d:"Lord Teague's toll road along the cliffs. Everything he owns is for sale."},
+ maud:{n:"Wexley",x:176,y:104,k:"seat",lord:"maud",d:"Lady Maud's manor. She is Elinor's cousin."},
+ rhun:{n:"The Hills",x:20,y:36,k:"seat",lord:"rhun",d:"Lord Rhun's high country. He fought beside your father for forty years."},
+ garrick:{n:"The North Road",x:104,y:20,k:"seat",lord:"garrick",d:"Lord Garrick guards the road to the King. He has called Corvin a friend for thirty years."},
+ thornby:{n:"Thornby",x:104,y:46,k:"village",d:"Your village of mills and goats, the first to go hungry in a bad year."},
+ fen:{n:"The Fen",x:162,y:70,k:"fen",d:"Reeds, mist and the Ferrywoman's crossing. People say the river listens there."},
+ ashwood:{n:"The Ashwood",x:104,y:86,k:"wood",d:"Deep forest on the far bank. Deer, boar, and outlaws."}
+};
+const RIVER=[[8,46],[22,50],[40,58],[60,60],[80,61],[100,60],[121,62],[140,66],[162,71],[182,80],[198,88],[214,95],[240,101]];
+function vnoise(px,py){const h=(i,j)=>(hsh(i,j)%1000)/1000,sm=t=>t*t*(3-2*t);let v=0,a=.65;for(const g of[14,6]){const i=Math.floor(px/g),j=Math.floor(py/g),fx=sm(px/g-i),fy=sm(py/g-j);
+ v+=a*((h(i,j)*(1-fx)+h(i+1,j)*fx)*(1-fy)+(h(i,j+1)*(1-fx)+h(i+1,j+1)*fx)*fy);a=.35}return v}
+function coastX(y){return 214+8*Math.sin(y/14)+5*Math.sin(y/5.3)-(y<34?(34-y)*.55:0)}
+function riverY(px){for(let i=0;i<RIVER.length-1;i++){const[a,b]=RIVER[i],[c,d]=RIVER[i+1];if(px>=a&&px<=c)return b+(d-b)*(px-a)/(c-a)}return 60}
+const WMAP={base:{},t:0,parts:[]};
+function worldPaint(se,frozen){const key=se+(frozen?"F":"");if(WMAP.base[key])return WMAP.base[key];
+ const c=document.createElement("canvas");c.width=WW;c.height=WH;const x=c.getContext("2d"),r=nmRand(5);
+ const land={spring:["#5a8a3a","#4a7a32","#6a9a44"],summer:["#7a9a3a","#6a8a32","#8aaa4a"],autumn:["#9a7a3a","#8a6a30","#aa8a44"],winter:["#d8dde6","#c4ccd8","#e8ecf2"]}[se];
+ // land and sea
+ for(let y=0;y<WH;y++)for(let px=0;px<WW;px++){const cx=coastX(y),n=vnoise(px,y);
+  if(px>cx){const d=px-cx;x.fillStyle=d<2?"#c8b888":d<4?"#5a9ab8":lerpCol("#3a7aa0","#1a3a6a",Math.min(1,d/22));if(d>=4&&(px*7+y*13)%23===0)x.fillStyle="#6aaac8"}
+  else{const d=((px*3+y*5)%4)/4*.12-.06;x.fillStyle=n+d>.62?land[2]:n+d<.36?land[1]:land[0]}x.fillRect(px,y,1,1)}
+ // farm fields around Highfield and Thornby
+ for(let i=0;i<26;i++){const fx=66+Math.floor(r()*50),fy=26+Math.floor(r()*24),fw=4+Math.floor(r()*5),fh=3+Math.floor(r()*3);if(Math.abs(fy-riverY(fx))<5)continue;
+  const fc=se==="winter"?"#eef0f4":se==="autumn"?["#c8a040","#b88a30","#a07a2a"][i%3]:["#9aba4a","#c8b850","#7aa040"][i%3];cfill(x,fc,fx,fy,fw,fh);cfill(x,shade(fc,-.15),fx,fy+fh-1,fw,1)}
+ // the mountains in the north and the high hills in the west
+ const peak=(px,py,h,snow)=>{for(let i=0;i<h;i++){const w=i*2+1;cfill(x,i<h*.5?"#8a8494":"#6a6474",px-i,py+i,i+1,1);cfill(x,i<h*.5?"#6a6474":"#4a4454",px+1,py+i,i,1);if(snow&&i<h*.35)cfill(x,"#f4f6fa",px-i,py+i,w,1)}};
+ for(let px=0;px<WW-30;px+=7+Math.floor(r()*5)){if(Math.abs(px-121)<9)continue;peak(px,2+Math.floor(r()*5),8+Math.floor(r()*6),true)}
+ for(let i=0;i<9;i++){const px=6+Math.floor(r()*30),py=24+Math.floor(r()*22);peak(px,py,5+Math.floor(r()*3),se==="winter")}
+ for(let i=0;i<7;i++){const px=30+Math.floor(r()*24),py=74+Math.floor(r()*14);peak(px,py,4,se==="winter")}
+ // forests
+ const tree=(px,py)=>{const tc=se==="winter"?"#2a4a3a":se==="autumn"?(r()<.5?"#a04a1a":"#7a5a1a"):"#2a5a2a";cfill(x,"#14281a",px-1,py+1,4,2);cfill(x,tc,px,py-1,2,3);cfill(x,shade(tc,.2),px,py-1,1,1);if(se==="winter")cfill(x,"#f4f6fa",px,py-1,2,1)};
+ const wood=(cx,cy,rx,ry,n)=>{for(let i=0;i<n;i++){const a=r()*6.28,d=Math.sqrt(r());tree(Math.round(cx+Math.cos(a)*rx*d),Math.round(cy+Math.sin(a)*ry*d))}};
+ wood(104,88,18,9,70);wood(160,50,12,7,30);wood(58,42,12,8,30);wood(150,108,16,7,40);wood(30,100,14,8,30);wood(190,30,10,7,20);
+ // the fen: reeds and pools
+ for(let i=0;i<40;i++){const px=150+Math.floor(r()*26),py=66+Math.floor(r()*12);cfill(x,r()<.5?"#3a6a5a":"#5a7a4a",px,py,1,2)}
+ for(let i=0;i<8;i++){const px=152+Math.floor(r()*22),py=68+Math.floor(r()*9);cfill(x,frozen?"#d8e8f4":"#3a6a8a",px,py,3,1)}
+ // roads
+ const road=(pts)=>{for(let i=0;i<pts.length-1;i++){const[a,b]=pts[i],[c2,d]=pts[i+1],n=Math.ceil(Math.hypot(c2-a,d-b));for(let k=0;k<n;k+=2){const px=Math.round(a+(c2-a)*k/n),py=Math.round(b+(d-b)*k/n);cfill(x,se==="winter"?"#9a8a7a":"#c8a870",px,py,1,1)}}};
+ road([[121,57],[118,40],[108,22],[121,8]]);road([[121,57],[142,40],[178,42],[200,60],[206,80],[210,92]]);road([[178,42],[186,26],[189,20]]);road([[121,57],[100,56],[80,62],[60,70],[40,80]]);
+ road([[121,64],[132,80],[146,94]]);road([[104,46],[86,34]]);road([[60,70],[72,104]]);road([[146,94],[176,104]]);road([[80,62],[52,48],[20,36]]);
+ // the river Ember, wide at the mouth
+ for(let i=0;i<RIVER.length-1;i++){const[a,b]=RIVER[i],[c2,d]=RIVER[i+1];for(let px=a;px<=c2;px++){const py=b+(d-b)*(px-a)/(c2-a),w=px<60?2:px<180?3:4;
+  cfill(x,frozen?"#a8c0d8":"#2a5a8a",px,Math.round(py-w/2),1,w);cfill(x,frozen?"#e8f2fa":"#4a8ab8",px,Math.round(py-w/2),1,1)}}
+ // the ford: stepping stones by Emberfall
+ for(let i=0;i<4;i++)cfill(x,"#b8b0a0",119+i,61+(i%2),1,1);
+ // a faint parchment edge and a compass in the sea
+ for(let i=0;i<WW;i++){cfill(x,"rgba(40,24,10,.35)",i,0,1,1);cfill(x,"rgba(40,24,10,.35)",i,WH-1,1,1)}
+ const cpx=228,cpy=112;cfill(x,"#e8dcc0",cpx,cpy-6,1,12);cfill(x,"#e8dcc0",cpx-5,cpy,11,1);cfill(x,"#c8382a",cpx,cpy-6,1,4);cfill(x,"#e8dcc0",cpx-1,cpy-1,3,3);
+ return WMAP.base[key]=enhance(c)}
+function placeIcon(x,P,t){const{x:px,y:py,k}=P;
+ if(k==="home"){cfill(x,"#000",px-5,py-7,11,8);cfill(x,"#8a8494",px-4,py-6,9,6);cfill(x,"#aaa4b4",px-4,py-6,9,1);cfill(x,"#000",px-1,py-10,3,4);cfill(x,"#8a8494",px-.5,py-10,2,4);cfill(x,"#2a1a10",px-.5,py-2,1.5,2);
+  for(const wx of[-4,-1,2,4])cfill(x,"#8a8494",px+wx,py-7,1,1);x.globalAlpha=.6+.4*Math.sin(t/12);cfill(x,"#ffcf6a",px-3,py-4,1,1);cfill(x,"#ffcf6a",px+2.5,py-4,1,1);x.globalAlpha=1;
+  cfill(x,"#3a2a1a",px+.5,py-15,.5,6);for(let i=0;i<6;i++)cfill(x,i%3<2?"#c8382a":"#a8222a",px+1+i*.5,py-15+Math.round(Math.sin(t/7+i*.8))*.5,.5,2)}
+ else if(k==="dark"||k==="grey"){const st=k==="dark"?"#2a2228":"#6a6a74",hi=k==="dark"?"#4a3a44":"#8a8a94";cfill(x,"#000",px-4,py-6,9,7);cfill(x,st,px-3,py-5,7,5);cfill(x,hi,px-3,py-5,7,1);cfill(x,"#000",px-1,py-9,3,4);cfill(x,st,px-.5,py-9,2,4);
+  cfill(x,"#2a1a10",px+.5,py-14,.5,5);const fc=k==="dark"?["#1a1a1a","#9a1f1f"]:["#8a8a94","#5a5a64"];for(let i=0;i<6;i++)cfill(x,i%2?fc[1]:fc[0],px+1+i*.5,py-14+Math.round(Math.sin(t/7+i*.8))*.5,.5,2)}
+ else if(k==="crown"){cfill(x,"#000",px-4,py-3,9,5);cfill(x,"#f2c14e",px-3,py-2,7,3);cfill(x,"#f2c14e",px-3,py-4,1,2);cfill(x,"#f2c14e",px,py-4.5,1,2.5);cfill(x,"#f2c14e",px+3,py-4,1,2);cfill(x,"#c8382a",px,py-1,1,1)}
+ else if(k==="abbey"){cfill(x,"#000",px-3,py-5,7,6);cfill(x,"#d8d0bf",px-2,py-4,5,4);cfill(x,"#000",px-1,py-8,3,3);cfill(x,"#d8d0bf",px-.5,py-8,2,3);cfill(x,"#c99a3a",px,py-10,.5,2);cfill(x,"#c99a3a",px-.5,py-9.5,1.5,.5)}
+ else if(k==="port"){cfill(x,"#000",px-4,py-4,8,5);cfill(x,"#b8a888",px-3,py-3,6,3);cfill(x,"#8a3a2a",px-3,py-4,6,1);const b=Math.sin(t/14)*.5;cfill(x,"#5a3a1a",px+5,py+b,4,1);cfill(x,"#e8dcc0",px+6.5,py-3+b,1.5,3)}
+ else if(k==="village"){cfill(x,"#000",px-3,py-3,4,4);cfill(x,"#b8a888",px-2.5,py-2.5,3,3);cfill(x,"#8a3a2a",px-3,py-3.5,4,1);cfill(x,"#000",px+1,py-2,3,3);cfill(x,"#b8a888",px+1.5,py-1.5,2,2);cfill(x,"#8a3a2a",px+1,py-2.5,3,1)}
+ else if(k==="seat"){cfill(x,"#000",px-3,py-4,7,5);cfill(x,"#a89a88",px-2,py-3,5,3);cfill(x,"#c8bca8",px-2,py-3,5,.5);cfill(x,"#000",px-.5,py-6,2,2);cfill(x,"#a89a88",px,py-6,1,2)}}
+const MISSION_AT={patrol:"thornby",hunt:"ashwood",bandits:[160,48],caravan:[204,74],scout:[140,84],raid:[132,78],harvest:[96,38],wolves:[40,40],vexHunt:"vex",shadow:"greymarch"};
+function armyTok(x,px,py,cols,t,n){for(let i=0;i<n;i++){const ox=(i%3)*2.5-2.5,oy=Math.floor(i/3)*2,b=Math.round(Math.sin(t/5+i))*.5;cfill(x,"#000",px+ox-.5,py+oy-3.5+b,2.5,4);cfill(x,cols[0],px+ox,py+oy-3+b,1.5,3);cfill(x,cols[1],px+ox,py+oy-3.5+b,1.5,1);cfill(x,"#c8cdd6",px+ox+1.5,py+oy-5+b,.5,3)}
+ cfill(x,"#000",px+4.5,py-9.5,1,8);cfill(x,"#2a1a10",px+4.5,py-9,.5,7);for(let i=0;i<6;i++){cfill(x,"#000",px+5+i*.5,py-9.5+Math.round(Math.sin(t/6+i))*.5,.5,3.5);cfill(x,cols[2],px+5+i*.5,py-9+Math.round(Math.sin(t/6+i))*.5,.5,2.5)}}
+function warPath(x,a,b,col,t){const n=Math.hypot(b[0]-a[0],b[1]-a[1]);x.globalAlpha=.85;for(let k=0;k<n-3;k+=3){const f=k/n,ph=((k+t*.15)%6)<3;if(!ph)continue;cfill(x,col,a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f,1,1)}
+ const ang=Math.atan2(b[1]-a[1],b[0]-a[0]);x.fillStyle=col;x.beginPath();x.moveTo(b[0],b[1]);x.lineTo(b[0]-Math.cos(ang-.5)*4,b[1]-Math.sin(ang-.5)*4);x.lineTo(b[0]-Math.cos(ang+.5)*4,b[1]-Math.sin(ang+.5)*4);x.fill();x.globalAlpha=1}
+function lerpPt(a,b,f){return[a[0]+(b[0]-a[0])*f,a[1]+(b[1]-a[1])*f]}
+/* armies on the map this month, and anything the caller wants shown moving (for the war maps) */
+function worldArmies(){const A=[],m=S?S.month:1;if(!S)return A;
+ if(m<=BATTLE_MONTH&&!has("knelt")&&!fought()){const f=Math.max(0,(m-1)/(BATTLE_MONTH-1));A.push({at:lerpPt([146,94],[124,68],f*.85),path:[[140,88],[123,66]],pc:"#c8222a",cols:["#2a2228","#9a1f1f","#9a1f1f"],n:3+Math.round(f*6),lab:"Vex's host"})}
+ const F=typeof winterFoes==="function"&&m>=7&&m<=10&&!has("winterDone")?winterFoes():null;
+ if(F&&F.cor){const f=Math.max(0,(m-7)/3);A.push({at:lerpPt([40,80],[104,72],f*.8),path:[[48,76],[116,62]],pc:"#e8e8f0",cols:["#6a6a74","#c8c8d0","#8a8a94"],n:3+Math.round(f*6),lab:"Corvin's men"})}
+ if(S.mission){const at=MISSION_AT[S.mission.id];const p=typeof at==="string"?[PLACES[at].x,PLACES[at].y+5]:at||[130,50];A.push({at:p,cols:["#5c6470","#8a1f2a","#c8382a"],n:Math.min(6,Math.ceil(S.mission.n/3)),lab:"Your soldiers"})}
+ if(has("sentKing")&&m>=7&&m<=9)A.push({at:[112,14],cols:["#5c6470","#8a1f2a","#c8382a"],n:4,lab:"Your soldiers, with the King"});
+ return A}
+function drawWorld(x,o={}){const t=++WMAP.t,se=S?SEASON(S.month):"spring",frozen=S&&S.month>=10&&S.month<=12;
+ x.drawImage(worldPaint(se,frozen),0,0,WW,WH);
+ // water: glints on the sea and the river
+ x.globalCompositeOperation="lighter";
+ for(let i=0;i<40;i++){const py=(i*29)%WH,px=coastX(py)+6+((i*53+t*.1)%30);x.globalAlpha=.25+.25*Math.sin(t/14+i);cfill(x,"#9ad0f0",px,py,2,.5)}
+ if(!frozen)for(let i=0;i<24;i++){const px=(i*11+t*.2)%232+4;x.globalAlpha=.3+.3*Math.sin(t/9+i);cfill(x,"#bfe4ff",px,riverY(px)-.5,1,.5)}
+ x.globalAlpha=1;x.globalCompositeOperation="source-over";
+ // cloud shadows drifting over the land
+ x.globalAlpha=.12;for(let i=0;i<5;i++){const cx=((i*61+t*.05)%(WW+60))-30,cy=14+i*22;x.fillStyle="#102030";x.beginPath();x.ellipse(cx,cy,16,5,0,0,6.28);x.fill()}x.globalAlpha=1;
+ // chimney smoke over Emberfall
+ if(t%14===0)WMAP.parts.push({x:121,y:46,vx:.04,vy:-.08,life:90});
+ for(let i=WMAP.parts.length-1;i>=0;i--){const p=WMAP.parts[i];p.x+=p.vx;p.y+=p.vy;if(--p.life<=0){WMAP.parts.splice(i,1);continue}x.globalAlpha=.25*p.life/90;cfill(x,"#d8d0c8",p.x,p.y,1.5,1.5)}x.globalAlpha=1;
+ for(const k in PLACES)placeIcon(x,PLACES[k],t);
+ // where each lord stands: a little banner over their seat
+ if(o.stance)for(const L of LORDS){const P=PLACES[L.id];if(!P)continue;const s=lordStance(L),col=s>0?"#c8382a":s<0?"#8a8a94":"#e8dcc0";cfill(x,"#2a1a10",P.x+4,P.y-9,.5,6);cfill(x,"#000",P.x+4.5,P.y-9.5,3,3);cfill(x,col,P.x+4.5,P.y-9,2.5,2)}
+ const AR=o.armies||worldArmies();AR.forEach(a=>{if(a.path)warPath(x,a.path[0],a.path[1],a.pc,t)});AR.forEach(a=>armyTok(x,a.at[0],a.at[1],a.cols,t,a.n));
+ if(o.focus){const[fx,fy]=o.focus;x.globalAlpha=.5+.4*Math.sin(t/8);x.strokeStyle="#f2c14e";x.lineWidth=.5;x.beginPath();x.arc(fx,fy-3,8+Math.sin(t/8),0,6.28);x.stroke();x.globalAlpha=1}
+ // a gentle vignette like old vellum
+ if(!WMAP.vig){const v=document.createElement("canvas");v.width=WW;v.height=WH;const vx=v.getContext("2d");const g=vx.createRadialGradient(WW/2,WH/2,WH*.4,WW/2,WH/2,WW*.62);g.addColorStop(0,"rgba(40,24,10,0)");g.addColorStop(1,"rgba(40,24,10,.5)");vx.fillStyle=g;vx.fillRect(0,0,WW,WH);WMAP.vig=v}
+ x.imageSmoothingEnabled=true;x.drawImage(WMAP.vig,0,0,WW,WH);x.imageSmoothingEnabled=false}
+/* the Map: tap a place to read about it */
+let WSEL=null;
+function openWorld(sel){SFX.page();WSEL=sel||null;const ch2=S.month>BATTLE_MONTH||has("corvinClaim");
+ const labs=Object.entries(PLACES).map(([k,P])=>{const L=LORDS.find(l=>l.id===k),s=L&&ch2?lordStance(L):null;
+  return `<button class="wpl${k==="emberfall"?" home":""}${WSEL===k?" on":""}" style="left:${(P.x/WW*100).toFixed(2)}%;top:${((P.y+3)/WH*100).toFixed(2)}%" onclick="openWorld('${k}')">${s===null?"":`<i class="${s>0?"y":s<0?"n":"u"}">${s>0?"✔":s<0?"✖":"?"}</i>`}${P.n}</button>`}).join("");
+ let card="";if(WSEL){const P=PLACES[WSEL],L=LORDS.find(l=>l.id===WSEL);const s=L?lordStance(L):0;
+  const arm=worldArmies().filter(a=>Math.hypot(a.at[0]-P.x,a.at[1]-P.y)<14).map(a=>a.lab);
+  card=`<div class="wcard"><b>${P.n}</b>${L?`<span class="wl">${L.n}${ch2?` · <em class="${s>0?"sy":s<0?"sn":"su"}">${s>0?"for you":s<0?"for Corvin":"undecided"}</em>`:""}</span>`:""}<p>${P.d}${L&&ch2?` <i>${L.why(s)}</i>`:""}${arm.length?` <b class="warn">${arm.join(", ")} ${arm.length>1?"are":"is"} here.</b>`:""}</p></div>`}
+ const v=ch2?councilVotes():null;
+ overlay(`<div class="wmwrap"><canvas id="wmap" width="${WW*2}" height="${WH*2}"></canvas><div class="wpls">${labs}</div></div>
+  <div class="whud"><div class="ntitle"><b>The River Country</b><span>${ch2?`The council: <i class="y">${v.yes} for you</i> · <i class="n">${v.no} for Corvin</i> · ${v.und} undecided. You need 6.`:has("knelt")?"Vex's banner flies over the ford.":`Vex's host gathers across the river. ${BATTLE_MONTH-S.month>0?`${BATTLE_MONTH-S.month} month${BATTLE_MONTH-S.month>1?"s":""} until July.`:"He comes this month."}`}</span></div><button class="pb done" id="wmClose">Close</button></div>${card}`);
+ wmFit();$("wmClose").onclick=()=>{SFX.click();WSEL=null;if(S&&S.night&&S.night.reqDone)showNight();else closeOverlay()}}
+function wmFit(){const o=$("overlay"),w=o.querySelector(".wmwrap");if(!w)return;const W0=o.clientWidth,H0=o.clientHeight,ar=WW/WH;let ww=W0,hh=W0/ar;const cover=W0/H0>=1.7;if(cover?hh<H0:hh>H0){hh=H0;ww=H0*ar}w.style.width=ww+"px";w.style.height=hh+"px"}
+/* the war map: before a battle, the armies march across the realm */
+function warMap(title,text,armies,done){SFX.war();
+ overlay(`<div class="wmwrap"><canvas id="wmap" width="${WW*2}" height="${WH*2}"></canvas></div><div class="ovb wmtext"><div><div class="dim">— ${title.toUpperCase()} —</div><p>${text}</p></div><button class="pb" id="wmGo" style="opacity:0;animation:appear .8s ${FAST?0:2.2}s forwards">To the walls</button></div>`);
+ wmFit();WMAP.march={armies,t0:WMAP.t,focus:[121,62]};$("wmGo").onclick=()=>{SFX.click();WMAP.march=null;closeOverlay();done()}}
+function wmFrame(x){if(WMAP.march){const M=WMAP.march,f=Math.min(1,(WMAP.t-M.t0)/(FAST?1:200)),e=1-Math.pow(1-f,2);
+  drawWorld(x,{armies:M.armies.map(a=>({...a,at:lerpPt(a.from,a.to,e)})),focus:M.focus})}else drawWorld(x,{stance:S&&(S.month>BATTLE_MONTH||has("corvinClaim"))})}
+addEventListener("resize",()=>{if($("wmap"))wmFit()});
 
 /* =========================================================
    MAIN LOOP
    ========================================================= */
 /* lots of choices: in landscape they spread into two columns instead of scrolling */
-new MutationObserver(()=>{const n=$("choices").children.length;$("dialog").classList.toggle("many",n>3);$("dialog").classList.toggle("lots",n>5)}).observe($("choices"),{childList:true});
+new MutationObserver(()=>{const n=$("choices").children.length,d=$("dialog");d.classList.toggle("many",n>3);d.classList.toggle("lots",n>5);
+ delete d.dataset.fit;d.classList.remove("ftB","ftC","ftW","ftP","ft3","many2");$("choices").classList.remove("tight");$("txt").style.fontSize="";$("txt").style.lineHeight="";requestAnimationFrame(fitDialog)}).observe($("choices"),{childList:true});
 const pctx=$("portrait").getContext("2d");let PCHAR=null;
 const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4)");
 /* ---------------- Wide stage for landscape: the hall is extended to fill the screen ---------------- */
@@ -1392,12 +1747,24 @@ function wideDungeon(x,E,R,LW){
  if(LW-R>=70)chains(R+60);
  if(E>=46)WIDE.torches.push([E-40,46])}
 /* if a long speech or many choices don't fit the box, tighten the type a step instead of scrolling */
-function fitDialog(){const t=$("txt"),ch=$("choices");
- const over=ch.scrollHeight>ch.clientHeight+1;if(over)ch.classList.add("tight");else if(!ch.children.length)ch.classList.remove("tight")}
+function fitDialog(){const d=$("dialog"),ch=$("choices"),tx=$("txt");
+ if(!ch.children.length){if(d.dataset.fit){delete d.dataset.fit;d.classList.remove("ftB","ftC","ftW","ftP","ft3","many2")}return}
+ if(d.dataset.fit)return;d.dataset.fit=1;
+ /* step down until every choice is on screen: tighter spacing, smaller type, two columns, and only then
+    a wider choice column, and only if the page of text beside it still fits. Never a scrollbar. */
+ const over=()=>ch.scrollHeight>ch.clientHeight+1,txOver=()=>tx.scrollHeight>tx.clientHeight+1;
+ const steps=[()=>ch.classList.add("tight"),()=>d.classList.add("ftB"),()=>{if(ch.children.length>2)d.classList.add("many2")},()=>d.classList.add("ftC"),
+  ()=>{d.classList.add("ftW");if(txOver())d.classList.remove("ftW")},()=>{d.classList.add("ftP");if(txOver())d.classList.remove("ftP")},()=>{if(ch.children.length>=5)d.classList.add("ft3")}];
+ for(const st of steps){if(!over())break;st()}
+ if(txOver()){let fs=parseFloat(getComputedStyle(tx).fontSize);while(txOver()&&fs>12){fs-=.5;tx.style.fontSize=fs+"px";tx.style.lineHeight="1.2"}}}
 function loop(){
- drawScene();
+ /* a screen that covers everything doesn't need the hall painted underneath it */
+ const ov=$("overlay"),full=ov.style.display==="flex"&&/^(nm|wm|ts|fb|pl)$/.test(ov.className);
+ if(!full)drawScene();else SC.t++;
  if(SC.t%6===0)fitDialog();
- const cc=document.getElementById("castle");if(cc){const cx=cc.getContext("2d");cx.setTransform(2,0,0,2,0,0);cx.imageSmoothingEnabled=false;(CS.mode==="map"?drawMap:drawCastle)(cx)}
+ const cc=document.getElementById("castle");if(cc){const cx=cc.getContext("2d");cx.setTransform(2,0,0,2,0,0);cx.imageSmoothingEnabled=false;drawCastle(cx)}
+ const wm=document.getElementById("wmap");if(wm){const wx=wm.getContext("2d");wx.setTransform(2,0,0,2,0,0);wx.imageSmoothingEnabled=false;wmFrame(wx)}
+ const nm=document.getElementById("nmap");if(nm&&S){const nx=nm.getContext("2d");nx.setTransform(2,0,0,2,0,0);nx.imageSmoothingEnabled=false;drawNightMap(nx)}
  drawPortrait(pctx,PCHAR,{mouth:SC.talk?mouthOf():0,blink:((SC.t)%200)<6});
  requestAnimationFrame(loop)}
 
@@ -1440,7 +1807,7 @@ const E=[
  choices:[{t:"Pay the tribute",cost:{gold:30},go:()=>{fx({gold:-30});set("paidVex");note("Paid tribute to Baron Vex.");return "Sir Gerrit smiles. \"A wise young lord.\" Somehow, it sounds like a threat."}},
   {t:"\"Tell your Baron to come take it.\"",go:()=>{set("defiedVex");fx({favor:6});note("Defied Baron Vex.");return "The hall cheers. Gerrit does not. \"He will. When the summer comes.\""}},
   {t:"Stall him with a feast",cost:{food:10},go:()=>{fx({food:-10});set("stalledVex");return "Gerrit eats your venison and leaves undecided. Time bought, at least."}}]},
-{m:2,who:"elinor",text:"Lord Harwin of the Eastern Marches has written. He wants Maren for his son. A marriage would bind his spears to ours... but she does not know the boy.",
+{m:2,who:"elinor",text:"Lord Harwin of the Eastern Marches has written. He wants Maren for his son. It would bind his spears to ours... but she's never even met the boy.",
  choices:[{t:"Accept the match",go:()=>{set("marenBetrothed");note("Betrothed Maren to Harwin's son.");return "Elinor nods slowly. \"I'll tell her. She won't thank you.\""}},
   {t:"\"Let Maren decide.\"",go:()=>{set("marenChoice");fx({favor:2});return "Elinor's face softens. \"That's why I married you.\""}},
   {t:"Refuse the match",go:()=>{set("refusedHarwin");return "\"Harwin's pride won't like it. But I'm glad.\""}}]},
@@ -1456,7 +1823,7 @@ const E=[
 {m:3,who:"morwen",text:"Don't call your guards, little lord. I came through the fen to make you an offer.\n\nI can see what's coming. Fire on the river, when summer is at its height. I can turn it aside... for a price I'll name later.",
  choices:[{t:"Accept her bargain",go:()=>{set("witchPact");note("Made a pact with Morwen.");return "She laughs. \"Later always comes, little lord.\" And then she is simply gone."}},
   {t:"Have her seized",go:()=>{set("witchEnemy");fx({favor:4});return "Your guards grab only a cloak full of moths."}},
-  {t:"Ask what she sees",go:()=>{set("witchWarned");return "\"Vex's banners on the river in July. Count your men, little lord. Count them twice.\""}}]},
+  {t:"Ask what she sees",go:()=>{set("witchWarned");return "\"Vex's banners on the river in July. Count your men, little lord. Then the graves.\""}}]},
 {m:3,who:"cuthbert",text:"The abbey roof leaks onto the altar, my lord. Your father always promised to mend it. The faithful notice such things.",
  choices:[{t:"Donate 20 gold",cost:{gold:20},go:()=>{fx({gold:-20,favor:8});set("church");note("Mended the abbey roof.");return "\"Heaven sees your generosity. So does the city.\""}},
   {t:"\"Heaven can fix its own roof.\"",go:()=>{fx({favor:-8});set("churchAngry");return "Cuthbert makes a sign against ill luck. Twice."}}]},
@@ -1506,7 +1873,7 @@ const E=[
 {m:5,who:"merchant",req:()=>has("loan"),text:"Midsummer, my lord! Eighty gold, as agreed.",
  choices:[{t:"Repay 80 gold",cost:{gold:80},go:()=>{fx({gold:-80});delete S.f.loan;set("loanRepaid");return "\"A pleasure, as always.\""}},
   {t:"Default",go:()=>{set("guildEnemy");fx({favor:-6,food:-10});note("Defaulted on the Guild.");return "The Guild seizes grain wagons on the road. Prices in Emberfall double."}}]},
-{m:5,who:"eastlord",req:()=>has("marenBetrothed")&&!has("knelt"),text:"Our houses are one now, Emberfall. When Vex comes, my riders will come too. Forty lances.",
+{m:5,who:"eastlord",req:()=>has("marenBetrothed")&&!has("knelt"),text:"Maren will marry my Edric at harvest, and that makes us family. When Vex comes, my riders will come too. Forty lances.",
  choices:[{t:"\"Emberfall is grateful.\"",go:()=>{set("harwinAlly");fx({favor:3});note("Lord Harwin pledged his lances.");return "He clasps your arm. \"Family is family.\""}}]},
 {m:5,who:"eastlord",req:()=>has("refusedHarwin"),text:"You refused my son. The Marches will remember the insult.",
  choices:[{t:"Offer gold as apology",cost:{gold:20},go:()=>{fx({gold:-20});return "\"Gold mends pride, if not friendship.\""}},
@@ -1523,7 +1890,7 @@ const E=[
 {m:5,who:"tobin",req:()=>has("tobinStudy")&&!has("knelt"),text:"Father, I went through the old ledgers with Aldric. There's a tunnel under the east wall. Grandfather used it for smuggling!",
  choices:[{t:"Use it to raid Vex's supplies",go:()=>{set("tunnelRaid");fx({food:15});note("Raided Vex's camp through the tunnel.");return "Your men return with three wagons of Vex's grain."}},
   {t:"Keep it as an escape route",go:()=>{set("tunnel");return "If the walls fall, your family can live."}}]},
-{m:5,who:"elinor",req:()=>!has("knelt"),text:"Whatever happens when Vex comes... I want you to know. You were a better lord than your father. Kinder.",
+{m:5,who:"elinor",req:()=>!has("knelt"),text:"Whatever happens when Vex comes... I want you to know. You're a kinder lord than your father ever was.",
  choices:[{t:"\"Take the children and leave.\"",go:()=>{set("familySafe");return "\"I'll stay until the last moment. Then I'll go.\""}},
   {t:"\"We stand together.\"",go:()=>{set("familyStays");fx({favor:5});return "She takes your hand. It doesn't tremble."}}]},
 {m:5,who:"aldric",req:()=>has("knelt"),text:"My lord... Vex's banners on the river. He hasn't come to fight. He's come to take your oath in person, in front of the whole city.",
@@ -1533,7 +1900,7 @@ const E=[
  choices:[{t:"Hold the walls",go:()=>{set("plan_wall");return "Stones stacked, oil boiled. Let him come."}},
   {t:"Ride out and attack",go:()=>{set("plan_attack");return "\"For Emberfall!\" The gates open."}},
   {t:"Parley with Vex",go:()=>{set("plan_parley");return "You ride out under a white banner."}},
-  {t:"Flee through the tunnel",req:()=>has("tunnel"),go:()=>{set("plan_flee");return "In the dark, you lead your family away from Emberfall."}}]},
+  {t:"Flee through the tunnel",req:()=>has("tunnel"),go:()=>{set("plan_flee");return "Into the tunnel, family first. You don't look back."}}]},
 /* ================= CHAPTER TWO: August to February ================= */
 /* ---- AUGUST: after the battle ---- */
 {m:6,who:"aldric",text:()=>has("vassal")?"My lord. Vex's banner flies over the gate. We are alive, and we are his. The people are waiting to see what kind of lord you'll be now.":has("vexWounded")?"My lord. We held, but the bells haven't stopped ringing for the dead. Vex limped home across the river. He'll be back.":"My lord. The bells are ringing for the dead and for the living. Emberfall is still yours. Now we must hold it through the winter.",
@@ -1596,7 +1963,7 @@ const E=[
 {m:9,who:"whisper",req:()=>has("spy")&&has("corvinClaim")&&!has("corvinSecret"),text:"\"The will your cousin carries was written by a clerk in Greymarch, my lord. For a price. I can bring you the clerk before the council... for 20 gold.\"",
  choices:[{t:"Pay The Whisper",cost:{gold:20},go:()=>{fx({gold:-20});set("corvinSecret");set("clerkFound");addClue("clerk");note("The Whisper found the clerk who forged Corvin's will.");return "\"He'll be in your dungeon before the council. Singing.\""}},
   {t:"Decline",go:()=>"\"Your throne, my lord. Your gamble.\""}]},
-{m:9,who:"aldric",text:"Winter is coming, my lord. We'll need firewood for four months, or we'll be burning furniture by February.",
+{m:9,who:"aldric",text:"Winter's close, my lord. We'll need firewood for four months, or we'll be burning furniture by February.",
  choices:[{t:"Buy firewood now",cost:{gold:15},go:()=>{fx({gold:-15});set("firewood");return "Wagons of oak stacked to the rafters. (No firewood costs this winter.)"}},
   {t:"Cut the Ashwood",go:()=>{set("firewood");fx({favor:-4});return "The royal forest rings with axes. The hunters are not pleased. (No firewood costs this winter.)"}},
   {t:"\"We'll manage.\"",go:()=>"Aldric writes \"firewood: 4 gold a month\" in the ledger, and underlines it."}]},
@@ -1638,10 +2005,10 @@ const E=[
  choices:[{t:"Pay the physicians",cost:{gold:15},go:()=>{fx({gold:-15,favor:5});return "Hot broth, willow bark and clean blankets. Most of them pull through."}},
   {t:"Send for Morwen",agent:"witch",go:()=>{send("witch");fx({favor:3});set("witchHealed");return "Morwen walks through Thornby in the snow. The coughing stops behind her."}},
   {t:"Open the castle stores",cost:{food:10},go:()=>{fx({food:-10,favor:4});return "Warm bellies fight the cold better than prayers."}}]},
-{m:11,who:"corvin",req:()=>has("corvinFight"),text:"\"The lords arrive for the council next month, cousin. Some of them are already drinking my wine.\" Corvin raises his cup to you.",
+{m:11,who:"corvin",req:()=>has("corvinFight"),text:"\"The lords arrive for the council next month, cousin. Some are already drinking my wine.\" He raises his cup. \"Your health.\"",
  choices:[{t:"Host a feast for the visiting lords",cost:{gold:30},go:()=>{fx({gold:-30});set("lordsFeasted");return "Your wine is better than his. The lords notice."}},
   {t:"Ride out to each lord yourself",cost:{food:8},go:()=>{fx({food:-8});set("lordsVisited");return "Two weeks in the snow, eleven halls, eleven handshakes."}},
-  {t:"\"My year speaks for itself.\"",go:()=>"Corvin laughs. \"We'll see what it says.\""}]},
+  {t:"\"My year speaks for itself.\"",go:()=>"Corvin laughs. \"It does. Loudly.\""}]},
 /* ---- FEBRUARY: the last month ---- */
 {m:12,who:"aldric",text:"The last month of your first year, my lord. When the snow breaks, the lords gather for the Lords' Council. Whatever they think of you, they'll say it then.",
  choices:[{t:"\"Then let's finish strong.\"",go:()=>{fx({favor:2});return "Aldric smiles. \"Your father used to say that. He rarely did.\""}},
@@ -1655,11 +2022,11 @@ const E=[
  choices:[{t:"\"Then let it be the fen's.\"",go:()=>{set("witchThrone");note("Gave Emberfall to the fen.");return "She smiles, and the candles turn green, one by one."}},
   {t:"\"Get off my throne.\"",go:()=>{delete S.f.witchRealm;delete S.f.morwenCourt;set("morwenBanished");fx({favor:5});return "She does, slowly. \"You'll miss me, little lord.\""}}]},
 /* ---- CHAPTER TWO: the Midwinter Crown ---- */
-{m:6,who:"corvin",text:()=>(fought()||has("outcome_peace")?"\"Cousin! Corvin of Greymarch. I rode the moment I heard about the battle. And about dear Roderick, of course.\"":"\"Cousin! Corvin of Greymarch. I rode the moment I heard about your... arrangement with Baron Vex. And about dear Roderick, of course.\"")+" He unrolls a parchment with a flourish. \"His will. He named me his heir. When the snow breaks in February, the eleven lords of the river meet here, as the old law says, to confirm a new lord's first year. Let them decide which of us it should be.\"",
+{m:6,who:"corvin",text:()=>(fought()?"\"Cousin! You remember me? Corvin of Greymarch. I sat with your father through his last nights. I rode the moment I heard about the battle. Poor, dear Roderick. Such a shame.\"":"\"Cousin! You remember me? Corvin of Greymarch. I sat with your father through his last nights. And now I hear about your... arrangement with Baron Vex. Poor, dear Roderick. Such a shame.\"")+" He unrolls a parchment with a flourish. \"His will. He named me his heir. When the snow breaks in February, the eleven lords of the river meet here, as the old law says, to confirm a new lord's first year. Let them decide which of us it should be.\"",
  choices:[{t:"Welcome him as family",go:()=>{set("corvinGuest");set("corvinClaim");set("corvinFight");note("Lord Corvin arrived with a will naming him heir. The lords will decide in February.");setTimeout(()=>showTip("council"),600);return "He takes the best guest room, praises the wine, and writes eleven letters before supper. Aldric counts the silverware."}},
   {t:"Demand to see the will",go:()=>{set("willSeen");set("corvinClaim");set("corvinFight");note("Lord Corvin arrived with a will naming him heir. The lords will decide in February.");setTimeout(()=>showTip("council"),600);return "You read every line. It's your father's seal. You're almost sure it's not your father's hand."}},
   {t:"Throw him out of Emberfall",go:()=>{set("corvinEnemy");set("corvinClaim");set("corvinFight");fx({favor:2});S.lords=S.lords||{};note("Turned Lord Corvin away from the gate. The lords will decide in February.");setTimeout(()=>showTip("council"),600);return "\"As you wish, cousin.\" He smiles all the way to the gate. \"I'll tell the lords how warmly Emberfall greets its family.\""}}]},
-{m:6,who:"wynn",req:()=>(has("vexDead")||has("vexWounded"))&&!hasClue("vexLetters"),text:"Sergeant Wynn drops a muddy chest at your feet. \"Vex's war chest, my lord, dragged out of the river. Silver, maps... and these.\" A bundle of letters, all sealed with a single letter: C.",
+{m:6,who:"wynn",req:()=>(has("vexDead")||has("vexWounded"))&&!hasClue("vexLetters"),text:"Sergeant Wynn drops a muddy chest at your feet. \"Vex's war chest, my lord, dragged out of the river. Silver, maps... and these.\" A bundle of letters, each sealed with one initial: C.",
  choices:[{t:"Read every one",go:()=>{addClue("vexLetters");return "\"Strike before the harvest, and the ford is yours. The boy will not last the summer.\" No name. Just C. Someone wanted Vex to ruin you."}},
   {t:"Keep the silver, burn the rest",go:()=>{fx({gold:20});return "The letters curl in the fire. The silver goes in the strongbox. Aldric watches the ashes for a long time."}}]},
 {m:6,who:"brannoc",req:()=>has("brannocTrap")&&fought()&&!hasClue("brannoc"),text:"Brannoc, in chains, his face bruised from the night of the battle. \"You let me open that gate onto your spears. Clever boy. Go on, then. Ask me.\"",
@@ -1685,7 +2052,7 @@ const E=[
   {t:"\"Never.\"",go:()=>"\"Then the lords will decide.\" He leaves smiling. He's always smiling."}]},
 /* ---- NOVEMBER ---- */
 {m:9,who:"rhun",text:"Lord Rhun of the Hills, old and broad, leaning on a sword he no longer needs. \"I fought beside your father at Saltmere. Forty years. Tell me true, boy: did Roderick die in his sleep?\"",
- choices:[{t:"\"No. He was murdered.\"",go:()=>{if(clueCount()>=2){set("rhunTold");note("Told Lord Rhun the truth about your father.");return "You show him what you've found. He reads it twice, very slowly. \"Then I know how I'll vote. And I'll be watching your cousin.\""}return "\"Murdered? By whom?\" You have suspicions, not proof. \"Find me proof, and you'll have my vote.\""}},
+ choices:[{t:"\"No. He was murdered.\"",go:()=>{if(clueCount()>=2){set("rhunTold");note("Told Lord Rhun the truth about your father.");return "You show him what you've found. He reads it twice, very slowly. \"Then I know how I'll vote. And I'll be watching your cousin.\""}return "\"Murdered? By whom?\" You have suspicions, not proof. \"Bring me proof, boy. Then I'm yours.\""}},
   {t:"\"So they tell me.\"",go:()=>"He looks at you for a long moment. \"Your father would have looked harder.\""}]},
 {m:9,who:"anselm",text:()=>"Bishop Anselm, in purple"+(has("witchRealm")?", without Brother Cuthbert, who left you for the abbey in Greymarch. ":", with Brother Cuthbert one step behind. ")+"\"The church will vote at the council with its conscience, my lord. My conscience is troubled by the state of the abbey bell tower.\"",
  choices:[{t:"Pay for the bell tower",cost:{gold:25},go:()=>{fx({gold:-25,favor:3});set("anselmWon");return "The bells ring for an hour the day the scaffolding comes down. The Bishop's conscience is greatly eased."}},
@@ -1791,7 +2158,7 @@ const BUILD={
    ENGINE
    ========================================================= */
 function buildStats(){$("stats").innerHTML=[["gold","Gold"],["food","Grain"],["men","Army"],["favor","Favor"]].map(([k,l])=>`<div class="stat" id="s-${k}" onclick="statInfo('${k}')" role="button" aria-label="${l}"><img class="px" src="${ICONURL[k]}"><div><b>0</b><small>${l.toUpperCase()}</small></div></div>`).join("")}
-function render(){for(const k of["gold","food","men","favor"])$("s-"+k).querySelector("b").textContent=S[k];$("daylbl").innerHTML=`${MONTHS[S.month-1].toUpperCase()} · ${SEASON(S.month).toUpperCase()}<small>${threatText()}</small>`}
+function render(){for(const k of["gold","food","men","favor"])$("s-"+k).querySelector("b").textContent=S[k];$("daylbl").innerHTML=`${MONTHS[S.month-1].toUpperCase()}<span class="se"> · ${SEASON(S.month).toUpperCase()}</span><small>${threatText()}</small>`}
 function floatStat(k,v){const el=$("s-"+k);const f=document.createElement("span");f.className="float";f.textContent=(v>0?"+":"")+v;f.style.color=v>0?"#9ef08a":"#ff7a6a";
  el.appendChild(f);setTimeout(()=>f.remove(),1400);el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
 function buildMonth(){
@@ -1895,7 +2262,7 @@ const MISSIONS={
   lose:()=>"Vex's outriders caught them in the reeds. No map, and fewer scouts."},
  raid:{n:"Raid Vex's supply wagons",d:"Strike his army before it marches. Once only.",base:15,per:3,from:4,to:4,once:1,when:()=>!has("knelt"),
   win:()=>{fx({food:12});set("vexRaided");note("Raided Vex's supply wagons.");return "Wagons burn on the Baron's road. His army will march hungry."},
-  lose:()=>"Vex was waiting for them. It was a trap."},
+  lose:()=>"Vex was waiting. The wagons were bait."},
  harvest:{n:"Guard the harvest wagons",d:"Bandits love a full wagon.",base:55,per:3,from:7,to:9,
   win:()=>{fx({food:20});return "Every wagon arrives. The granary is full to the rafters."},
   lose:()=>{fx({food:4});return "Bandits took half the wagons on the Thornby road."}},
@@ -1907,7 +2274,7 @@ const MISSIONS={
   lose:()=>"Vex was waiting for them. He always is."},
  shadow:{n:"Shadow Lord Corvin's men",d:"Find out what your cousin is hiding. Once only.",base:35,per:3,from:8,to:11,once:1,when:()=>has("corvinClaim")&&!has("corvinSecret"),
   win:()=>{set("corvinSecret");set("clerkFound");addClue("clerk");note("Your soldiers found the clerk who forged Corvin's will.");return "They followed his courier to a clerk in Greymarch. The clerk confessed: the will is a forgery."},
-  lose:()=>"Corvin's men spotted them. Corvin sends you a basket of pears, with a smug note."}
+  lose:()=>"Corvin's men spotted them. He sends you pears, and a note: \"Do eat, cousin.\""}
 };
 /* one surprise per night, in one room (marked "!"). Each happens once per reign. */
 const NIGHT_EVENTS=[
@@ -1991,7 +2358,7 @@ const SCENES=[
    {t:"Send Brannoc to hold the river fort",go:()=>{set("brannocAway");fx({men:-6});note("Sent Brannoc and six men to the river fort.");return "\"The fort? As you command.\" He takes six men and doesn't look back."}}]},
  {id:"marenTears",m:[2,3],room:"family",who:"maren",when:()=>has("marenBetrothed")&&!has("marenLoves"),text:"You hear crying behind Maren's door. She opens it before you knock. \"Is this what I am? A bargain for spears?\"",
   choices:[{t:"Sit with her until she sleeps",go:()=>{S.bond.maren++;return "You don't say much. You don't need to. She falls asleep holding your hand."}},
-   {t:"\"Daughters of lords marry for their houses.\"",go:()=>{set("marenBitter");return "She shuts the door. The lock turns."}},
+   {t:"\"Lords' daughters marry for their houses.\"",go:()=>{set("marenBitter");return "She shuts the door. The lock turns."}},
    {t:"Promise her a say in it",go:()=>{S.bond.maren+=2;set("marenLoves");return "\"You mean it?\" For the first time in weeks, she smiles."}}]},
  {id:"marenLetters",m:[2,3],room:"family",who:"maren",when:()=>has("marenChoice"),text:"Maren has ink on her fingers. \"Edric, Lord Harwin's son, has written to me. May I write back?\"",
   choices:[{t:"\"Write as much as you like.\"",go:()=>{S.bond.maren++;return "Letters fly east every week. Harwin's riders start calling at Emberfall."}},
@@ -2051,7 +2418,7 @@ const SCENES=[
   choices:[{t:"\"Greymarch. Like the vial.\"",go:()=>{addClue("wine");S.bond.elinor++;return hasClue("vial")?"Elinor nods slowly. Green Greymarch glass. Greymarch wine. Neither of you says his name out loud.":"\"Greymarch,\" she repeats. \"Remember that.\""}},
    {t:"\"Corvin loved him. Leave it.\"",go:()=>"\"Did he?\" Elinor says. \"Then why is he trying to take his son's throne?\""}]},
  {id:"lordsLetters",m:[7],room:"war",who:"aldric",when:()=>has("corvinFight"),text:"Aldric has pinned eleven letters to the map, one for each lord of the river. \"Corvin has written to every one of them, my lord. Here's how they stand. Some can be won with gold, some with honor, some only with the truth.\"",
-  choices:[{t:"Write to Lord Pell yourself (5 gold for the courier)",cost:{gold:5},go:()=>{fx({gold:-5});set("pellWon");return "Pell writes back within the week: two pages about hunting dogs, and a promise. (Check the Journal to see where every lord stands.)"}},
+  choices:[{t:"Write to Lord Pell (5 gold courier)",cost:{gold:5},go:()=>{fx({gold:-5});set("pellWon");return "Pell writes back within the week: two pages about hunting dogs, and a promise. (Check the Journal to see where every lord stands.)"}},
    {t:"\"I'll win them by ruling well.\"",go:()=>"\"A noble plan, my lord. Slow, but noble.\" (Check the Journal to see where every lord stands.)"}]},
  {id:"suspects",m:[8],room:"war",who:"wynn",with:["aldric"],when:()=>has("poisonHunt")&&!hasClue("cupbearer"),text:()=>`Wynn has three frightened people in the war room. \"The cook made the feast for everyone, and nobody else was sick. ${has("boyPage")||has("pipSquire")?"Pip filled the cup and drank from it himself, and nearly died.":"Your cupbearer filled the cup, then drank from it himself and nearly died."} And ${has("corvinEnemy")?"a new serving man, hired from Greymarch in September,":"Lord Corvin's valet"}... was seen near the wine table. He wears Greymarch rings.\"`,
   choices:[{t:"Accuse the cook",go:()=>{fx({favor:-4});return "The cook weeps that she's served this family for twenty years. Everyone ate her food. Wynn lets her go at dawn, and the kitchen stops speaking to you."}},
@@ -2059,7 +2426,7 @@ const SCENES=[
    {t:"Search the man from Greymarch",go:()=>{addClue("cupbearer");set("corvinValet");note("Corvin's valet was caught with the poison.");return "Sewn into his sleeve: a twist of paper, still green with powder. He won't say a word. He doesn't need to. He's Corvin's man."}}]},
  {id:"ulricNight",m:[10,11],room:"treasury",who:"ulric",when:()=>has("ulricSafe"),text:"Master Ulric hasn't slept since he came. \"He'll find me, my lord. Corvin always finds people. Promise me I'll live to speak at the council.\"",
   choices:[{t:"Put two guards on him",go:()=>"Ulric finally sleeps. The guards don't."},
-   {t:"Pay to smuggle his family out of Greymarch (10 gold)",cost:{gold:10},go:()=>{fx({gold:-10});S.f.ulricBrave=1;return "\"My daughters... safe?\" He cries. When the council comes, he'll stand up and speak. You're sure of it."}}]},
+   {t:"Smuggle out his family (10 gold)",cost:{gold:10},go:()=>{fx({gold:-10});S.f.ulricBrave=1;return "\"My daughters... safe?\" He cries. When the council comes, he'll stand up and speak. You're sure of it."}}]},
  {id:"icebreak",m:[9],room:"mason",who:"mason",when:()=>!!winterFoes()&&!has("icebreak"),text:"Hildra is watching the river. \"It'll freeze by Midwinter, my lord. Then anyone can walk across it to your walls. Unless... give me 12 gold for iron picks and a crew. When they're on the ice, we break it under them.\"",
   choices:[{t:"\"Do it.\" (12 gold)",cost:{gold:12},go:()=>{fx({gold:-12});set("icebreak");note("Hildra readied crews to break the river ice.");return "Her crews mark lines on the ice every morning, and hide the picks in the reeds. \"Let them come,\" she says."}},
    {t:"\"Who would attack in winter?\"",go:()=>"\"Somebody who's tired of waiting,\" says Hildra."}]},
@@ -2136,26 +2503,26 @@ function roomStatus(id){const N=S.night||{};
  if((N.evs||[]).some(i=>NIGHT_EVENTS[i].room===id&&!N.evDone[i]))return"ev";
  if(id==="family"&&!N.visited&&famHasNews())return"ev";
  return(N.seen&&N.seen[id])||{war:!!S.mission,mason:!!N.built,family:!!N.visited,council:!!N.counsel}[id]?"done":""}
+function nightMood(){return S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20||(S.unrest||0)>=1?"There is angry muttering in the taverns.":S.month===4?(has("knelt")?"Vex's riders are coming to collect your oath.":"Scouts say Vex's army is on the march."):S.month===BATTLE_MONTH-1?"The soldiers sleep in their armor tonight.":S.month===9?"The river is starting to freeze.":S.month>=10?"The lords' banners are on the roads.":"Emberfall sleeps."}
 function showNight(){
- ensureState();const N=S.night,req=(N.req||[]).map(id=>SCENES.find(x=>x.id===id)),left=req.filter(sc=>!N.reqDone[sc.id]),leftRooms=[...new Set(left.map(sc=>sc.room))],mis=S.mission;
- SC.room=null;SC.cast=[];SC.walker=null;SC.speaker=null;SC.emote=null;clearDialog();setCastle("map");
- const tiles=[
-  ["treasury",ICONURL.gold,"Treasury",S.food<25?"Grain is running low. The Guild sells grain here.":`Taxes: ${TAX[S.tax].n}. Next month ${money(ledgerRows().gold)} gold.`],
-  ["war",ICONURL.men,"War Room",mis?`${mis.n} soldiers out: ${MISSIONS[mis.id].n.toLowerCase()}.`:`${leader()} awaits orders.`],
-  ["mason",HAMMERURL,"Mason's Yard",N.built?`Building the ${BUILD[N.built].n}.`:"Hildra is ready to build."],
-  ["family",ICONURL.favor,"Family Quarters",N.visited?`You spent the evening with ${C[N.visited].n.replace("Lady ","")}.`:"Your family is still awake."]];
- tiles.unshift(["council",ICONURL.favor===undefined?"":CROWNURL,"Council Table",N.counsel?"Your table has spoken tonight.":`${Object.values(tbl()).filter(Boolean).length} of 5 seats filled. Hear one counsel.`]);
- if(has("brannocJailed"))tiles.push(["dungeon",KEYURL,"Dungeon",has("brannocExiled")?"An empty cell.":"Brannoc waits in chains."]);
- const body=`<h3>Night falls on Emberfall</h3><p class="dim" style="margin-top:0">The end of ${MONTHS[S.month-1]}. ${req.length?`${["","One matter needs","Two matters need","Three matters need"][req.length]} you tonight. Tap a room to go there.`:"Nothing urgent tonight. Wander the castle, or go straight to bed."}</p>
-   <div class="rooms">${tiles.map(([id,ic,n,st])=>{const k=roomStatus(id);return `<button class="room${k==="done"?" done":k==="req"?" story":k==="ev"?" ev":""}" onclick="enterRoom('${id}')"><span class="rh"><img class="px" src="${ic}" alt=""><b>${n}</b>${k==="req"?'<em class="bang gold">!</em>':k==="ev"?'<em class="bang">!</em>':k==="done"?'<em>✓</em>':""}</span><small>${k==="req"?"<b class='must'>A matter that can't wait.</b>":k==="ev"?"Something is happening here tonight.":st}</small></button>`}).join("")}</div>
-   <p class="dim">${S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20||(S.unrest||0)>=1?"There is angry muttering in the taverns.":S.month===4?(has("knelt")?"Vex's riders are coming to collect your oath.":"Scouts say Vex's army is on the march."):"Emberfall sleeps."}</p>
-   ${left.length?`<p class="must">Before you sleep: ${leftRooms.map(r=>ROOMNAME[r]).join(", ")}.</p>`:""}<button class="pb" id="nextBtn" ${left.length?"disabled":""}>Sleep until ${MONTHS[S.month]}</button>`;
- overlay(`${castleHTML()}</div><div class="ovb">${resBar()}${councilHTML()}${body}</div>`);
- setTimeout(()=>showTip("night"),300);
- const cv=$("castle");cv.classList.add("map");cv.onclick=mapTap;
- $("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id]))return;if(S.month>=FREE_MONTHS&&!PRO)return paywall(()=>{showNight();setTimeout(()=>$("nextBtn").click(),FAST?0:300)});SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month===BATTLE_MONTH;
+ ensureState();const N=S.night,req=(N.req||[]).map(id=>SCENES.find(x=>x.id===id)),left=req.filter(sc=>!N.reqDone[sc.id]),leftRooms=[...new Set(left.map(sc=>sc.room))];
+ SC.room=null;SC.cast=[];SC.walker=null;SC.speaker=null;SC.emote=null;clearDialog();
+ nmSize();const LW=NM.LW,R=nmLayout(LW).rooms;
+ const pct=([x,y,w,h])=>`left:${(x/LW*100).toFixed(2)}%;top:${(y/1.2).toFixed(2)}%;width:${(w/LW*100).toFixed(2)}%;height:${(h/1.2).toFixed(2)}%`;
+ const ids=["family","council","treasury","war","mason",...(has("brannocJailed")?["dungeon"]:[])];
+ const hot=ids.map(id=>{const k=roomStatus(id);return `<button class="room${k?" "+k:""}" style="${pct(R[id])}" onclick="enterRoom('${id}')" aria-label="${ROOMNAME[id]}"><span class="plq">${k==="req"||k==="ev"?'<em class="bang">!</em>':k==="done"?'<em class="ok">✓</em>':""}<span>${ROOMNAME[id]}</span></span></button>`}).join("");
+ overlay(`<div class="nmwrap"><canvas id="nmap" width="${LW*2}" height="240"></canvas><div class="rooms">${hot}</div></div>
+  <div class="nhud"><div class="ntitle"><b>Night · end of ${MONTHS[S.month-1]}</b><span>${left.length?`${["","Something needs you tonight.","Two matters need you tonight.","Three matters need you tonight."][left.length]}`:nightMood()}</span></div>
+  <div class="nright">${resBar()}<div class="nbtns"><button class="hb" onclick="openWorld()">Map</button><button class="hb" onclick="openJournal()">Journal</button><button class="hb" onclick="openSettings()">⚙</button></div></div></div>
+  <button class="pb${left.length?" wait":""}" id="nextBtn">${left.length?`<em class="bang">!</em> ${leftRooms.map(r=>ROOMNAME[r]).join(" · ")} first`:`Sleep until ${MONTHS[S.month]}`}</button>`);
+ nmFit();setTimeout(()=>showTip("night"),300);
+ $("nextBtn").onclick=()=>{if((S.night.req||[]).some(id=>!S.night.reqDone[id])){SFX.blip&&SFX.blip(300);document.querySelectorAll("#overlay .room.req").forEach(r=>{r.classList.remove("nudge");void r.offsetWidth;r.classList.add("nudge")});return}
+  if(S.month>=FREE_MONTHS&&!PRO)return paywall(()=>{showNight();setTimeout(()=>$("nextBtn").click(),FAST?0:300)});SFX.click();closeOverlay();if(fail())return;S.month++;S.night={};const war=S.month===BATTLE_MONTH;
   setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":dayTrack());monthCard(()=>missionReport(()=>{buildMonth();next()}))};
 }
+/* the map keeps its shape: as wide as the screen allows, the rooms always where the paint is */
+function nmFit(){const o=$("overlay"),w=$("overlay").querySelector(".nmwrap");if(!w)return;const W0=o.clientWidth,H0=o.clientHeight,ar=NM.LW/120;
+ let ww=W0,hh=W0/ar;if(hh>H0){hh=H0;ww=H0*ar}w.style.width=ww+"px";w.style.height=hh+"px"}
 /* walking into a room: the lord comes through the door, then each matter plays out as dialogue */
 function clearDialog(){PCHAR=null;$("pbox").style.display="";$("who").textContent="";$("role").textContent="";$("choices").innerHTML="";$("txt").className="";$("txt").textContent=""}
 function roomCast(id){const N=S.night,list=ROOMS[id].cast();
@@ -2174,7 +2541,7 @@ function speak(k,text,done){if(typeof text==="function")text=text();const c=k?C[
  $("who").textContent=c?c.n:ROOMNAME[SC.room];$("role").textContent=c?c.r:"Tonight";$("txt").className="";$("choices").innerHTML="";
  typeText(text,c?c.voice:190,done)}
 function choiceBtn(o,i,fn){const b=document.createElement("button");b.className="ch";b.style.animationDelay=i*70+"ms";
- b.innerHTML=o.t+(o.cost?`<span class="cost">${Object.entries(o.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}">−${v}</span>`).join("")}${can(o)?"":"<span>(not enough)</span>"}</span>`:"")+(o.agent?(setTimeout(()=>showTip("agents"),400),"")+`<span class="cost agent">${agentFree(o.agent)?`${AGENTS[o.agent].role}: ${AGENTS[o.agent].name()} · away until next month`:`${AGENTS[o.agent].name()} is away`}</span>`:"");
+ b.innerHTML=o.t+(o.sub?`<span class="cost sub">${o.sub}</span>`:"")+(o.cost?`<span class="cost">${Object.entries(o.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}">−${v}</span>`).join("")}${can(o)?"":"<span>(not enough)</span>"}</span>`:"")+(o.agent?(setTimeout(()=>showTip("agents"),400),"")+`<span class="cost agent">${agentFree(o.agent)?`Sends ${AGENTS[o.agent].name().replace(/^(Captain|Sergeant|Lady|Lord|Sir|Master) /,"")} away for a month`:`${AGENTS[o.agent].name()} is away`}</span>`:"");
  b.disabled=!can(o)||!!o.off;b.onclick=fn;return b}
 function goBtn(label,fn){const b=document.createElement("button");b.className="ch go";b.textContent=label;b.onclick=()=>{SFX.click();$("choices").innerHTML="";fn()};$("choices").appendChild(b)}
 function roomStep(){
@@ -2198,7 +2565,7 @@ const ROOMTALK={
  mason:()=>{const N=S.night;return{k:"mason",text:N.built?`"The ${BUILD[N.built].n} is underway, my lord. One project a month. Stone won't be hurried."`:`"What shall we build, my lord? One project a month. Stone won't be hurried."`,
   acts:[{t:"Commission a building",go:()=>panel("mason"),off:!!N.built}]}},
  family:()=>{const N=S.night;return N.visited?{k:null,text:"The candles are burning low. Everyone has gone to bed.",acts:[]}:
-  {k:null,text:"Your family is still awake. Who will you spend the evening with?",acts:["elinor","maren","tobin"].filter(famHere).map(k=>({t:`${nextTalk(k)?"✦ ":""}Spend the evening with ${C[k].n.replace("Lady ","")}${nextTalk(k)?" (wants to talk)":""}`,go:()=>visit(k)}))}},
+  {k:null,text:"Your family is still awake. Who will you spend the evening with?",acts:["elinor","maren","tobin"].filter(famHere).map(k=>({t:`Spend the evening with ${C[k].n.replace("Lady ","")}`,sub:nextTalk(k)?`✦ ${k==="tobin"?"He":"She"} wants to talk`:"",go:()=>visit(k)}))}},
  dungeon:()=>({k:null,text:!has("brannocExiled")?"Brannoc doesn't look up when you pass. Somewhere, water drips onto stone.":SC.cast.length?"The guards are already unlocking his chains. He'll be across the river by dawn.":"The cell is empty. Only the straw remembers him.",acts:[]}),
 };
 function roomIdle(){const id=SC.room;if(!id)return;const R=ROOMTALK[id]();
@@ -2298,7 +2665,7 @@ function aftermath(k){
  note(`The battle for Emberfall: ${t}.`);save();
  setCastle(mode);Music.play(mode==="dawn"?"hall":"night");mode==="dawn"?SFX.fanfare():SFX.toll();
  overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE BATTLE IS DECIDED —</div><h3>${t}</h3><p>${d}</p>
-  <p style="color:#f2c14e">But a year has twelve months. The harvest is coming, and so is the winter.</p>
+  <p style="color:#f2c14e">But a year has twelve months. The harvest is coming, then the snow.</p>
   <button class="pb" id="onBtn">Onward to August</button></div>`);
  const goOn=()=>{closeOverlay();setPhase("day",SEASON(6));Music.play(dayTrack());save();monthCard(()=>missionReport(()=>{buildMonth();next()}))};
  $("onBtn").onclick=()=>{SFX.click();S.month=6;S.night={};save();if(!PRO)return paywall(goOn);goOn()};
@@ -2374,7 +2741,7 @@ function openJournal(tab){SFX.page();const m=S.month,ch2=m>BATTLE_MONTH||has("co
    <p class="note" id="lordWhy" style="color:#f2d080">Tap a lord to see what will move them.</p><div class="lords">${LORDS.map(L=>{const s=lordStance(L);return `<div class="lord ${s>0?"yes":s<0?"no":"und"}" onclick="SFX.click();$('lordWhy').textContent='${L.n} of ${L.seat}: '+this.querySelector('small').textContent"><i>${s>0?"✔":s<0?"✖":"?"}</i><span><b>${L.n}</b><small>${L.why(s)}</small></span></div>`}).join("")}</div></section>`}
  if(tab==="table")body=`<section style="grid-column:1/-1"><h4>The Council Table</h4><p class="note">Five seats. Who sits at your table changes what you can do, and how the story goes. Visit the Council Table at night to hear one of them.</p>${tableHTML()}</section>`;
  if(tab==="chron")body=`<section style="grid-column:1/-1"><h4>The Chronicle of Emberfall</h4><ul class="chron">${(S.chron||[]).slice().reverse().map(c=>`<li>${c}</li>`).join("")||"<li>Nothing yet written.</li>"}</ul></section>`;
- modal(`<div class="phead"><div><h3>The Journal</h3><div class="jtabs">${tabs.map(([k,l])=>`<button class="${k===tab?"on":""}" onclick="openJournal('${k}')">${l}</button>`).join("")}</div></div><button class="pb done" onclick="closeModal()">Close</button></div><div class="pbody ${tab==="baron"?"t3":"t1"} jr">${body}</div>`,"pnl");document.querySelectorAll(".seats canvas").forEach(c=>{const k=c.dataset.k;if(k&&C[k])drawPortrait(c.getContext("2d"),C[k],{})})}
+ modal(`<div class="phead"><div><h3>The Journal</h3><div class="jtabs">${tabs.map(([k,l])=>`<button class="${k===tab?"on":""}" onclick="openJournal('${k}')">${l}</button>`).join("")}<button onclick="closeModal();openWorld()">Map ›</button></div></div><button class="pb done" onclick="closeModal()">Close</button></div><div class="pbody ${tab==="baron"?"t3":"t1"} jr">${body}</div>`,"pnl");document.querySelectorAll(".seats canvas").forEach(c=>{const k=c.dataset.k;if(k&&C[k])drawPortrait(c.getContext("2d"),C[k],{})})}
 
 /* =========================================================
    THE BATTLE OF THE FORD — a playable siege in four beats.
@@ -2414,7 +2781,13 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
  // sky
  const Wn=BT.winter,sky=x.createLinearGradient(0,0,0,70);sky.addColorStop(0,Wn?"#05060f":night?"#0c0a1c":"#1e1430");sky.addColorStop(.65,Wn?"#141a30":night?"#3a1418":"#7a2a30");sky.addColorStop(1,Wn?"#3a3048":night?"#8a3010":"#e0703a");x.fillStyle=sky;x.fillRect(0,0,LW,70);
  if(!night&&!Wn){x.globalAlpha=.9;x.fillStyle="#ffd890";x.beginPath();x.arc(LW*.2,62,9,0,Math.PI*2);x.fill();x.globalAlpha=1}
- for(let i=0;i<30;i++){x.globalAlpha=night?.6:.15;x.fillStyle="#fff";x.fillRect((i*53)%LW,(i*17)%40,.5,.5)}x.globalAlpha=1;
+ for(let i=0;i<46;i++){x.globalAlpha=(night?.35:.1)+(night?.45:.1)*Math.abs(Math.sin(t/40+i));x.fillStyle="#fff";x.fillRect((i*53)%LW,(i*17)%44,i%7?.5:1,i%7?.5:1)}x.globalAlpha=1;
+ if(night){const mx=LW*.82,my=14;x.fillStyle=Wn?"#e8eef6":"#f0d8b8";x.beginPath();x.arc(mx,my,5,0,6.28);x.fill();x.fillStyle=Wn?"#c8d0dc":"#d8b898";x.fillRect(mx-2,my-1,1.5,1.5);x.fillRect(mx+1,my+1.5,1,1);x.globalCompositeOperation="lighter";nmGlow(x,mx,my,22,Wn?"200,215,255":"255,190,140",.18);x.globalCompositeOperation="source-over"}
+ // the enemy camp lights the underside of the clouds
+ x.globalCompositeOperation="lighter";nmGlow(x,LW*.14,62,LW*.22,Wn?"120,150,220":"255,110,40",night?.28:.14);x.globalCompositeOperation="source-over";
+ for(let i=0;i<5;i++){const cx=((i*97+t*.06*(i%2?1:.6))%(LW+80))-40,cy=12+i*7;x.globalAlpha=night?.22:.3;x.fillStyle=Wn?"#2a3048":night?"#2a1418":"#5a2a2a";x.beginPath();x.ellipse(cx,cy,26+i*4,3+i%2,0,0,6.28);x.fill();x.globalAlpha=night?.12:.18;x.fillStyle=Wn?"#5a6a9a":"#c8502a";x.fillRect(cx-18,cy+2,36,.5)}x.globalAlpha=1;
+ // smoke columns rising from the camp
+ for(let c=0;c<3;c++){const bx=LW*(.06+c*.09);for(let k=0;k<9;k++){const yy=58-k*6,wob=Math.sin(t/30+k*.7+c)*3*(k/9);x.globalAlpha=.16*(1-k/9);x.fillStyle=Wn?"#3a4054":"#2a1e22";x.beginPath();x.ellipse(bx+wob+k*1.2,yy,3+k*1.4,2.2+k*.5,0,0,6.28);x.fill()}}x.globalAlpha=1;
  // hills
  x.fillStyle=Wn?"#b8c0d4":night?"#140c18":"#3a1c2a";x.beginPath();x.moveTo(0,64);for(let px=0;px<=LW;px+=8)x.lineTo(px,52+Math.sin(px/37)*5+Math.sin(px/13)*2);x.lineTo(LW,64);x.fill();
  // ground
@@ -2429,6 +2802,10 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
  x.fillStyle="#5a5660";for(let i=0;i<6;i++)x.fillRect(rx0+3+i*((rx1-rx0)/6),74+(i%2)*2,3,1.5);
  if(BT.fire>0){for(let i=0;i<12;i++){const fx=rx0+2+i*((rx1-rx0)/12)+((i*7)%3),fy=70+(i*5)%22;flame(x,fx,fy,4+((i*3)%4),2.6,fx+i);}
   if(Math.random()<.4)part({x:rx0+Math.random()*(rx1-rx0),y:64+Math.random()*24,vx:.05,vy:-.25,life:90,max:90,col:"#3a2a2a",sz:2})}
+ x.globalCompositeOperation="lighter";
+ for(let i=0;i<4;i++){const fx=LW*.06+i*LW*.07;nmGlow(x,fx,63,12,"255,140,50",.32+.06*Math.sin(t/3+i))}
+ if(BT.fire>0){nmGlow(x,(rx0+rx1)/2,80,LW*.2,"255,120,40",.42+.08*Math.sin(t/2.5));for(let i=0;i<10;i++){x.globalAlpha=.25+.15*Math.sin(t/4+i);x.fillStyle="#ff9a40";x.fillRect(rx0+4+i*(rx1-rx0)/10,96+(i%3)*5,1,6+Math.sin(t/5+i)*2)}x.globalAlpha=1}
+ x.globalCompositeOperation="source-over";
  if(BT.green>0){x.globalCompositeOperation="lighter";const g=x.createRadialGradient((rx0+rx1)/2,80,4,(rx0+rx1)/2,80,90);g.addColorStop(0,`rgba(80,255,120,${.35+.1*Math.sin(t/4)})`);g.addColorStop(1,"rgba(80,255,120,0)");x.fillStyle=g;x.fillRect(0,0,LW,H);x.globalCompositeOperation="source-over";
   for(let i=0;i<10;i++){const fx=rx0-20+i*((rx1-rx0+40)/10);x.save();flame(x,fx,88-(i%3)*6,7,3,fx);x.restore()}}
  if(Wn){x.strokeStyle="#5a6a8a";x.lineWidth=.5;for(let i=0;i<7;i++){x.beginPath();x.moveTo(rx0+i*7,60+i*5);x.lineTo(rx0+i*7+9,66+i*6);x.lineTo(rx0+i*7+4,74+i*4);x.stroke()}
@@ -2439,6 +2816,9 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
  const st="#4a4256",sd="#3a3446",sl="#5e566a";x.fillStyle=st;x.fillRect(wx,40,LW-wx,58);for(let y=42;y<98;y+=4){x.fillStyle=sd;x.fillRect(wx,y,LW-wx,.5)}
  for(let px=wx;px<LW;px+=5){x.fillStyle=st;x.fillRect(px,36,3,4);x.fillStyle=sl;x.fillRect(px,36,3,.5)}
  for(const tx of[wx-4,LW*.9]){x.fillStyle=st;x.fillRect(tx,24,14,74);x.fillStyle=sl;x.fillRect(tx,24,1,74);for(let px=tx;px<tx+14;px+=4)x.fillRect(px,21,2.5,3);x.fillStyle="#9a1f1f";x.fillRect(tx+7,8,.5,13);x.fillRect(tx+7.5,8+Math.sin(t/8+tx)*.5,6,3.5);x.fillStyle="#e0b040";x.fillRect(tx+9.5,9+Math.sin(t/8+tx)*.5,1.5,1.5)}
+ for(let px=wx+2;px<LW;px+=5)if(Wn){x.fillStyle="#e8eef6";x.fillRect(px,36,3,.5)}
+ for(let y=46;y<96;y+=13)for(let px=wx+10+(y%2)*7;px<LW-4;px+=19){x.fillStyle="#140c10";x.fillRect(px,y,1.5,4);x.globalAlpha=.5+.5*Math.abs(Math.sin(t/20+px));x.fillStyle="#ffb860";x.fillRect(px+.25,y+1,1,2);x.globalAlpha=1}
+ x.fillStyle=sd;x.fillRect(wx,86,LW-wx,12);x.fillStyle="rgba(0,0,0,.25)";x.fillRect(wx,92,LW-wx,6);
  const gx=wx+LW*.07;x.fillStyle="#140c10";x.fillRect(gx,70,16,28);x.beginPath();x.arc(gx+8,70,8,Math.PI,0);x.fill();x.fillStyle="#5e3c22";if(BT.phase!=="vex")for(let i=0;i<16;i+=3)x.fillRect(gx+i,64,1.5,34);
  if(BT.phase==="postern"&&has("bt_traitor")){const px=LW*.95;x.fillStyle="#0c0810";x.fillRect(px-3,82,6,14);x.fillStyle="rgba(255,150,60,.3)";x.fillRect(px-3,82,6,14)}
  // ladders against the wall
@@ -2449,9 +2829,13 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
   if(u.side==="vex"&&vexGoal!==null&&u.x<vexGoal){const inR=u.x>rx0&&u.x<rx1;u.x+=u.v*(inR?.45:1);if(inR&&Math.random()<.03)part({x:u.x,y:u.y,vx:(Math.random()-.5)*.3,vy:-.4,life:16,max:16,col:"#a8c8f0",sz:.5,grav:.05})}
   if(u.side==="vex"&&BT.fire>0&&u.x>rx0&&u.x<rx1&&Math.random()<.006)u.hp=0;
   if(u.side==="vex"&&BT.green>0&&u.x>rx0-20&&Math.random()<.02)u.hp=0;
+  if(u.side==="vex"&&u.ph<1.3&&night){const tx=u.x-1.6,ty=u.y-11;x.fillStyle="#5a3a1e";x.fillRect(tx,ty,.5,4);flame(x,tx+.25,ty,2.4,1.6,u.x);x.globalCompositeOperation="lighter";nmGlow(x,tx,ty-1,7,"255,150,60",.22);x.globalCompositeOperation="source-over"}
   const grey=Wn&&(!BT.foes||!BT.foes.vex||u.ph>3);soldier(x,u,u.side==="vex"?(grey?"#3e4a3e":"#2a2a30"):"#8a1f2a",u.side==="vex"?(grey?"#6a9a5a":"#9a1f1f"):"#e0b040",u.side==="vex"?1:-1)});
+ // braziers along the battlements
+ for(let bxx=wx+12;bxx<LW-6;bxx+=LW*.085){x.fillStyle="#3a3036";x.fillRect(bxx-1.5,35,3,1.5);flame(x,bxx,35,3,2.2,bxx);x.globalCompositeOperation="lighter";nmGlow(x,bxx,33,10,"255,160,70",.3+.05*Math.sin(t/3+bxx));x.globalCompositeOperation="source-over"}
  // Harwin's riders sweep in from the right
- if(BT.harwin>0){BT.harwin+=1.2;for(let i=0;i<9;i++){const hx=LW+20-BT.harwin+i*9-(i%3)*4,hy=84+(i%3)*5;if(hx<-20)continue;x.fillStyle="#3a2a20";x.fillRect(hx-4,hy-5,8,4);x.fillRect(hx-5+((BT.t>>2)%2),hy-1,1,2);x.fillRect(hx+3-((BT.t>>2)%2),hy-1,1,2);x.fillStyle="#2a4a6a";x.fillRect(hx-1.5,hy-10,3,5);x.fillStyle="#c8cdd6";x.fillRect(hx-1,hy-12,2,2);x.fillStyle="#8a6a3a";x.fillRect(hx-9,hy-9,7,.5)}
+ if(BT.harwin>0){BT.harwin+=1.2;for(let i=0;i<9;i++){const hx=LW+20-BT.harwin+i*9-(i%3)*4,hy=84+(i%3)*5;if(hx<-20)continue;const AK=BT.allyKind||"harwin",foot=AK!=="harwin";if(!foot){x.fillStyle="#3a2a20";x.fillRect(hx-4,hy-5,8,4);x.fillRect(hx-5+((BT.t>>2)%2),hy-1,1,2);x.fillRect(hx+3-((BT.t>>2)%2),hy-1,1,2)}else{x.fillStyle="#2a1a10";x.fillRect(hx-1+((BT.t>>2)%2),hy-5,1,5);x.fillRect(hx+1-((BT.t>>2)%2),hy-5,1,5)}
+   x.fillStyle=AK==="fox"?"#3a6a2a":AK==="king"?"#8a1f2a":"#2a4a6a";x.fillRect(hx-1.5,hy-10,3,5);x.fillStyle="#c8cdd6";x.fillRect(hx-1,hy-12,2,2);x.fillStyle="#8a6a3a";x.fillRect(hx-9,hy-9,7,.5)}
   BT.units.forEach(u=>{if(u.side==="vex"&&u.hp>0&&u.x>LW+10-BT.harwin-10&&Math.random()<.2)u.hp=0})}
  // arrows from the wall
  if(BT.phase!=="eve"&&Math.random()<(BT.volley?0.9:.25)){const tg=BT.units.filter(u=>u.side==="vex"&&u.hp>0);if(tg.length){const u=tg[Math.floor(Math.random()*tg.length)];BT.shots.push({x0:wx+Math.random()*(LW-wx-10),y0:38,x1:u.x,y1:u.y-4,k:0,u})}}
@@ -2459,6 +2843,11 @@ function drawBattle(x){const LW=WIDE.LW,t=++BT.t,ph=BT.phase,night=ph!=="eve",rx
  for(let i=BT.shots.length-1;i>=0;i--){const a=BT.shots[i];a.k+=.035;if(a.k>=1){if(Math.random()<.35)a.u.hp=0;BT.shots.splice(i,1);continue}
   const px=a.x0+(a.x1-a.x0)*a.k,py=a.y0+(a.y1-a.y0)*a.k-Math.sin(a.k*Math.PI)*22,dx=(a.x1-a.x0)/40,dy=(a.y1-a.y0)/40-Math.cos(a.k*Math.PI)*1.6;
   x.strokeStyle="#e8dcc0";x.lineWidth=.5;x.beginPath();x.moveTo(px,py);x.lineTo(px-dx,py-dy);x.stroke()}
+ // smoke drifting across the field
+ for(let i=0;i<4;i++){const cx=((i*131+t*.18)%(LW+120))-60,cy=62+i*9;x.globalAlpha=night?.1:.14;x.fillStyle=Wn?"#c8d0e0":"#3a2e30";x.beginPath();x.ellipse(cx,cy,30,4,0,0,6.28);x.fill()}x.globalAlpha=1;
+ if(night&&!Wn&&Math.random()<.35)part({x:Math.random()*LW*.6,y:100,vx:(Math.random()-.2)*.25,vy:-.25-Math.random()*.3,life:120,max:120,col:Math.random()<.5?"#ffb040":"#ff6a20",glow:1,sz:.5});
+ // reeds and grass in the foreground
+ for(let px=0;px<wx-6;px+=2.5){const h=4+((px*7)%5),sw=Math.sin(t/25+px*.3)*.8;x.fillStyle=Wn?"#9aa4b8":"#0a0806";x.beginPath();x.moveTo(px,120);x.lineTo(px+sw+.5,120-h);x.lineTo(px+1.2,120);x.fill()}
  if(BT.flash>0){x.fillStyle=`rgba(255,220,160,${BT.flash/20})`;x.fillRect(0,0,LW,H);BT.flash--}
 }
 /* the close view at the gate: you and Baron Vex */
@@ -2468,12 +2857,22 @@ function drawGateDuel(x){const LW=WIDE.LW,t=++BT.t,E=WIDE.E;
  for(let px=0;px<LW;px+=8){x.fillStyle="#3e3648";x.fillRect(px,15,5,5)}
  const gx=LW/2-18;x.fillStyle="#0c0810";x.fillRect(gx,44,36,46);x.beginPath();x.arc(gx+18,44,18,Math.PI,0);x.fill();x.fillStyle="#5e3c22";for(let i=0;i<36;i+=4)x.fillRect(gx+i,38+Math.abs(i-18)*.3,2,52-Math.abs(i-18)*.3);
  x.fillStyle=BT.winter?"#b8c0d0":"#2a2026";x.fillRect(0,90,LW,30);for(let px=0;px<LW;px+=14){x.fillStyle="#241c22";x.fillRect(px,90,1,30)}
- for(const fx of[gx-14,gx+50]){torch(x,fx,50)}
+ // fire beyond the gate, the fight going on all around
+ x.globalCompositeOperation="lighter";nmGlow(x,gx+18,70,30,BT.winter?"140,170,255":"255,120,40",.35+.08*Math.sin(t/3));x.globalCompositeOperation="source-over";
+ for(let i=0;i<5;i++){const fx=gx+5+i*6.5;flame(x,fx,90,5+(i%3)*2,2.6,fx+i)}
+ for(const side of[-1,1])for(let k=0;k<3;k++){const bx=LW/2+side*(48+k*16+(k%2)*5),by=96+(k%2)*2,ph=Math.floor((t+k*13)/10)%2;x.globalAlpha=.75;
+  soldier0(x,{x:bx-2+ph,y:by,ph:k},"#8a1f2a","#e0b040",1);soldier0(x,{x:bx+2-ph,y:by,ph:k+2},BT.winter&&BT.champ!=="vex"?"#3e4a3e":"#2a2a30",BT.winter&&BT.champ!=="vex"?"#6a9a5a":"#9a1f1f",-1);x.globalAlpha=1;
+  if((t+k*7)%30===0)for(let q=0;q<3;q++)part({x:bx,y:by-4,vx:(Math.random()-.5)*.8,vy:-Math.random()*.6,life:10,max:10,col:"#fff4c0",glow:1,sz:.5,grav:.05})}
+ for(let i=0;i<6;i++){x.strokeStyle="#5a4a3a";x.lineWidth=.5;const ax=12+((i*47)%(LW-24)),ay=104+(i*5)%10;x.beginPath();x.moveTo(ax,ay);x.lineTo(ax-2,ay-4);x.stroke();x.fillStyle="#d8d0c0";x.fillRect(ax-2.5,ay-4.5,1,.5)}
+ for(let i=0;i<3;i++){const cx=((i*151+t*.12)%(LW+80))-40;x.globalAlpha=.12;x.fillStyle=BT.winter?"#c8d0e0":"#2a1e22";x.beginPath();x.ellipse(cx,40+i*14,34,6,0,0,6.28);x.fill()}x.globalAlpha=1;
+ for(const fx of[gx-14,gx+50]){torch(x,fx,50);x.globalCompositeOperation="lighter";nmGlow(x,fx,48,16,"255,160,70",.3);x.globalCompositeOperation="source-over"}
+ x.globalCompositeOperation="lighter";nmGlow(x,LW/2,98,26,"255,180,100",.12);x.globalCompositeOperation="source-over";
  if(BT.winter){if(Math.random()<.8)part({x:Math.random()*LW,y:-2,vx:(Math.random()-.5)*.3,vy:.4+Math.random()*.3,life:300,max:300,col:"#ffffff",sz:Math.random()<.5?.5:1})}
  else if(Math.random()<.3)part({x:Math.random()*LW,y:0,vx:(Math.random()-.5)*.2,vy:.4,life:200,max:200,col:"#ff9a40",glow:1,sz:.5});
  const lunge=BT.duel?Math.max(0,Math.sin(t/6))*3:0;
  drawBody(x,C[BT.champ||"vex"],LW/2-11+lunge,100,1,{bob:bobOf(1),gest:BT.duel&&t%24<12});
  drawBody(x,C.lord,LW/2+11-lunge,100,-1,{bob:bobOf(2),gest:BT.duel&&t%24>=12});
+ if(BT.duel&&t%36===0)BT.flash=6;if(BT.flash>0){x.fillStyle=`rgba(255,240,210,${BT.flash/24})`;x.fillRect(0,0,LW,H);BT.flash--}
  if(BT.duel&&t%12===0){SC.shake=2;if(t%36===0)SFX.clash();for(let k=0;k<6;k++)part({x:LW/2,y:82,vx:(Math.random()-.5)*1.2,vy:-Math.random()*1,life:14,max:14,col:"#fff4c0",glow:1,sz:.5,grav:.05})}
 }
 /* ---------------- the beats ---------------- */
@@ -2490,14 +2889,16 @@ function siege(){
   overlay(`${castleHTML()}</div><div class="ovb siege"><h3>High Summer</h3><p style="animation-delay:.3s">Baron Vex's host crosses the ford at dusk.</p><p style="animation-delay:1.3s">${has("plan_flee")?"Torches gutter in the tunnel as Emberfall grows small behind you.":has("plan_parley")?"You ride out beneath a white banner to meet the Baron.":"Vex's banner rises over your gate. There is no battle at all."}</p>
    <button class="pb" style="opacity:0;animation:appear 1s ${FAST?0:2}s forwards" id="fateBtn">Face your fate</button></div>`);
   $("fateBtn").onclick=()=>{SFX.click();OUTCOMES[k]?aftermath(k):ending(k)};return}
- closeOverlay();battleBegin();BSCORE=battlePower();Music.play("battle");SFX.war();setPhase("dusk",SEASON(5));
- if(traitorLoose())set("bt_traitor");
- beatEve()}
+ Music.play("battle");
+ const A=[{from:[146,94],to:[126,68],path:[[140,88],[123,66]],pc:"#c8222a",cols:["#2a2228","#9a1f1f","#9a1f1f"],n:9}];
+ if(has("harwinAlly"))A.push({from:[178,44],to:[134,58],path:[[172,44],[132,57]],pc:"#6aa0e0",cols:["#2a4a6a","#c8cdd6","#3a6aa0"],n:6});
+ warMap("The Last Night of July",`Baron Vex marches out of Blackmoor with two hundred men, straight for the ford.${has("harwinAlly")?" From the east, Lord Harwin's lances are riding to keep their promise.":has("harwinEnemy")?" In the east, Harwin's riders watch from their hills, and do not move.":" No one is coming to help. Emberfall stands alone."}`,A,()=>{
+  battleBegin();BSCORE=battlePower();SFX.war();setPhase("dusk",SEASON(5));if(traitorLoose())set("bt_traitor");beatEve()})}
 function beatEve(){BT.phase="eve";
- bSay("The Eve of Battle",null,`Dusk on the last day of July. Across the ford, Vex's campfires spread like a second sunset: two hundred men, maybe more. On your walls, ${S.men} soldiers wait for you to speak.\n\nYour defenses look ${defenseWord(battlePower()).toLowerCase()}.`,
-  [{t:"\"For Emberfall, and every home behind this wall!\"",go:()=>{SFX.roar();const m=S.favor>=55?14:7;BSCORE+=m;return S.favor>=55?"They roar it back at you. They love this city, and they'd die for it. Some of them will.":"A ragged cheer. They're fighting for their homes, if not quite for you."}},
-   {t:"\"Fight well, and every one of you eats at my table tomorrow.\"",cost:{food:10},go:()=>{fx({food:-10});BSCORE+=12;return "A real cheer, and a few laughs. The cooks start roasting before the first arrow flies."}},
-   {t:"\"Vex wants your homes. Make him pay for every stone.\"",go:()=>{BSCORE+=9;return "Grim nods along the wall. Nobody cheers. Everybody tightens their grip."}}],beatFord)}
+ bSay("The Eve of Battle",null,`Dusk on the last day of July. Across the ford, Vex's campfires spread like a second sunset: two hundred men, maybe more. On your walls, ${S.men} soldiers wait for you to speak.${has("harwinAlly")?" Somewhere in the east, Lord Harwin's riders are on the road, as he promised.":""}\n\nYour defenses look ${defenseWord(battlePower()).toLowerCase()}.`,
+  [{t:"\"For every home behind this wall!\"",go:()=>{SFX.roar();const m=S.favor>=55?14:7;BSCORE+=m;return S.favor>=55?"They roar it back at you. They love this city, and they'd die for it. Some of them will.":"A ragged cheer. They're fighting for their homes, if not quite for you."}},
+   {t:"\"Fight well, and tomorrow we all feast.\"",cost:{food:10},go:()=>{fx({food:-10});BSCORE+=12;return "A real cheer, and a few laughs. The cooks start roasting before the first arrow flies."}},
+   {t:"\"Make Vex pay for every stone.\"",go:()=>{BSCORE+=9;return "Grim nods along the wall. Nobody cheers. Everybody tightens their grip."}}],beatFord)}
 function beatFord(){BT.phase="ford";BT.volley=40;SFX.war();
  bSay("The Ford",null,"Horns in the dark. Vex's vanguard wades into the river, shields up, a hundred men at least, the water churning white around their knees.",
   [{t:"\"Archers! Loose!\"",go:()=>{BT.volley=120;BSCORE+=has("arrows")?18:10;return has("arrows")?"The new arrows fly thick as rain. Men fall in the water and don't get up.":"The arrows hiss down. Some find their mark. Not enough."}},
@@ -2516,8 +2917,8 @@ function beatPostern(){BT.phase="postern";
    {t:"Push the ladders down by hand",go:()=>{BSCORE+=6;fx({men:-3});return "Forked poles, bare hands and a lot of shouting. Ladder after ladder goes over backwards."}},
    {t:"Send Tobin's squad to the wall",req:()=>has("tobinAtGate"),go:()=>{BSCORE+=10;S.bond.tobin++;set("tobinBloodied");return "Your son's voice, high and fierce, holding the east wall. When the last ladder falls, his squad cheers his name."}}],afterPostern)}
 function afterPostern(){
- if(has("harwinAlly")){BT.harwin=1;SFX.fanfare();return bSay("The Marches Ride",null,"A horn in the east, then another. Lord Harwin's forty lances come down the hill like a landslide and hit Vex's flank at full gallop.",[{t:"\"For Emberfall and the Marches!\"",go:()=>{BSCORE+=10;return "Vex's army folds in on itself. But the Baron himself is still coming, straight for your gate."}}],beatVex)}
- if(has("harwinEnemy")){BSCORE-=10;return bSay("Riders in the East",null,"Horns in the east. For a moment your heart leaps. Then you see the colors: Harwin's riders, holding back on the hill and watching. They won't help you.",[{t:"\"Then we do this alone.\"",go:()=>"Your soldiers hear you say it. Somehow, it helps."}],beatVex)}
+ if(has("harwinAlly")){BT.harwin=1;BT.allyKind="harwin";SFX.fanfare();return bSay("The Marches Ride","eastlord",`A horn in the east. Lord Harwin has kept the oath he swore when Maren was promised to his son: forty lances, all the way from the Marches. "For Emberfall, and my son's bride!" They hit Vex's flank like a landslide.`,[{t:"\"For Emberfall and the Marches!\"",go:()=>{BSCORE+=10;return "Vex's army folds in on itself. But the Baron himself is still coming, straight for your gate."}}],beatVex)}
+ if(has("harwinEnemy")){BSCORE-=10;return bSay("Riders in the East",null,"Horns in the east. For a moment your heart leaps. Then you see the colors: Harwin's riders, sitting on the hill. They've come to watch you lose.",[{t:"\"Then we do this alone.\"",go:()=>"Your soldiers hear you say it. Somehow, it helps."}],beatVex)}
  beatVex()}
 function beatVex(){BT.phase="vex";BT.view="gate";BT.duel=false;SC.fade=1;
  if(has("bt_witch")){const k=battlePower()>60?"witchQueen":"witchFall";return bSay("The Green Fire",null,"There's no one left to fight. The green fire has eaten Vex's army, and the ford, and it's still moving.",[{t:"Watch",go:()=>""}],()=>finishBattle(k))}
@@ -2559,17 +2960,22 @@ function winterPower(){let p=S.men+(S.b.walls&&!has("wallsCracked")?25:S.b.walls
  +(has("foxPardoned")?12:0)+(has("tobinKnight")?10:has("tobinBloodied")?6:0)+(has("vexMenSworn")?8:0)+(has("arrows")?5:0)+(has("winterIntel")?12:0)+(has("falseBooks")?12:0)-(has("corvinKnows")?10:0)+marshalBonus();return p}
 function winterSiege(done){
  const F=winterFoes();if(!F)return done();
- BT.winter=true;BT.foes=F;battleBegin();BSCORE=winterPower();Music.play("battle");SFX.war();
+ Music.play("battle");const A=[];
+ if(F.cor)A.push({from:[40,80],to:[112,68],path:[[48,76],[116,63]],pc:"#e8e8f0",cols:["#6a6a74","#c8c8d0","#8a8a94"],n:9});
+ if(F.vex)A.push({from:[146,94],to:[126,68],path:[[140,88],[123,66]],pc:"#c8222a",cols:["#2a2228","#9a1f1f","#9a1f1f"],n:5});
+ if(has("harwinBound")||has("marenWed"))A.push({from:[178,44],to:[134,58],path:[[172,44],[132,57]],pc:"#6aa0e0",cols:["#2a4a6a","#c8cdd6","#3a6aa0"],n:6});
+ warMap("The Longest Night",`The river has frozen from bank to bank, and an army can walk across it. ${F.cor?"Corvin's grey host marches out of Greymarch"+(F.vex?", and Baron Vex comes up from Blackmoor to join him.":".") :"Baron Vex marches out of Blackmoor, back for his revenge."}`,A,()=>{
+ BT.winter=true;BT.foes=F;battleBegin();BSCORE=winterPower();SFX.war();
  setPhase("night",SEASON(S.month));
  bSay("The Longest Night",null,`The longest night of the year, and the coldest. The river has frozen solid from bank to bank.\n\nAt midnight the bells ring. Torches on the ice: ${F.cor?"the grey banners of Greymarch, Corvin's own men"+(F.vex?", and beside them, the black and red of Baron Vex":""):"the black and red of Baron Vex, back for his revenge"}. ${F.cor?"Corvin is done waiting for the council.":""}`,
-  [{t:"\"They want our city on the darkest night. Show them it burns bright.\"",go:()=>{SFX.roar();BSCORE+=S.favor>=55?14:7;return "Every window in Emberfall is lit at once. From the ice, it must look like the whole city is awake and waiting. It is."}},
-   {t:"Hot wine and bread for every soldier on the wall",cost:{food:8},go:()=>{fx({food:-8});BSCORE+=11;return "Steaming cups along the battlements. Frozen fingers come back to life on their swords."}},
-   {t:"\"Corvin wants a crown. Let's give him a grave.\"",req:()=>F.cor,go:()=>{BSCORE+=9;return "A grim laugh runs along the wall. Nobody here wants Corvin for a lord."}}],winterIce)}
+  [{t:"\"Light every window. Let them see us.\"",go:()=>{SFX.roar();BSCORE+=S.favor>=55?14:7;return "Every window in Emberfall is lit at once. From the ice, it must look like the whole city is awake and waiting. It is."}},
+   {t:"Hot wine and bread for the wall",cost:{food:8},go:()=>{fx({food:-8});BSCORE+=11;return "Steaming cups along the battlements. Frozen fingers come back to life on their swords."}},
+   {t:"\"Corvin wants a crown. Give him a grave.\"",req:()=>F.cor,go:()=>{BSCORE+=9;return "A grim laugh runs along the wall. Nobody here wants Corvin for a lord."}}],winterIce)})}
 function winterIce(){BT.phase="ford";BT.volley=40;SFX.war();
  bSay("The Ice",null,"They come in a black line across the white river: shields up, boots slipping, hundreds of them. The ice groans under their weight.",
   [{t:"\"Break the ice!\"",req:()=>has("icebreak"),go:()=>{BT.crack=1;BSCORE+=28;SC.shake=6;SFX.crack();return "Hildra's crews swing their iron picks at the marked lines. With a sound like the sky splitting, the river opens. Whole ranks go into the black water."}},
    {t:"\"Archers! Loose!\"",go:()=>{BT.volley=120;BSCORE+=has("arrows")?14:9;return "Arrows hiss down onto the ice. Men fall and slide. The line keeps coming."}},
-   {t:"\"Fire arrows, into their oil wagons!\"",req:()=>has("pitch")||has("winterIntel"),go:()=>{BT.fire=1;BSCORE+=18;return "A flaming arrow finds the wagons in the middle of the river. The explosion lights the whole valley. The ice beneath them softens and cracks."}},
+   {t:"\"Fire arrows! Hit the oil wagons!\"",req:()=>has("pitch")||has("winterIntel"),go:()=>{BT.fire=1;BSCORE+=18;return "A flaming arrow finds the wagons in the middle of the river. The explosion lights the whole valley. The ice beneath them softens and cracks."}},
    {t:"\"Charge them on the ice!\"",go:()=>{const ok=winterPower()>=75;BSCORE+=ok?16:-14;fx({men:ok?-4:-9});SC.shake=4;return ok?"You lead the charge across the slippery ice. Their line, packed tight and sliding, breaks before yours does.":"The ice is as treacherous for you as for them. You fall back to the gate with fewer men than you went out with."}}],winterGate)}
 function winterGate(){BT.phase="postern";
  if(has("corvinGuardIn"))return bSay("Inside the Walls","wynn","\"My lord! Corvin's honor guard, the forty you let sleep in the barracks! They've killed the gatekeepers and they're lifting the bar on the main gate!\"",
@@ -2579,15 +2985,15 @@ function winterGate(){BT.phase="postern";
  bSay("The Walls","wynn","\"Ladders! They're on the north wall!\"",
   [{t:"Fire from the new watchtowers",req:()=>!!S.b.towers,go:()=>{BSCORE+=14;return "Hildra's watchtowers command the whole north wall. The ladders never get close."}},
    {t:"Push the ladders off with poles",go:()=>{BSCORE+=6;fx({men:-3});return "Ice on the rungs, ice on the poles, and a lot of shouting. The ladders go over, one by one."}},
-   {t:"Pour boiling water. Let it freeze on them.",go:()=>{BSCORE+=10;return "The water turns to ice before it hits the ground. So do the men on the ladders, nearly."}}],winterAllies)}
+   {t:"Pour boiling water. Let it freeze on them.",go:()=>{BSCORE+=10;return "It freezes before it hits the ground, and so, nearly, do the men on the ladders."}}],winterAllies)}
 function winterAllies(){
  const helps=[];
- if(has("harwinBound")||has("marenWed"))helps.push(["The Marches Ride",`Horns from the east. Harwin's riders, with ${has("marenWed")?"Maren's husband":"Harwin's son"} Edric at their head, come thundering across the frozen fields.`,18]);
- if(has("foxPardoned"))helps.push(["The Fox's Men","Out of the dark forest on the far bank, a whistle, then dozens more. The Fox's old band, your eyes in the woods all autumn, hits their supply line from behind.",12]);
+ if(has("harwinBound")||has("marenWed"))helps.push(["The Marches Ride",`Horns from the east. ${has("marenWed")?"Family keeps its promises: Harwin's riders, with Maren's husband Edric at their head,":"Harwin keeps his word to Emberfall: his riders, with his son Edric at their head,"} come thundering across the frozen fields. They've ridden two days through the snow to get here.`,18]);
+ if(has("foxPardoned"))helps.push(["The Fox's Men","Out of the dark forest on the far bank, a whistle, then dozens more. The Fox's old band, the outlaws you pardoned, hits their supply line from behind.",12]);
  if(has("sentKing")&&!has("sentKingBack"))helps.push(["Home from the North","Through the snow, a column you know: your own soldiers, home from the King's war, a day early. They march straight into the fight.",14]);
  if(!helps.length)return winterFinal();
- const [t,d,v]=helps[0];BT.harwin=1;SFX.fanfare();if(helps.some(h=>h[0]==="Home from the North")){set("sentKingBack");fx({men:14})}
- bSay(t,null,d+(helps.length>1?` And they aren't the only ones: ${helps.slice(1).map(h=>h[0].toLowerCase()).join(", ")}.`:""),[{t:"\"For Emberfall!\"",go:()=>{BSCORE+=helps.reduce((a,h)=>a+h[2],0);return "The enemy line buckles. But at the gate, their champion is still coming."}}],winterFinal)}
+ const [t,d,v]=helps[0];BT.harwin=1;BT.allyKind=t==="The Marches Ride"?"harwin":t==="The Fox's Men"?"fox":"king";SFX.fanfare();if(helps.some(h=>h[0]==="Home from the North")){set("sentKingBack");fx({men:14})}
+ bSay(t,BT.allyKind==="harwin"?"eastlord":BT.allyKind==="fox"?"pip":null,d+(helps.length>1?` And they aren't the only ones: ${helps.slice(1).map(h=>h[0].toLowerCase()).join(", ")}.`:""),[{t:"\"For Emberfall!\"",go:()=>{BSCORE+=helps.reduce((a,h)=>a+h[2],0);return "The enemy line buckles. But at the gate, their champion is still coming."}}],winterFinal)}
 function winterFinal(){BT.phase="vex";BT.view="gate";BT.duel=false;SC.fade=1;
  const champ=BT.foes.vex?(has("vexWounded")?"Baron Vex himself, half-healed and furious, his black armor rimed with frost":"Baron Vex himself, in black armor rimed with frost, come to take back what the King's peace cost him"):"Corvin's champion, Sir Aldous of Greymarch, a giant in grey steel";
  BT.champ=BT.foes.vex?"vex":"aldous";
@@ -2629,18 +3035,18 @@ function finalEnding(){
 function finale(){
  closeOverlay();SC.room=null;SC.cast=[];setPhase("day","winter");Music.play("council");SFX.toll();
  if(!has("corvinFight")||(has("vassal")&&!has("freed"))){
-  const lines=has("vassal")&&!has("freed")?"Sir Gerrit sits at the head of the council table. The lords look at him, not at you.":has("corvinPact")?"Corvin sits at your right hand, smiling, his son beside Maren. There is no vote. There doesn't need to be.":"The lords eat your bread, drink your wine and argue about the King. Then, one by one, they raise their cups to you.";
+  const lines=has("vassal")&&!has("freed")?"Sir Gerrit sits at the head of the council table. The lords look at him, not at you.":has("corvinPact")?"Corvin sits at your side, smiling, his son next to Maren. There is no vote. There doesn't need to be.":"The lords eat your bread, drink your wine and argue about the King. Then, one by one, they raise their cups to you.";
   return bSay("The Lords' Council",null,"The snow breaks. Eleven lords ride through your gate for the Lords' Council.\n\n"+lines,[{t:"The end of your first year",go:()=>""}],()=>ending(finalEnding()))}
  SC.court=[["rhun",44,1],["ysolde",57,1],["anselm",84,1],["garrick",97,1],["teague",128,-1]];
  SC.enter("corvin",()=>bSay("The Lords' Council","corvin",`The great hall is packed: eleven lords, their households, half the city in the gallery. Corvin unrolls the will one last time.\n\n"My lords. Roderick named me his heir, in his own hand, under his own seal. His son has had a year. You've all seen what kind of year. I ask you to choose the steadier hand."`,
-  [{t:"\"I accuse Lord Corvin of my father's murder.\"",req:()=>clueCount()>=3,go:()=>{if(strongCase()){set("corvinExposed");return "You lay it out piece by piece: "+(S.clues||[]).map(k=>CLUES[k][0].toLowerCase()).join("; ")+".\n\n"+(hasClue("apothecary")?"Master Ulric stands up in the gallery, shaking, and swears to it. ":"")+(hasClue("brannoc")?"Brannoc's confession is read aloud. ":"")+"The hall goes silent. Corvin's smile finally slips."}
+  [{t:"\"I accuse Corvin of my father's murder.\"",req:()=>clueCount()>=3,go:()=>{if(strongCase()){set("corvinExposed");return "You lay it out piece by piece: "+(S.clues||[]).map(k=>CLUES[k][0].toLowerCase()).join("; ")+".\n\n"+(hasClue("apothecary")?"Master Ulric stands up in the gallery, shaking, and swears to it. ":"")+(hasClue("brannoc")?"Brannoc's confession is read aloud. ":"")+"The hall goes silent. Corvin's smile finally slips."}
     set("accuseFailed");return "You lay out what you have. It's not enough. The lords mutter: grief, suspicion, a young lord desperate to keep his chair. Corvin looks wounded, and very patient."}},
-   {t:"\"The will is a forgery, and I can prove it.\"",req:()=>has("corvinSecret"),go:()=>{set("willExposed");return has("clerkFound")?"The Greymarch clerk confesses in front of everyone: twenty silver pieces and a copy of your father's seal. Half the hall is on its feet. Corvin calls it a lie. Nobody is listening.":"Aldric lays your father's letters beside the will, and shows the lords the R's: your father wrote them like little crowns. The will's are plain. One by one, the lords lean in to look. Corvin calls it a clerk's fancy. Nobody is listening."}},
+   {t:"\"The will is forged. I can prove it.\"",req:()=>has("corvinSecret"),go:()=>{set("willExposed");return has("clerkFound")?"The Greymarch clerk confesses in front of everyone: twenty silver pieces and a copy of your father's seal. Half the hall is on its feet. Corvin calls it a lie. Nobody is listening.":"Aldric lays your father's letters beside the will, and shows the lords the R's: your father wrote them like little crowns. The will's are plain. One by one, the lords lean in to look. Corvin calls it a clerk's fancy. Nobody is listening."}},
    {t:"\"Judge me by my year.\"",go:()=>`You don't argue. You tell them what you did: the hard spring, ${fought()?"the battle at the ford":has("outcome_peace")?"the summer you made Vex back down without a war":"the summer you bent to keep your people alive"}, the choices you'd make again and the ones you wouldn't. Then you sit down and let them decide.`}],
   councilVerdict))}
 function councilVerdict(){
- if(has("corvinExposed"))return bSay("The Lords' Council","corvin","Corvin is on his feet, backing towards the doors, where your guards are already waiting. \"Cousin. Cousin, listen. We're family. Whatever you think I did...\"",
-  [{t:"\"Chain him. He'll face the King's justice.\"",go:()=>{set("corvinJustice");return "They take him out in irons through a silent hall. Lord Rhun is the first to stand and bow to you. Then all of them do."}},
+ if(has("corvinExposed"))return bSay("The Lords' Council","corvin","Corvin is on his feet, backing towards the doors, where your guards are already waiting. \"Cousin. Cousin, listen. We're family. Roderick wouldn't want...\"",
+  [{t:"\"Chain him for the King's justice.\"",go:()=>{set("corvinJustice");return "They lead him out in irons through a silent hall. Old Rhun, your father's friend, bows first. Then all of them do."}},
    {t:"\"Exile him. Let him live with it.\"",go:()=>{set("corvinExiled");fx({favor:3});return "He leaves with nothing: no will, no lands, no name. The lords watch the doors close behind him. Then they turn to you."}}],()=>ending(finalEnding()));
  const v=councilVotes();let yes=0;
  if(has("willExposed")){LORDS.forEach(L=>{if(lordStance(L)===0)(S.lords=S.lords||{})[L.id]=1});if(has("corvinCaught")||clueCount()>=2)S.lords.garrick=1}
@@ -2648,32 +3054,32 @@ function councilVerdict(){
  const V=councilVotes(),lean=S.favor>=60?1:S.favor>=45?.5:0;let undLeft=Math.round(V.und*lean);
  const lines=LORDS.map(L=>{let s=lordStance(L);if(s===0){s=undLeft>0?1:-1;if(s>0)undLeft--}if(s>0)yes++;return `${L.n} of ${L.seat}: ${s>0?"for you.":"for Corvin."}`});
  const won=yes>=6;if(!won)set("councilLost");
- bSay("The Vote",null,`The vote is called. One by one, the lords stand.\n\n${lines.join("\n")}\n\n${won?`${yes} of eleven. Emberfall is yours.`:`Only ${yes} of eleven. The throne is Corvin's.`}`,[{t:won?"\"Thank you, my lords.\"":"Stand, and walk out with your head high",go:()=>won?"The hall erupts. Corvin rolls up his will very slowly, and leaves before the cheering stops.":"Corvin is already in your chair before you reach the door."}],()=>ending(finalEnding()))}
+ bSay("The Vote",null,`The vote is called. One by one, the lords stand.\n\n${lines.join("\n")}\n\n${won?`${yes} of eleven. Emberfall is yours.`:`Only ${yes} of eleven. The throne is Corvin's.`}`,[{t:won?"\"Thank you, my lords.\"":"Stand, and walk out with your head high",go:()=>won?"The hall erupts. Corvin rolls up his will very slowly, and leaves before the cheering stops.":"Corvin is in your father's seat before you reach the door."}],()=>ending(finalEnding()))}
 
 /* Evenings with your family are conversations that follow the story. Each one happens once; when someone has
    something new to say, their name glows on the night map. */
 const TALKS={
  elinor:[
-  {id:"e1",when:()=>S.month<=2,text:"Elinor pours two cups of wine. \"The ladies of the court are watching you, my love. They say you frown at petitioners. Smile more. It costs nothing.\"",
+  {id:"e1",when:()=>S.month<=2,text:"Elinor pours two cups of wine. \"The court ladies watch you, my love. They say you scowl at petitioners. Smile. It's the one thing that's free.\"",
    choices:[{t:"\"Then I'll smile more.\"",go:()=>{fx({favor:3});return "You practice in the mirror. Elinor laughs until she has to sit down. It works, though."}},{t:"\"Let them watch me work.\"",go:()=>{S.bond.elinor++;return "\"Good,\" she says. \"I married a lord, not a jester.\""}}]},
-  {id:"e2",when:()=>hasClue("vial")&&S.month<=BATTLE_MONTH,text:"\"I can't stop thinking about that vial,\" Elinor says. \"Vex wanted your father gone, everyone knows that. But Vex is across the river. Whoever used that poison could walk into his chamber.\"",
-   choices:[{t:"\"Someone close, then.\"",go:()=>{S.bond.elinor++;set("suspectClose");return "\"Someone close,\" she agrees. From then on, she watches every guest at your table, and remembers everything."}},{t:"\"Vex has long arms.\"",go:()=>"\"Maybe,\" she says. She doesn't sound convinced."}]},
+  {id:"e2",when:()=>hasClue("vial")&&S.month<=BATTLE_MONTH,text:"\"I can't stop thinking about that vial,\" Elinor says. \"Vex wanted your father gone, everyone knows that. But Vex is across the river. Whoever poisoned him walked right into his chamber.\"",
+   choices:[{t:"\"Someone close, then.\"",go:()=>{S.bond.elinor++;set("suspectClose");return "\"Someone close,\" she agrees. From then on, she watches every guest at your table, and remembers everything."}},{t:"\"Vex has long arms.\"",go:()=>"\"Maybe,\" she says, and bolts the door anyway."}]},
   {id:"e3",when:()=>S.month>=4&&S.month<=BATTLE_MONTH&&!has("knelt"),text:"Elinor is packing a small chest: the children's warm cloaks, some bread, her mother's ring. \"In case,\" she says. \"If the walls fall in July, I want the children gone before the gate breaks.\"",
-   choices:[{t:"\"Take them to the Marches if it comes to that.\"",go:()=>{set("familySafe");S.bond.elinor++;return "She nods, and closes the chest, and leaves it by the door."}},{t:"\"The walls won't fall. We stand together.\"",go:()=>{set("familyStays");fx({favor:3});return "She unpacks the chest, slowly. \"Together, then.\" The servants hear about it, and so does the city."}}]},
-  {id:"e4",when:()=>S.month>BATTLE_MONTH&&!has("knelt")&&!has("vassal"),text:()=>`Elinor finds you on the wall walk, looking at the ford. ${has("outcome_pyrrhic")?"\"So many of them, love. You can't carry all of them.\"":"\"You're still listening for horns, aren't you? It's over. We won.\""}`,
-   choices:[{t:"\"I see their faces every night.\"",go:()=>{S.bond.elinor++;return "She doesn't say it gets better. She just stays until the stars come out."}},{t:"\"Corvin is the war now.\"",go:()=>{S.bond.elinor++;return "\"Then fight him like you fought Vex,\" she says. \"Only smarter.\""}}]},
+   choices:[{t:"\"If it comes to that, go to the Marches.\"",go:()=>{set("familySafe");S.bond.elinor++;return "She nods, and closes the chest, and leaves it by the door."}},{t:"\"The walls won't fall. We stand together.\"",go:()=>{set("familyStays");fx({favor:3});return "She unpacks the chest, slowly. \"Together, then.\" The servants hear about it, and so does the city."}}]},
+  {id:"e4",when:()=>S.month>BATTLE_MONTH&&!has("knelt")&&!has("vassal"),text:()=>`Elinor finds you on the wall walk, looking at the ford. ${has("outcome_pyrrhic")?"\"So many of them, love. You can't carry all of them.\"":(has("outcome_peace")?"\"Still listening for horns? There won't be any. You stopped a war with words, love.\"":"\"Still listening for horns? It's over, love. We won.\"")}`,
+   choices:[{t:"\"I see their faces every night.\"",req:()=>!has("outcome_peace"),go:()=>{S.bond.elinor++;return "She doesn't say it gets better. She just stays until the stars come out."}},{t:"\"Words were cheaper than graves.\"",req:()=>has("outcome_peace"),go:()=>{S.bond.elinor++;return "\"They were,\" she says, and leans her head on your shoulder. \"Your father never once tried them.\""}},{t:"\"Corvin is the war now.\"",go:()=>{S.bond.elinor++;return "\"Then fight him like you fought Vex,\" she says. \"Only smarter.\""}}]},
   {id:"e5",when:()=>has("corvinFight")&&S.month>=8&&!has("maudAsked"),text:"\"My cousin Maud has a vote at the council,\" Elinor says, a little too casually. \"Lady Maud of Wexley. We grew up together. She'll vote however I ask her to... if you'll let me ask.\"",
    choices:[{t:"\"Please. Ask her.\"",go:()=>{set("maudAsked");S.bond.elinor++;return S.bond.elinor>=2?"Elinor writes that night. Maud's answer comes in a week: \"For you, cousin, anything.\"":"Elinor writes, but her heart isn't in it, and Maud can tell. (Spend more time with Elinor.)"}},{t:"\"Keep your family out of this.\"",go:()=>{set("elinorHurt");S.bond.elinor=Math.max(0,S.bond.elinor-1);return "\"My family,\" she repeats. \"I see.\" She sleeps in the other room tonight."}}]},
   {id:"e6",when:()=>S.month>=10,text:"Snow against the windows. Elinor has pulled the bed furs in front of the fire, and found a jug of the good mead. \"No petitioners,\" she says. \"No lords. No Corvin. Just tonight.\"",
    choices:[{t:"\"Just tonight.\"",go:()=>{S.bond.elinor++;fx({favor:1});return "For one night, you're nobody's lord at all."}}]},
   {id:"e7",when:()=>has("vassal")&&!has("freed"),text:"\"Gerrit reads our letters now,\" Elinor whispers. \"Every one. If you're planning something, my love, don't write it down. Tell me. I'll carry it.\"",
-   choices:[{t:"Tell her about the uprising",go:()=>{set("rebelSeed");S.bond.elinor++;return "She listens without a word, then fixes two of your mistakes."}},{t:"\"There's no plan.\"",go:()=>"She looks at you for a long moment. \"Then make one.\""}]},
+   choices:[{t:"Tell her about the uprising",go:()=>{set("rebelSeed");S.bond.elinor++;return "She hears it all in silence, then fixes your worst idea."}},{t:"\"There's no plan.\"",go:()=>"She holds your gaze. \"Then make one. Soon.\""}]},
  ],
  maren:[
   {id:"m1",when:()=>S.month<=3,text:"Maren is reading in the window seat. \"Did you know Grandfather wrote poems? Terrible ones. Listen: 'O river, thou art wet.'\"",
-   choices:[{t:"Read the worst one aloud together",go:()=>{S.bond.maren++;return "You laugh together for the first time in weeks. Elinor comes in to see what the noise is, and stays."}},{t:"\"You should be studying the lords' houses.\"",go:()=>"She closes the book. \"Yes, Father.\""}]},
+   choices:[{t:"Read the worst one aloud together",go:()=>{S.bond.maren++;return "You laugh together for the first time since the funeral. Elinor looks in at the noise, and stays."}},{t:"\"Study the lords' houses instead.\"",go:()=>"She closes the book. \"Yes, Father.\""}]},
   {id:"m2",when:()=>S.month>=3&&S.month<=6,text:"Maren unrolls a map she drew herself: the Marches, the coast, cities you've never seen. \"I want to see the world, Father. Not just this hall, and not just some husband's hall either.\"",
-   choices:[{t:"\"Then you'll see it. I promise.\"",go:()=>{S.bond.maren++;set("marenPromise");return "She doesn't believe you. Then, slowly, she does."}},{t:"\"The world isn't safe for a lord's daughter.\"",go:()=>"\"Nothing is safe for a lord's daughter,\" she says. \"That's rather the point.\""}]},
+   choices:[{t:"\"Then you'll see it. I promise.\"",go:()=>{S.bond.maren++;set("marenPromise");return "She doesn't believe you. Then, slowly, she does."}},{t:"\"It isn't safe for a lord's daughter.\"",go:()=>"\"Nothing is safe for a lord's daughter,\" she says. \"That's rather the point.\""}]},
   {id:"m3",when:()=>has("corvinFight")&&S.month===6&&!has("ysoldeCharmed")&&!has("ysoldeSnubbed"),text:"\"Lady Ysolde of Saltmere is coming to court,\" Maren says. \"She writes poetry, real poetry. If I read her mine, she might like us. She might vote for us. I'm good at this, Father. Let me help.\"",
    choices:[{t:"\"Charm her, then.\"",go:()=>{set("ysoldeCharmed");S.bond.maren++;note("Maren won Lady Ysolde's friendship.");return "Maren and Ysolde talk poetry for three hours. Ysolde leaves calling her \"my dear\". Her vote comes with her."}},{t:"\"Leave politics to me.\"",go:()=>{S.bond.maren=Math.max(0,S.bond.maren-1);return "\"Of course,\" Maren says, in exactly her mother's voice."}}]},
   {id:"m4",when:()=>has("corvinPact"),text:"Maren doesn't look up when you come in. \"Edwy,\" she says. \"Corvin's son. He giggles at funerals, Father. I asked around.\"",
@@ -2686,7 +3092,7 @@ const TALKS={
    choices:[{t:"\"Again. Guard up this time.\"",go:()=>{S.bond.tobin++;return "\"Again!\" By the tenth time, he nearly disarms you."}},{t:"\"Enough swords. Come and read.\"",go:()=>{set("tobinStudy");return "He groans, but he follows you to the library, and asks good questions."}}]},
   {id:"t2",when:()=>S.month>=3&&S.month<=BATTLE_MONTH&&!has("knelt"),text:"Tobin holds his practice sword like a soldier now. \"When Vex comes, Father, let me stand at the gate with Wynn's men. I'm ready.\"",
    choices:[{t:"\"You'll stand beside me.\"",go:()=>{set("tobinAtGate");S.bond.tobin++;return "He stands up straighter than you've ever seen him. Elinor, in the doorway, doesn't say a word."}},{t:"\"You'll guard your mother and sister.\"",go:()=>{set("tobinGuards");return "\"That's not fighting!\" \"It's the most important post in the castle.\" He believes you, almost."}}]},
-  {id:"t3",when:()=>S.month>BATTLE_MONTH&&has("tobinAtGate")&&fought(),text:"Tobin can't sleep. \"At the gate... I hit a man, Father. He went down and didn't get up. Everyone keeps calling me brave. I don't feel brave.\"",
+  {id:"t3",when:()=>S.month>BATTLE_MONTH&&has("tobinAtGate")&&fought(),text:()=>has("tobinBloodied")?"Tobin can't sleep. \"On the wall... I hit a man, Father. He went down and didn't get up. Everyone keeps calling me brave. I don't feel brave.\"":"Tobin can't sleep. \"I stood at the gate all night with a spear I could barely lift, Father. I heard them dying on the other side. Everyone keeps calling me brave. I don't feel brave.\"",
    choices:[{t:"\"That's why you were brave.\"",go:()=>{S.bond.tobin++;set("tobinWise");return "He thinks about that for a long time. Then he sleeps, finally, with the candle still burning."}},{t:"\"It gets easier.\"",go:()=>{set("tobinHardened");return "\"I don't want it to,\" he says. You don't have an answer to that."}}]},
   {id:"t4",when:()=>S.month>BATTLE_MONTH&&!has("tobinAtGate")&&fought()&&!has("tobinHostage"),text:"Tobin is sulking in the stables. \"Everyone fought in July except me. The stable boys fought. The cook's boy fought. I guarded a door.\"",
    choices:[{t:"\"Then train for the next fight.\"",go:()=>{S.bond.tobin++;set("tobinEarn");return "He's in the yard with Wynn before dawn, every day after."}},{t:"\"I needed you safe.\"",go:()=>"\"I know,\" he says. \"I just hate it.\""}]},
@@ -2869,7 +3275,7 @@ let TIPS=[];try{TIPS=JSON.parse(localStorage.getItem("ef_tips")||"[]")}catch(e){
 const TIP={
  journal:["Your Journal","The <b>Journal</b> (top right) shows what's at stake: how ready Emberfall is for Vex, what you've learned about your father's death, and later, where the lords stand."],
  start:["Welcome, my lord","Petitioners walk up the carpet one at a time. Read what they want, then choose. Most choices cost or earn <b>gold</b>, <b>grain</b>, <b>soldiers</b> or the people's <b>favor</b>, shown at the top. Let any of them collapse and your reign ends early.<br><br>Tap any resource at the top to see what's raising or draining it."],
- night:["Night in the castle","At the end of each month you walk the castle. A <b style='color:#f2c14e'>gold !</b> means a matter that must be settled before you sleep. A <b style='color:#ff8a7a'>red !</b> is an optional surprise. Every other room is yours to visit or skip.<br><br>At the <b>Council Table</b> you can hear one of your advisers each night."],
+ night:["Night in the castle","At the end of each month you walk the castle. Tap any room to go there. A <b style='color:#f2c14e'>gold !</b> means a matter that must be settled before you sleep. A <b style='color:#ff8a7a'>red !</b> is an optional surprise. Every other room is yours to visit or skip.<br><br>At the <b>Council Table</b> you can hear one of your advisers each night. The <b>Map</b> shows the whole river country."],
  treasury:["The Treasury","Aldric's ledger shows where the money went and what next month will bring. Taxes change gold against favor. If grain runs low, buy it from the Guild here: cheap at harvest, dear in winter."],
  war:["The War Room","Send soldiers on missions. More soldiers means better odds, but fewer at home and more to lose. They report back at the start of next month."],
  mason:["The Mason's Yard","Hildra builds one thing a month. Buildings pay off every month after, so build early."],
@@ -2931,22 +3337,22 @@ const ENDINGS={
  debt:["Owned by the Guild","The Merchant Guild bought your debts and then your castle. You still sit on the throne, but Osric Fairweather tells you when to stand."],
  exile:["The Lord in Exile","You escaped through grandfather's tunnel with your family. Emberfall burned behind you. Somewhere far away, you raise your children in peace, and in shame."],
  fallen:["The Fall of Emberfall","The gates broke. Vex found you on your father's throne. The chronicles forget your name."],
- lastStandSafe:["The Last Stand",()=>`You fell at the gate, sword in hand. Elinor and the children reached ${has("harwinEnemy")?"her family in Wexley":"the Marches"} safely. Maren tells her children of you.`],
+ lastStandSafe:["The Last Stand",()=>`You fell at the gate, sword in hand. Elinor and the children reached ${has("harwinEnemy")?"her family in Wexley":"the Marches"} safely. Maren's children know your name.`],
  witchFall:["Fire Without End","Morwen's fire did not stop at Vex's army. It took the ford, the city, the abbey. You won, and there is nothing left to rule."],
  chained:["Vex's Chains","The uprising failed. Vex hanged the guild masters in the square and took your crown for his hall. You live, in a tower, looking at a river you used to rule."],
  vassalForever:["The Baron's Steward","A year passed, and you never rose. Emberfall is quiet, well fed and owned. Sir Gerrit sends your taxes across the river every month, and thanks you every time."],
  fenThrone:["The Fen Throne","The green came up through the flagstones in spring. Emberfall is Morwen's now, and yours, in a way. The crows bow when you pass. The priests are long gone."],
- usurped:["The Cousin's Crown","The lords voted, and the vote was Corvin's. You ride out of Emberfall with your family and a single cart. Behind you, your cousin is already measuring the throne."],
+ usurped:["The Cousin's Crown","The vote was Corvin's. You ride out of Emberfall with your family and a single cart. Behind you, your father's killer is measuring his throne."],
  pricePeace:["The Price of Peace","Corvin burned his will, and Maren married his son. You kept your throne. At the wedding, Maren smiled for the guests and never once looked at you."],
  brokenChain:["The Broken Chain","Vex's banner burned in the square on the first day of spring. Emberfall bent the knee once, and stood back up. Songs about the uprising are already too long."],
- twoBanks:["Lord of Both Banks","Your banner flies on both sides of the river now. Your first year ends with two thrones' worth of land, and a people who mostly like you."],
- kingsHand:["The King's Right Hand","King Osmund summons you to court in spring, to sit at his right hand. Emberfall's soldiers held the north. Now Emberfall's lord will help hold the realm."],
+ twoBanks:["Lord of Both Banks","Your banner flies on both sides of the river now. Your first year ends with twice the land, and a people who mostly like you."],
+ kingsHand:["The King's Champion","King Osmund summons you to court in spring, to stand at his side. Emberfall's soldiers held the north. Now Emberfall's lord will help hold the realm."],
  twoHouses:["Two Houses, One Blood","Emberfall and the Marches are family now. When the snow melts, Harwin's riders and yours hunt together in the Ashwood, and Maren's letters come every week."],
  emberLord:["The Ember Lord","They light every window in Emberfall on the anniversary of your crowning. Ask anyone in the city about their lord, and they'll talk for an hour. All of it good."],
  ironYear:["The Iron Year","Your soldiers fill the walls and your people fill the churches, praying you never turn your army on them. Emberfall is safe. It is not happy."],
  winterCoup:["The Longest Night",()=>has("winterByCorvin")?"Corvin's men took the gate in the dark. By dawn his grey banners hung from your towers, and the lords who came for the council found a new lord waiting for them, very sorry for the misunderstanding. You watched it from a cell under your own hall.":"Vex's men took the gate in the dark. By dawn his black banners hung from your towers. This time there was no oath to swear: only a cell under your own hall, and a long view of the river."],
  emberCrown:["The Ember Crown",()=>(has("corvinExiled")?"Corvin rode out of the great hall with nothing: no will, no lands, no name.":"Corvin left the great hall in chains, bound for the King's justice.")+" The eleven lords knelt to you one by one. On the first day of spring they set your father's old crown on your head, and you swore, in front of everyone, to rule better than the men who wanted it. The bells of Saint Ember rang for a whole day."],
- longYear:["The Long Year","You made it. Not every choice was right, and not every winter night was warm, but spring comes to Emberfall, and it is still yours."]
+ longYear:["The Long Year","You made it. Not every choice was right, and not every night was warm. But spring has come to Emberfall, and it is still yours."]
 };
 const BAD2=["winterCoup"];const GOOD=["emberCrown","brokenChain","twoBanks","kingsHand","twoHouses","emberLord","longYear"],BAD=["winterCoup","revolt","fallen","witchFall","debt","chained","usurped"];
 function gotEndings(){try{return JSON.parse(localStorage.getItem("ef_end")||"[]").filter(k=>ENDINGS[k])}catch(e){return[]}}
@@ -2960,7 +3366,7 @@ function ending(k){SC.court=null;
   <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
   <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="showTitle()">Title Screen</button></div>`);
  return true}
-function overlay(h){const o=$("overlay");o.className=/class="rooms"/.test(h)?"nt":/class="logo"/.test(h)?"ts":/class="ovb prolog/.test(h)?"pl":/class="ovb (siege|ending)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
+function overlay(h){const o=$("overlay");o.className=/id="nmap"/.test(h)?"nm":/id="wmap"/.test(h)?"wm":/class="rooms"/.test(h)?"nt":/class="logo"/.test(h)?"ts":/class="ovb prolog/.test(h)?"pl":/class="ovb (siege|ending)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
 function modal(h,cls=""){const m=$("modal");m.innerHTML=`<div class="box ${cls}">${h}</div>`;m.style.display="flex"}
 function closeModal(){const m=$("modal");m.style.display="none";m.innerHTML=""}
@@ -2975,7 +3381,7 @@ function openSettings(quiet){if(!quiet)SFX.click();else SFX.blip&&SFX.blip(700);
   ${tg("Sound effects",AU.sfxOn,"AU.sfxOn=!AU.sfxOn;if(AU.sg)AU.sg.gain.value=AU.sfxOn?.6:0;savePrefs()")}
   ${tg("Vibration",PREF.haptics,"PREF.haptics=!PREF.haptics;savePrefs()")}</section>
  <section><h4>Reading</h4><p class="lbl">Text speed</p>
-  <div class="seg">${Object.keys(SPEEDS).map(k=>`<button class="${PREF.speed===k?"on":""}" onclick="setSpeed('${k}')"><b>${SPEEDNAME[k]}</b></button>`).join("")}</div>
+  <div class="seg sp">${Object.keys(SPEEDS).map(k=>`<button class="${PREF.speed===k?"on":""}" onclick="setSpeed('${k}')">${SPEEDNAME[k]}</button>`).join("")}</div>
   ${tg("Larger text",PREF.big,"PREF.big=!PREF.big;savePrefs()")}</section>
  <section><h4>Your reign</h4>
   <button class="act" onclick="resetTips()">Show tips again</button>
@@ -2987,11 +3393,11 @@ function openEndings(){SFX.page();const got=gotEndings();modal(`<h3>Endings ${go
 function save(){try{localStorage.setItem("ef_save3",JSON.stringify(S))}catch(e){}}
 /* ---------------- Prologue: who you are, what happened, and who is coming ---------------- */
 const PROLOGUE=[
- {mode:"title",h:"Emberfall",t:"A proud little city on the river Ember, at the far edge of King Osmund's realm. Its old stone ford is the only crossing for fifty miles. Whoever holds Emberfall holds the road east."},
- {mode:"snow",h:"The Old Lord Is Dead",t:"This winter your father, Lord Roderick, died in his sleep. The villages loved him and the lords across the river feared him. He left you a cracked wall, a thin treasury, and a hall full of people who aren't sure you're ready."},
- {mode:"burn",h:"Baron Vex",t:"Across the river waits Baron Vex. For twenty years he has wanted the ford, and only your father kept him on his own bank. Now Vex smells weakness. He is gathering men, and by midsummer he will come."},
+ {mode:"world:emberfall",h:"Emberfall",t:"A proud little city on the river Ember, at the far edge of King Osmund's realm. Its old stone ford is the only crossing for fifty miles. Whoever holds Emberfall holds the road east."},
+ {mode:"snow",h:"The Old Lord Is Dead",t:"This winter your father, Lord Roderick, died in his sleep, or so they say. The villages loved him; his enemies feared him. He left you a cracked wall, a thin treasury, and a hall full of people who aren't sure you're ready."},
+ {mode:"world:vex",h:"Baron Vex",t:"Across the river, in his black castle of Blackmoor, waits Baron Vex. For twenty years he has wanted the ford, and only your father kept him on his own bank. Now Vex smells weakness. He is gathering men, and by midsummer he will come."},
  {mode:"spring",h:"Your Family",faces:["elinor","maren","tobin"],t:"You don't rule alone. Lady Elinor, your wife, sharp and steady. Maren, your eldest, old enough to be married off for an alliance. Young Tobin, who dreams of becoming a knight. Every choice you make, they will feel."},
- {mode:"dawn",h:"Your First Year",t:"Each day, petitioners will climb the carpet to your throne. Each night, you may walk the castle. Keep the gold, the grain, the army and the people's favor from collapsing, and in the deep of winter the great lords will meet to judge your reign."},
+ {mode:"dawn",h:"Your First Year",t:"Each day, petitioners will climb the carpet to your throne. Each night, you may walk the castle. Keep the gold, the grain, the army and the people's favor from collapsing, and when the snows break in February the great lords will meet to judge your reign."},
 ];
 function prologue(done,i=0){
  const P=PROLOGUE[i];if(!P){closeOverlay();return done()}
