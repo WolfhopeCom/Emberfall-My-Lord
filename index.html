@@ -214,7 +214,7 @@ img.px{image-rendering:pixelated}
  #overlay.nt .must{font-size:13.5px!important;margin:2px 0!important}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
- #app{grid-template-rows:auto minmax(0,1fr) 43%}
+ #app{grid-template-rows:auto minmax(0,1fr) 40%}
  .ch{padding:5px 8px 5px 22px;font-size:14.5px}#choices{gap:5px}
  #overlay.fb .ovb p{font-size:14.5px}#overlay.fb .ovb h3{font-size:19px}#overlay.fb .nums b{font-size:18px}#overlay.fb .summary ul{font-size:13px}
  #overlay.nt .ovb>p.dim:not(.must){display:none}
@@ -227,7 +227,7 @@ img.px{image-rendering:pixelated}
  #overlay.nt .rooms{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px){
- #app{grid-template-rows:auto minmax(0,1fr) 46%}
+ #app{grid-template-rows:auto minmax(0,1fr) 42%}
  #txt{font-size:14.5px;line-height:1.26}
  .ch{font-size:14px;padding:5px 8px 5px 22px}
 }
@@ -463,7 +463,7 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
  background:linear-gradient(45deg,transparent 42%,#b8862a 42%,#f2c14e 58%,transparent 58%),linear-gradient(-45deg,transparent 42%,#b8862a 42%,#f2c14e 58%,transparent 58%);opacity:.85}
 #dialog::before{left:3px;top:3px}#dialog::after{right:3px;bottom:3px}
 #overlay{animation:ovIn .35s ease-out}
-#overlay.nm .nmwrap,#overlay.wm .wmwrap{animation:ovZoom .6s cubic-bezier(.2,.8,.2,1) both}
+#overlay.nm .nmwrap,#overlay.wm .wmwrap{animation:ovZoom .6s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes ovIn{from{opacity:0}}
 @keyframes ovZoom{from{opacity:0;transform:translate(-50%,-50%) scale(1.04)}}
 #modal .box{animation:popIn .22s cubic-bezier(.2,.9,.3,1.2) both}
@@ -471,6 +471,13 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 .ch{transition:transform .08s,box-shadow .08s,background-color .15s}
 @media (hover:hover){.ch:not([disabled]):hover{background-color:#fffaf0}}
 .hb:active{transform:translateY(2px)}
+.logo h1{position:relative}
+.logo h1::after{content:attr(data-t);position:absolute;inset:0;color:transparent;text-shadow:none;pointer-events:none;
+ background:linear-gradient(100deg,transparent 42%,rgba(255,250,220,.95) 50%,transparent 58%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;animation:shine 6s ease-in-out 1.4s infinite}
+@keyframes shine{0%{background-position:160% 0}35%,100%{background-position:-60% 0}}
+#overlay.nm.going .nmwrap{transition:transform .28s ease-in,opacity .28s ease-in;transform:translate(-50%,-50%) scale(1.5);opacity:0}
+#overlay.nm.going .nhud,#overlay.nm.going #nextBtn{transition:opacity .2s;opacity:0}
+#overlay.nm .room.hit::after{border-color:#f2c14e;background:rgba(242,193,78,.18)}
 </style>
 </head>
 <body>
@@ -1616,16 +1623,20 @@ function drawWorld(x,o={}){const t=++WMAP.t,se=S?SEASON(S.month):"spring",frozen
  x.imageSmoothingEnabled=true;x.drawImage(WMAP.vig,0,0,WW,WH);x.imageSmoothingEnabled=false}
 /* the Map: tap a place to read about it */
 let WSEL=null;
-function openWorld(sel){SFX.page();WSEL=sel||null;const ch2=S.month>BATTLE_MONTH||has("corvinClaim");
+function wCard(k,ch2){const P=PLACES[k],L=LORDS.find(l=>l.id===k);const s=L?lordStance(L):0;
+ const arm=worldArmies().filter(a=>Math.hypot(a.at[0]-P.x,a.at[1]-P.y)<14).map(a=>a.lab);
+ return `<div class="wcard"><b>${P.n}</b>${L?`<span class="wl">${L.n}${ch2?` · <em class="${s>0?"sy":s<0?"sn":"su"}">${s>0?"for you":s<0?"for Corvin":"undecided"}</em>`:""}</span>`:""}<p>${P.d}${L&&ch2?` <i>${L.why(s)}</i>`:""}${arm.length?` <b class="warn">${arm.join(", ")} ${arm.length>1?"are":"is"} here.</b>`:""}</p></div>`}
+function openWorld(sel){const ch2=S.month>BATTLE_MONTH||has("corvinClaim");
+ if(sel&&$("wmap")&&!WMAP.march){WSEL=WSEL===sel?null:sel;SFX.blip?SFX.blip(520):SFX.click();document.querySelectorAll(".wpl").forEach(b=>b.classList.toggle("on",b.dataset.k===WSEL));
+  const old=document.querySelector("#overlay .wcard");if(old)old.remove();if(WSEL)$("overlay").insertAdjacentHTML("beforeend",wCard(WSEL,ch2));return}
+ SFX.page();WSEL=sel||null;
  const labs=Object.entries(PLACES).map(([k,P])=>{const L=LORDS.find(l=>l.id===k),s=L&&ch2?lordStance(L):null;
-  return `<button class="wpl${k==="emberfall"?" home":""}${WSEL===k?" on":""}" style="left:${(P.x/WW*100).toFixed(2)}%;top:${((P.y+3)/WH*100).toFixed(2)}%" onclick="openWorld('${k}')">${s===null?"":`<i class="${s>0?"y":s<0?"n":"u"}">${s>0?"✔":s<0?"✖":"?"}</i>`}${P.n}</button>`}).join("");
- let card="";if(WSEL){const P=PLACES[WSEL],L=LORDS.find(l=>l.id===WSEL);const s=L?lordStance(L):0;
-  const arm=worldArmies().filter(a=>Math.hypot(a.at[0]-P.x,a.at[1]-P.y)<14).map(a=>a.lab);
-  card=`<div class="wcard"><b>${P.n}</b>${L?`<span class="wl">${L.n}${ch2?` · <em class="${s>0?"sy":s<0?"sn":"su"}">${s>0?"for you":s<0?"for Corvin":"undecided"}</em>`:""}</span>`:""}<p>${P.d}${L&&ch2?` <i>${L.why(s)}</i>`:""}${arm.length?` <b class="warn">${arm.join(", ")} ${arm.length>1?"are":"is"} here.</b>`:""}</p></div>`}
+  return `<button class="wpl${k==="emberfall"?" home":""}${WSEL===k?" on":""}" style="left:${(P.x/WW*100).toFixed(2)}%;top:${((P.y+3)/WH*100).toFixed(2)}%" data-k="${k}" onclick="openWorld('${k}')">${s===null?"":`<i class="${s>0?"y":s<0?"n":"u"}">${s>0?"✔":s<0?"✖":"?"}</i>`}${P.n}</button>`}).join("");
+ const card=WSEL?wCard(WSEL,ch2):"";
  const v=ch2?councilVotes():null;
  overlay(`<div class="wmwrap"><canvas id="wmap" width="${WW*2}" height="${WH*2}"></canvas><div class="wpls">${labs}</div></div>
   <div class="whud"><div class="ntitle"><b>The River Country</b><span>${ch2?`The council: <i class="y">${v.yes} for you</i> · <i class="n">${v.no} for Corvin</i> · ${v.und} undecided. You need 6.`:has("knelt")?"Vex's banner flies over the ford.":`Vex's host gathers across the river. ${BATTLE_MONTH-S.month>0?`${BATTLE_MONTH-S.month} month${BATTLE_MONTH-S.month>1?"s":""} until July.`:"He comes this month."}`}</span></div><button class="pb done" id="wmClose">Close</button></div>${card}`);
- wmFit();$("wmClose").onclick=()=>{SFX.click();WSEL=null;if(S&&S.night&&S.night.reqDone)showNight();else closeOverlay()}}
+ wmFit();$("wmap").onclick=()=>{if(WSEL)openWorld(WSEL)};$("wmClose").onclick=()=>{SFX.click();WSEL=null;if(S&&S.night&&S.night.reqDone)showNight();else closeOverlay()}}
 function wmFit(){const o=$("overlay"),w=o.querySelector(".wmwrap");if(!w)return;const W0=o.clientWidth,H0=o.clientHeight,ar=WW/WH;let ww=W0,hh=W0/ar;const cover=W0/H0>=1.7;if(cover?hh<H0:hh>H0){hh=H0;ww=H0*ar}w.style.width=ww+"px";w.style.height=hh+"px"}
 /* the war map: before a battle, the armies march across the realm */
 function warMap(title,text,armies,done){SFX.war();
@@ -2179,12 +2190,15 @@ function next(){
  const t=$("txt");t.className="wait";t.textContent="The great doors creak open...";
  SC.enter(e.who,()=>present(e));
 }
+/* if every option is out of reach (no gold, no soldiers), the lord can always say no */
+const NOHELP={t:"\"I can't help with this. Not now.\"",go:()=>{fx({favor:-2});return "A long silence. Then a short bow, and they're gone. People will hear about it."}};
+function withFallback(list){return list.some(o=>can(o)&&!o.off)?list:[...list,NOHELP]}
 function present(e){
  setTimeout(()=>showTip("start"),FAST?0:600);
  const c=C[e.who];PCHAR=c;$("pbox").style.display="";$("who").textContent=c.n;$("role").textContent=c.r;$("txt").className="";
  typeText(typeof e.text==="function"?e.text():e.text,c.voice,()=>{
   const ch=$("choices");ch.innerHTML="";
-  e.choices.filter(o=>(!o.req||o.req())&&(!o.agent||agentKnown(o.agent))).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>choose(e,o))))});
+  withFallback(e.choices.filter(o=>(!o.req||o.req())&&(!o.agent||agentKnown(o.agent)))).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>choose(e,o))))});
 }
 function choose(e,o){
  if(!can(o))return;SFX.click();$("choices").innerHTML="";LAST={};const reply=o.go();render();react();countChoice();
@@ -2510,7 +2524,7 @@ function showNight(){
  nmSize();const LW=NM.LW,R=nmLayout(LW).rooms;
  const pct=([x,y,w,h])=>`left:${(x/LW*100).toFixed(2)}%;top:${(y/1.2).toFixed(2)}%;width:${(w/LW*100).toFixed(2)}%;height:${(h/1.2).toFixed(2)}%`;
  const ids=["family","council","treasury","war","mason",...(has("brannocJailed")?["dungeon"]:[])];
- const hot=ids.map(id=>{const k=roomStatus(id);return `<button class="room${k?" "+k:""}" style="${pct(R[id])}" onclick="enterRoom('${id}')" aria-label="${ROOMNAME[id]}"><span class="plq">${k==="req"||k==="ev"?'<em class="bang">!</em>':k==="done"?'<em class="ok">✓</em>':""}<span>${ROOMNAME[id]}</span></span></button>`}).join("");
+ const hot=ids.map(id=>{const k=roomStatus(id);return `<button class="room${k?" "+k:""}" style="${pct(R[id])}" onclick="nmGo('${id}',this)" aria-label="${ROOMNAME[id]}"><span class="plq">${k==="req"||k==="ev"?'<em class="bang">!</em>':k==="done"?'<em class="ok">✓</em>':""}<span>${ROOMNAME[id]}</span></span></button>`}).join("");
  overlay(`<div class="nmwrap"><canvas id="nmap" width="${LW*2}" height="240"></canvas><div class="rooms">${hot}</div></div>
   <div class="nhud"><div class="ntitle"><b>Night · end of ${MONTHS[S.month-1]}</b><span>${left.length?`${["","Something needs you tonight.","Two matters need you tonight.","Three matters need you tonight."][left.length]}`:nightMood()}</span></div>
   <div class="nright">${resBar()}<div class="nbtns"><button class="hb" onclick="openWorld()">Map</button><button class="hb" onclick="openJournal()">Journal</button><button class="hb" onclick="openSettings()">⚙</button></div></div></div>
@@ -2521,6 +2535,8 @@ function showNight(){
   setPhase(war?"dusk":"day",SEASON(S.month));Music.play(war?"battle":dayTrack());monthCard(()=>missionReport(()=>{buildMonth();next()}))};
 }
 /* the map keeps its shape: as wide as the screen allows, the rooms always where the paint is */
+function nmGo(id,el){if($("overlay").classList.contains("going"))return;el.classList.add("hit");const w=$("overlay").querySelector(".nmwrap"),r=el.getBoundingClientRect(),o=w.getBoundingClientRect();
+ w.style.transformOrigin=`${((r.left+r.width/2-o.left)/o.width*100).toFixed(1)}% ${((r.top+r.height/2-o.top)/o.height*100).toFixed(1)}%`;$("overlay").classList.add("going");setTimeout(()=>enterRoom(id),FAST?0:260)}
 function nmFit(){const o=$("overlay"),w=$("overlay").querySelector(".nmwrap");if(!w)return;const W0=o.clientWidth,H0=o.clientHeight,ar=NM.LW/120;
  let ww=W0,hh=W0/ar;if(hh>H0){hh=H0;ww=H0*ar}w.style.width=ww+"px";w.style.height=hh+"px"}
 /* walking into a room: the lord comes through the door, then each matter plays out as dialogue */
@@ -2553,7 +2569,7 @@ function roomStep(){
  roomIdle()}
 function matter(k,text,choices,apply){
  speak(k,text,()=>{const ch=$("choices");
-  choices.forEach((o,i)=>{if(o.req&&!o.req())return;if(o.agent&&!agentKnown(o.agent))return;ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};
+  withFallback(choices.filter(o=>(!o.req||o.req())&&(!o.agent||agentKnown(o.agent)))).forEach((o,i)=>{ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};
    const reply=apply(o);render();countChoice();save();react();
    typeText(reply,k?C[k].voice:190,()=>goBtn("Continue",()=>{if(fail())return;roomStep()}))}))})})}
 const ROOMTALK={
@@ -2881,7 +2897,7 @@ function bSay(title,who,text,choices,after){
  $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:(BT.on?(BT.winter?"The Longest Night":"The Battle of the Ford"):"The Lords' Council");PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
  $("txt").className="";$("choices").innerHTML="";
  typeText(text,who?C[who].voice:150,()=>{const ch=$("choices");
-  choices.filter(o=>!o.req||o.req()).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};const r=o.go();render();save();
+  withFallback(choices.filter(o=>!o.req||o.req())).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};const r=o.go();render();save();
    typeText(r,150,()=>goBtn("Continue",after))})))})}
 function siege(){
  const calm=has("plan_flee")||has("knelt")||has("plan_parley");
@@ -3418,7 +3434,7 @@ function showTitle(){
  if(TY){clearTimeout(TY.to);TY=null}SC.walker=null;SC.talk=false;SC.room=null;SC.cast=[];
  let hasSave=false;try{hasSave=!!localStorage.getItem("ef_save3")}catch(e){}
  setCastle("title");Music.play("title");
- overlay(`${castleHTML()}<div class="logo"><h1>EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
+ overlay(`${castleHTML()}<div class="logo"><h1 data-t="EMBERFALL">EMBERFALL</h1><h2>MY LORD</h2></div></div><div class="ovb">
   <p class="dim">The throne is yours. So is everything that follows.</p>
   <div class="tbtns">${hasSave?'<button class="pb" onclick="cont()">Continue Reign</button>':""}<button class="pb ${hasSave?"alt":""}" onclick="${hasSave?"confirmNew()":"newGame()"}">New Reign</button>
   <button class="pb alt" onclick="openEndings()">Endings (${gotEndings().length}/${Object.keys(ENDINGS).length})</button>
