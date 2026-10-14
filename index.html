@@ -1612,7 +1612,7 @@ const E=[
 /* ---- DECEMBER ---- */
 {m:9,who:"whisper",req:()=>has("spy")&&!!winterFoes(),text:()=>winterFoes().cor?"\"Corvin is buying sellswords in Greymarch, my lord. Wagons of pitch. Sledges. He isn't planning to wait for any council.\"":"\"Baron Vex is gathering what's left of his army, my lord. Sledges, pitch, ladders. He means to cross when the river freezes.\"",
  choices:[{t:"\"Find out when, and where.\"",go:()=>{set("winterIntel");return "\"The Longest Night,\" the Whisper says, three days later. \"Across the ice, at the ford. They'll bring their oil wagons onto the river.\""}},
-  {t:`"${foeName()} wouldn't dare."`,go:()=>`"${foeName()}," says the Whisper, "dares everything that might work."`}]},
+  {t:"\"They wouldn't dare.\"",go:()=>`"${foeName()}," says the Whisper, "dares everything that might work."`}]},
 
 {m:10,who:"eastlord",req:()=>has("rebellion")&&has("harwinAlly"),text:"Harwin's lances at your gate, steam rising from the horses. \"It's December, my friend. Is Emberfall still with us?\"",
  choices:[{t:"Raise the banner",go:()=>rebel()},{t:"Call it off",go:()=>{delete S.f.rebellion;fx({favor:-6});return "Harwin turns his horse without a word."}}]},
