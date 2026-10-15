@@ -1848,7 +1848,7 @@ const E=[
   {t:"Train villagers instead",go:()=>{fx({men:8,food:-5,favor:-4});return "Farmers with spears. They'll learn, or they'll die."}},
   {t:"Not yet",go:()=>"Brannoc grunts. \"Don't wait too long.\""}]},
 {m:1,who:"mason",text:"Hildra, master mason. Your father let this castle crumble, my lord.\n\nGold buys stone, and stone buys safety. At the end of every month, tell me what to build: a granary, a market, a chapel, barracks... or walls.",
- choices:[{t:"\"Start planning the walls.\"",sub:"Plans cost 5 gold",go:()=>{set("masonWalls");fx({gold:-5});return "\"Ha! A lord who thinks ahead. I'll knock ten gold off the walls.\" (Surveyors' fees: −5 gold now.)"}},
+ choices:[{t:"\"Start planning the walls.\"",go:()=>{set("masonWalls");fx({gold:-5});return "\"Ha! A lord who thinks ahead. I'll knock ten gold off the walls.\" (Surveyors' fees: −5 gold now.)"}},
   {t:"\"We'll see what the treasury allows.\"",go:()=>"\"Stone is patient, my lord. Barons aren't.\""}]},
 /* ---- APRIL ---- */
 {m:2,who:"vexenvoy",text:"Baron Vex sends condolences on your father's death. And a reminder: the Emberfall ford was promised to him, years ago. He asks a tribute of 30 gold to... forget the matter.",
@@ -2177,7 +2177,7 @@ const R=[
  {s:"autumn",who:"peasant",text:"The apple orchards are groaning, m'lord. If the castle buys our cider, we'll press it all.",choices:[
   {t:"Buy the cider",cost:{gold:8},go:()=>{fx({gold:-8,favor:5});return "The whole city smells of apples for a month."}},{t:"No thank you",go:()=>"\"The pigs will enjoy it, then.\""}]},
  {s:"autumn",who:"widow",text:"Travelers from the south say there's sickness on the roads, m'lord. Should we close the gates to strangers?",choices:[
-  {t:"Close the gates",sub:"Lost trade: −4 gold",go:()=>{fx({gold:-4,favor:2});return "Trade slows. So does the sickness."}},{t:"Send Morwen to meet the travelers",agent:"witch",go:()=>{send("witch");fx({favor:4});return "She checks every traveler at the gate with a sprig of rue. Nobody gets sick. Nobody asks how."}},{t:"Keep them open",go:()=>{fx({gold:4});return "Business as usual. Fingers crossed."}}]},
+  {t:"Close the gates",go:()=>{fx({gold:-4,favor:2});return "Trade slows. So does the sickness. (Closed gates cost the markets: −4 gold.)"}},{t:"Send Morwen to meet the travelers",agent:"witch",go:()=>{send("witch");fx({favor:4});return "She checks every traveler at the gate with a sprig of rue. Nobody gets sick. Nobody asks how."}},{t:"Keep them open",go:()=>{fx({gold:4});return "Business as usual. Fingers crossed."}}]},
  {s:"autumn",who:"merchant",req:()=>!has("osricCaught"),text:"Grain prices are high in the cities this autumn, my lord. I'll buy 15 sacks for 25 gold.",choices:[
   {t:"Sell 15 grain",cost:{food:15},go:()=>{fx({food:-15,gold:25});return "\"A pleasure, as ever.\" You hope you won't miss it in February."}},{t:"Keep the grain",go:()=>"\"Winter is long, I suppose.\""}]},
  {s:"winter",who:"widow",text:"The wolves came down from the hills last night, m'lord. Two sheep and a dog.",choices:[
@@ -2199,7 +2199,7 @@ const R=[
  {s:"summer",who:"merchant",req:()=>!has("osricCaught"),text:"A travelling menagerie wants to perform in the square, my lord. A real bear! They'll pay the crown 6 gold.",choices:[
   {t:"Let them perform",go:()=>{if(roll(.25)){fx({gold:2,favor:-3});return "The bear gets loose and eats the mayor's prize cabbages. It's very funny for everyone except the mayor."}fx({gold:6,favor:3});return "Children follow the bear around for days. So do several adults."}},{t:"No bears",go:()=>"\"Your loss, my lord. It dances.\""}]},
  {s:"autumn",who:"peasant",text:()=>has("ironLaw")?"Your Iron Law took every man who could swing a scythe, m'lord. The late barley's still standing, and the rain is coming. Can your soldiers help bring it in?":"The late barley's still standing, m'lord, and there aren't enough hands to bring it in before the rain. Can your soldiers help?",choices:[
-  {t:"Send the soldiers",sub:"Costs 5 gold",go:()=>{fx({food:12,favor:3,gold:-5});return "Soldiers with scythes. The sheaves are in before the first drop falls. (Harvest wages for the garrison: −5 gold.)"}},{t:"\"Soldiers aren't farmhands.\"",go:()=>{fx({food:4,favor:-2});return "Half the barley rots in the fields."}}]},
+  {t:"Send the soldiers",go:()=>{fx({food:12,favor:3,gold:-5});return "Soldiers with scythes. The sheaves are in before the first drop falls. (Harvest wages for the garrison: −5 gold.)"}},{t:"\"Soldiers aren't farmhands.\"",go:()=>{fx({food:4,favor:-2});return "Half the barley rots in the fields."}}]},
  {s:"autumn",who:"elinor",req:()=>famHere("tobin"),text:"A scholar from the Royal College is passing through. He'd stay the winter and teach Tobin law and Latin, for 12 gold.",choices:[
   {t:"Hire him",cost:{gold:12},go:()=>{S.bond.tobin++;S.bond.elinor++;fx({gold:-12});return "Tobin complains bitterly, then starts reading everything in the library. Elinor is smug about it."}},{t:"\"He can learn swordplay instead.\"",go:()=>"Elinor gives you a long look and says nothing at all."}]},
  {s:"winter",who:"cuthbert",grp:"coldpoor",req:()=>!has("witchRealm"),text:"The poor of Thornby are freezing, my lord. Open the great hall to them on the coldest nights?",choices:[
@@ -2209,7 +2209,7 @@ const R=[
  {s:"any",who:"widow",text:"My boy wants to join your guard, m'lord. He's fifteen and strong as an ox, and he eats like one too.",choices:[
   {t:"Take him on",go:()=>{fx({men:1,favor:2});return "He trips over his own spear on the first day. By the end of the month he's the best archer in the barracks."}},{t:"\"He's too young.\"",go:()=>"Agna looks relieved, though she'd never say so."}]},
  {s:"any",who:"merchant",req:()=>!has("osricCaught"),text:"Clipped coins are going around the market, my lord. I know who's doing it. For a small fee, I'll tell you.",choices:[
-  {t:"Pay 5 gold",cost:{gold:5},go:()=>{fx({gold:7});return "It's a tanner with a pair of shears. He coughs up twelve gold to stay out of the dungeon."}},{t:"\"Find him yourself.\"",sub:"The bad coin costs you 4 gold",go:()=>{fx({gold:-4});return "The bad coins keep going around, and your taxes come in light."}}]},
+  {t:"Pay 5 gold",cost:{gold:5},go:()=>{fx({gold:7});return "It's a tanner with a pair of shears. He coughs up twelve gold to stay out of the dungeon."}},{t:"\"Find him yourself.\"",go:()=>{fx({gold:-4});return "The bad coins keep going around, and your taxes come in light. (Bad coin in the treasury: −4 gold.)"}}]},
  {s:"any",who:"aldric",grp:"rats",text:"Forgive me, my lord. The castle cats have wandered off, and the rats have found the granary.",choices:[
   {t:"Hire a rat-catcher",cost:{gold:4},go:()=>{fx({gold:-4});return "He arrives with three terriers and a sack. The sack is full by sundown."}},{t:"\"They'll come back.\"",go:()=>{fx({food:-8});return "The cats come back eventually. So does the bill: eight sacks of grain, gone."}}]}
 ];
@@ -2467,7 +2467,7 @@ const NIGHT_EVENTS=[
  {room:"treasury",text:"Aldric found a forgotten coffer in the vaults, sealed with your grandfather's crest. Forty years of dust, and 25 gold inside.",
   choices:[{t:"Keep it for the treasury",go:()=>{fx({gold:25});return "The coins go into the strongbox."}},{t:"Give it to Thornby's poor",go:()=>{fx({gold:5,favor:7});return "The story is all over the market by morning."}}]},
  {room:"treasury",when:()=>!rUsed("skim"),text:"A clerk's numbers don't add up. Aldric suspects someone has been skimming the tax money.",
-  choices:[{t:"Audit the books (5 gold)",cost:{gold:5},go:()=>{fx({gold:14});return "The skimmer is caught. The missing coin is returned."}},{t:"Let it go",sub:"The leak costs you 6 gold",go:()=>{fx({gold:-6});return "The leak goes on, quietly."}}]},
+  choices:[{t:"Audit the books (5 gold)",cost:{gold:5},go:()=>{fx({gold:14});return "The skimmer is caught. The missing coin is returned."}},{t:"Let it go",go:()=>{fx({gold:-6});return "The leak goes on, quietly. (The skimmer took another 6 gold.)"}}]},
  {room:"war",when:()=>S.month<BATTLE_MONTH&&!has("knelt"),text:"A sellsword captain knocks at the war room door. His company of ten will fight for you for 20 gold.",
   choices:[{t:"Hire the company",cost:{gold:20},go:()=>{fx({gold:-20,men:10});return "Ten hard-faced men join the garrison."}},{t:"Send him away",go:()=>"\"Your loss, my lord. Vex pays too.\""}]},
  {room:"war",when:()=>S.month<BATTLE_MONTH&&!has("knelt"),text:"A deserter from Vex's army is dragged in by the guards. He begs for shelter and offers what he knows.",
