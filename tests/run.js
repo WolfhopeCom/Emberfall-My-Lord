@@ -249,6 +249,96 @@ async function fresh(b, vp = { width: 852, height: 393 }) {
     }
   }
 
+  /* ---------- 8. regressions found by independent QA: reloads, double taps, broken saves, crowded nights ---------- */
+  if (!PLAY) {
+    const p = await fresh(b);
+    const drive = async (want, tries = 60) => {   // advance text and click the first choice matching `want`
+      for (let i = 0; i < tries; i++) {
+        const hit = await p.evaluate(w => { if (typeof TY !== 'undefined' && TY && TY.typing) { finishType(); return 'typing' } if (document.querySelector('#txt.more')) { advanceType(); return 'more' }
+          const bs = [...document.querySelectorAll('#choices button')]; const m = bs.find(x => new RegExp(w).test(x.textContent)); if (m) { m.click(); return 'hit' } const c = bs.find(x => /Continue/.test(x.textContent)); if (c) { c.click(); return 'cont' } const cb = document.querySelector('#cutBtn'); if (cb) { cb.click(); return 'cut' } return 'wait' }, want);
+        if (hit === 'hit') return true; await p.waitForTimeout(60);
+      }
+      return false;
+    };
+    const reload = async () => { await p.reload(); await p.waitForTimeout(400); await p.evaluate(() => { PRO = true; cont() }); await p.waitForTimeout(500); };
+    // A. after the July battle is decided, a reload continues into August and never fights it again
+    await p.evaluate(() => { PRO = true; localStorage.setItem('ef_pro', '1'); S = fresh(); S.month = 5; S.men = 40; render(); battleBegin(); BSCORE = 130; aftermath('victory'); });
+    const a1 = await p.evaluate(() => ({ m: JSON.parse(localStorage.getItem('ef_save3')).month, men: S.men }));
+    await reload();
+    const a2 = await p.evaluate(() => ({ m: S.month, battles: (S.chron || []).filter(c => /battle for Emberfall/.test(c)).length, men: S.men, onWar: /Last Night of July/.test(document.getElementById('overlay').textContent + $('txt').textContent) }));
+    ok('reload: after the July battle, Continue goes on to August without refighting it', a1.m === 6 && a2.m === 6 && a2.battles === 1 && a2.men === a1.men && !a2.onWar, JSON.stringify([a1, a2]));
+    // B. a ceremony reloaded halfway gives its reward once, not twice
+    await p.evaluate(() => { closeOverlay(); S = fresh(); S.month = 3; S.favor = 60; S.queue = ['cere:vex']; S.qi = 0; render(); next(); });
+    await drive('Ride to the water'); await drive('Come across');
+    await p.waitForTimeout(200); await reload();
+    const b1 = await p.evaluate(() => S.favor);
+    ok('reload: a parley reloaded halfway does not repeat its favor', b1 === 60, 'favor ' + b1);
+    // C. a reloaded ending does not bring the reign back
+    await p.evaluate(() => { closeOverlay(); S = fresh(); S.month = 5; save(); ending('fallen'); });
+    const c1 = await p.evaluate(() => localStorage.getItem('ef_save3'));
+    ok('reload: once an ending starts, there is no save to continue', c1 === null);
+    // D. a double tap on Unlock buys once and continues once
+    const d1 = await p.evaluate(async () => {
+      closeOverlay(); PRO = false; localStorage.removeItem('ef_pro'); let buys = 0, afters = 0;
+      window.Capacitor = { isNativePlatform: () => true, Plugins: { NativePurchases: { getProducts: async () => ({ products: [{ identifier: IAP_ID, priceString: '$1.99' }] }),
+        purchaseProduct: async () => { buys++; await new Promise(r => setTimeout(r, 300)); return { transactionId: 't' + buys, productIdentifier: IAP_ID } }, getPurchases: async () => ({ purchases: [] }), restorePurchases: async () => ({}) } } };
+      S = fresh(); S.month = 4; paywall(() => afters++); $('buyBtn').click(); $('buyBtn').click(); $('restoreBtn').click();
+      await new Promise(r => setTimeout(r, 900)); delete window.Capacitor; closeOverlay(); return { buys, afters, pro: PRO };
+    });
+    ok('purchase: a double tap on Unlock buys once and continues once', d1.buys === 1 && d1.afters === 1 && d1.pro === true, JSON.stringify(d1));
+    // E. "Not now" while the store is thinking: the purchase still counts, but the game doesn't jump ahead
+    const e1 = await p.evaluate(async () => {
+      PRO = false; localStorage.removeItem('ef_pro'); let afters = 0;
+      window.Capacitor = { isNativePlatform: () => true, Plugins: { NativePurchases: { getProducts: async () => ({ products: [{ identifier: IAP_ID }] }), purchaseProduct: async () => { await new Promise(r => setTimeout(r, 300)); return { transactionId: 'z', productIdentifier: IAP_ID } }, getPurchases: async () => ({ purchases: [] }) } } };
+      S = fresh(); S.month = 4; paywall(() => afters++); $('buyBtn').click(); $('laterBtn').click();
+      await new Promise(r => setTimeout(r, 700)); delete window.Capacitor; return { afters, pro: PRO };
+    });
+    ok('purchase: leaving the paywall mid-purchase unlocks without jumping ahead', e1.afters === 0 && e1.pro === true, JSON.stringify(e1));
+    // F. broken or out-of-date saves never crash: they load or show "The Chronicle is torn"
+    const bad = [{ month: 6, queue: [9999, 'r9999', 'seat:nope', 'cere:nope'], qi: 0 }, { month: 6, tax: 'bogus' }, { month: 6, night: { req: ['noSuchScene'], reqDone: {}, evs: [999], evDone: {} } },
+      { month: 6, mission: { id: 'bogus' } }, { month: 6, clues: 'vial' }, { month: 6, doneScenes: {} }, { month: 13 }, { month: '7' }, { month: 6, f: null, b: null, bond: 'x' }];
+    const fbad = [];
+    for (const sv of bad) {
+      await p.evaluate(x => { closeModal(); closeOverlay(); PRO = true; localStorage.setItem('ef_save3', JSON.stringify(x)) }, sv);
+      const before = p.errs.length; await reload();
+      const st = await p.evaluate(() => /Chronicle is torn/.test(document.getElementById('modal').textContent) ? 'torn' : (S && S.month >= 1 && S.month <= 12 ? 'loaded' : 'broken'));
+      if (p.errs.length > before || st === 'broken') fbad.push(JSON.stringify(sv).slice(0, 50) + ' → ' + st + ' ' + p.errs.slice(before).join(';').slice(0, 80));
+    }
+    ok(`save: ${bad.length} broken saves load or show a message, never crash`, fbad.length === 0, fbad.join(' | '));
+    // G. "New Reign" works even when the old save is unreadable
+    const g1 = await p.evaluate(() => { closeModal(); localStorage.setItem('ef_save3', '{not json'); try { confirmNew(); return /new reign/i.test(document.getElementById('modal').textContent) } catch (e) { return 'threw ' + e.message } });
+    ok('save: New Reign works with an unreadable save', g1 === true, String(g1));
+    // H. a crowded night keeps the scenes that can't wait
+    const h1 = await p.evaluate(() => { closeModal(); S = fresh(); S.month = 4; S.f.plague = 1; S.f.refugees = 1; S.f.tobinRides = 1; S.queue = []; S.qi = 0; endMonth(); const r = S.night.req; closeOverlay(); return r });
+    ok('night: single-month scenes are never crowded out', ['pitch', 'elinorFever', 'refugeeLand', 'tobinWound'].every(id => h1.includes(id)), h1.join(','));
+    ok('no page errors (regressions)', p.errs.length === 0, p.errs.slice(0, 3).join(' | '));
+    await p.close();
+  }
+
+  /* ---------- 9. every choice set in the real game text fits, with agents known, on the smallest phones ---------- */
+  if (!PLAY) {
+    for (const [nm, vp] of [['iPhone 15', { width: 852, height: 393 }], ['iPhone SE', { width: 667, height: 375 }]]) {
+      const p = await fresh(b, vp);
+      const r = await p.evaluate(async () => {
+        S = fresh(); S.month = 8; S.gold = 0; ['spy', 'foxPardoned', 'witchPact', 'harwinAlly', 'brannocJailed'].forEach(f => S.f[f] = 1); render(); closeOverlay();
+        const sets = []; E.forEach((e, i) => sets.push(['E' + i, e])); R.forEach((e, i) => sets.push(['R' + i, e]));
+        const out = [];
+        for (const [tag, e] of sets) {
+          let t = ''; try { t = typeof e.text === 'function' ? e.text() : e.text } catch (x) { continue }
+          PCHAR = C[e.who] || null; $('who').textContent = C[e.who] ? C[e.who].n : ''; $('txt').className = ''; $('txt').style.fontSize = ''; $('txt').textContent = String(t).split('\n\n')[0];
+          const c = $('choices'); c.innerHTML = ''; delete $('dialog').dataset.fit; fitDialog();
+          (e.choices || []).forEach((o, i) => { let ok = true; try { ok = !o.req || o.req() } catch (x) { } if (!ok) return; const bt = choiceBtn(o, i, () => { }); bt.style.animation = 'none'; c.appendChild(bt) });
+          fitDialog(); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          if (c.scrollHeight > c.clientHeight + 2) out.push(tag);
+        }
+        $("choices").innerHTML = ""; fitDialog();
+        return out;
+      });
+      ok(`layout: real choice text with agents fits on ${nm}`, r.length === 0, r.slice(0, 10).join(', '));
+      await p.close();
+    }
+  }
+
   /* ---------- 7. full playthroughs with different ruling styles ---------- */
   if (!QUICK) {
     const [onlyStyle, onlyN] = PLAY.split(':');

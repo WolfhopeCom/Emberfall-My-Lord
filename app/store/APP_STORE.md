@@ -31,7 +31,7 @@ In high summer, Vex's army crosses the ford. Command the battle yourself. Surviv
 • A playable siege: your preparations and your orders on the night decide the battle
 • Eleven lords to win over before the Midwinter Council
 • Your family, with conversations that change as the year does
-• 20 endings: a stolen crown, a burning city, a kingdom saved, and stranger fates
+• 21 endings: a stolen crown, a burning city, a kingdom saved, and stranger fates
 • Hand-drawn pixel art with real lighting, seasons and weather, plus an original soundtrack
 • Plays fully offline. No accounts, no ads, no tracking
 

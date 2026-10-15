@@ -41,8 +41,10 @@ def build_web(tester=False):
     html = html.replace("<script>", f'<script>window.EF_BUILD="{stamp}";</script>\n<script>', 1)
     print(f"build stamp: {stamp} (shown at the bottom of Settings)")
     if tester:
-        html = html.replace("<script>", "<script>window.EF_TESTER=true;</script>\n<script>", 1)
-        print("TESTER BUILD: the whole game is unlocked. Run plain `python3 build_app.py` before uploading to the App Store.")
+        import time
+        until = int((time.time() + 3 * 86400) * 1000)
+        html = html.replace("<script>", f"<script>window.EF_TESTER=true;window.EF_TESTER_UNTIL={until};</script>\n<script>", 1)
+        print("\n" + "!" * 70 + "\nTESTER BUILD: the whole game is unlocked for 3 days.\nDO NOT upload this build. Run plain `python3 build_app.py` before archiving for the App Store.\n" + "!" * 70 + "\n")
     (WWW / "index.html").write_text(html)
     if (WWW / "fonts").exists():
         shutil.rmtree(WWW / "fonts")
