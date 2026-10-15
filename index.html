@@ -1996,6 +1996,9 @@ const E=[
  choices:[{t:"Match his offer (30 gold)",cost:{gold:30},go:()=>{fx({gold:-30});set("gerritBought");return "Gerrit counts it twice. \"The Baron will be pleased. I'll make sure of it.\""}},
   {t:"\"Tell the Baron Corvin poisoned my father.\"",go:()=>{if(clueCount()>=2){set("gerritBought");return "Gerrit's face goes still. \"Poison. The Baron hates poisoners. He says it's a coward's weapon.\""}return "\"Proof, my lord,\" says Gerrit. \"The Baron likes proof.\""}},
   {t:"Say nothing",go:()=>"Gerrit shrugs and writes something down."}]},
+{m:7,who:"wynn",req:()=>!has("vassal")&&!has("ironLaw"),text:"Sergeant Wynn, stiff and formal. \"My lord, between your cousin and the winter, we need more spears. Give me the right to take every able man in Thornby and the farms. It won't be popular.\"",
+ choices:[{t:"\"Do it. Every able man.\"",go:()=>{set("ironLaw");fx({men:15,favor:-10});note("Passed the Iron Law: every able man was called to arms.");return "By the end of the week, the farms are full of women and old men, and the castle yard is full of farmers with spears. Nobody sings in the taverns."}},
+  {t:"\"Volunteers only.\"",go:()=>{fx({men:4,favor:1});return "Four men come forward. Wynn says it's four more than he expected."}}]},
 /* ---- NOVEMBER ---- */
 {m:9,who:"whisper",req:()=>has("spy")&&has("corvinClaim")&&!has("corvinSecret"),text:"\"The will your cousin carries was written by a clerk in Greymarch, my lord. For a price. I can bring you the clerk before the council... for 20 gold.\"",
  choices:[{t:"Pay The Whisper",cost:{gold:20},go:()=>{fx({gold:-20});set("corvinSecret");set("clerkFound");addClue("clerk");note("The Whisper found the clerk who forged Corvin's will.");return "\"He'll be in your dungeon before the council. Singing.\""}},
@@ -2032,7 +2035,7 @@ const E=[
 /* ---- JANUARY ---- */
 {m:11,who:"herald",req:()=>has("sentKing"),text:()=>has("sentKingBack")?"Hear the word of King Osmund! The northern raiders are broken, and the soldiers of Emberfall held the line at Saltmere. The King names their lord a Champion of the Realm.":"Hear the word of King Osmund! The northern raiders are broken. The soldiers of Emberfall held the line at Saltmere, and the King names their lord a Champion of the Realm.",
  choices:[{t:"\"Emberfall is honored.\"",go:()=>{set("kingChampion");set("kingFavor");if(has("sentKingBack")){fx({gold:30,favor:6});note("Named Champion of the Realm by King Osmund.");return "Royal silver, a sealed letter, and a banner for the great hall."}fx({men:14,gold:30,favor:6});note("Named Champion of the Realm by King Osmund.");return "Fourteen of the fifteen march back through the gate with royal silver in their packs."}}]},
-{m:11,who:"herald",req:()=>has("kingAngry"),text:"The royal herald stands in your hall, with the King's tax collector with a ledger and six guards. \"For refusing the King's call: thirty gold.\"",
+{m:11,who:"herald",req:()=>has("kingAngry"),text:"The royal herald stands in your hall, with the King's tax collector, a ledger and six guards. \"For refusing the King's call: thirty gold.\"",
  choices:[{t:"Pay",cost:{gold:30},go:()=>{fx({gold:-30});delete S.f.kingAngry;return "He counts every coin twice."}},
   {t:"\"Tell the King to come and collect it.\"",go:()=>{set("kingEnemy");fx({favor:4});note("Defied King Osmund's tax collector.");return "The hall cheers. Somewhere, a royal clerk writes your name on a list."}}]},
 {m:11,who:"tobin",req:()=>false,text:"Tobin kneels in the cold chapel in his first real armor. It's too big. \"I'm ready, Father.\"",
@@ -2071,7 +2074,7 @@ const E=[
  choices:[{t:"\"Then let it be the fen's.\"",go:()=>{set("witchThrone");note("Gave Emberfall to the fen.");return "She smiles, and the candles turn green, one by one."}},
   {t:"\"Leave Emberfall. Tonight.\"",go:()=>{delete S.f.witchRealm;delete S.f.morwenCourt;set("morwenBanished");fx({favor:5});return "She goes, slowly, and the torches flicker as she passes. \"You'll miss me, little lord.\""}}]},
 /* ---- CHAPTER TWO: the Midwinter Crown ---- */
-{m:6,who:"corvin",text:()=>(fought()?"\"Cousin! You remember me? Corvin of Greymarch. I sat with your father through his last nights. I rode the moment I heard about the battle. Poor, dear Roderick. Such a shame.\"":"\"Cousin! You remember me? Corvin of Greymarch. I sat with your father through his last nights. And now I hear about your... arrangement with Baron Vex. Poor, dear Roderick. Such a shame.\"")+" He unrolls a parchment with a flourish. \"His will. He named me his heir. When the snow breaks in February, the eleven lords of the river meet before the King, as the old law says, to confirm a new lord's first year. Let them decide which of us it should be.\"",
+{m:6,who:"corvin",text:()=>(fought()?"\"Cousin! You remember me? Corvin of Greymarch. I sat with your father through his last nights. I rode the moment I heard about the battle. Poor, dear Roderick. Such a shame. He was always so generous with other men's land.\"":"\"Cousin! You remember me? Corvin of Greymarch. I sat with your father through his last nights. And now I hear about your... arrangement with Baron Vex. Poor, dear Roderick. Such a shame.\"")+" He unrolls a parchment with a flourish. \"His will. He named me his heir. When the snow breaks in February, the eleven lords of the river meet before the King, as the old law says, to confirm a new lord's first year. Let them decide which of us it should be.\"",
  choices:[{t:"Welcome him as family",go:()=>{set("corvinGuest");set("corvinClaim");set("corvinFight");note("Lord Corvin arrived with a will naming him heir. The lords will decide in February.");setTimeout(()=>showTip("council"),600);return "He takes the best guest room, praises the wine, and writes eleven letters before supper. Aldric counts the silverware."}},
   {t:"Demand to see the will",go:()=>{set("willSeen");set("corvinClaim");set("corvinFight");note("Lord Corvin arrived with a will naming him heir. The lords will decide in February.");setTimeout(()=>showTip("council"),600);return "You read every line. It's your father's seal. You're almost sure it's not your father's hand."}},
   {t:"Throw him out of Emberfall",go:()=>{set("corvinEnemy");set("corvinClaim");set("corvinFight");fx({favor:2});S.lords=S.lords||{};note("Turned Lord Corvin away from the gate. The lords will decide in February.");setTimeout(()=>showTip("council"),600);return "\"As you wish, cousin.\" He smiles all the way to the gate. \"I'll tell the lords how warmly Emberfall greets its family.\""}}]},
@@ -2093,7 +2096,7 @@ const E=[
  choices:[{t:"Pay him 30 gold",cost:{gold:30},go:()=>{fx({gold:-30});set("teaguePaid");note("Bought Lord Teague's vote.");return "\"A pleasure doing business.\" He bites one of the coins. You suspect he bites everything."}},
   {t:"\"I don't buy lords.\"",go:()=>{fx({favor:3});return "\"Then you'll lose them, my lord.\" Word of your answer gets around the market, and people like it."}}]},
 /* ---- OCTOBER: the harvest feast ---- */
-{m:8,who:"aldric",text:()=>`The harvest feast. Halfway through the toasts, ${has("boyPage")||has("pipSquire")?"Pip, promoted to cupbearer, sips from your cup as a joke, and drops":"your cupbearer tastes your wine and drops"} like a stone. Purple lips. Aldric is white. "My lord... that's how your father looked."`,
+{m:8,who:"aldric",text:()=>`The harvest feast. Halfway through the toasts, ${has("boyPage")||has("pipSquire")?"Pip, promoted to cupbearer, sips from your cup as a joke, and drops":"your new cupbearer tastes your wine and drops"} like a stone. Purple lips. Aldric is white. "My lord... that's how your father looked."`,
  choices:[{t:"\"Seal the gates. No one leaves.\"",go:()=>{set("poisonHunt");fx({favor:-2});note("Someone tried to poison you at the harvest feast.");return has("boyPage")||has("pipSquire")?"Pip lives, barely: he only sipped. "+(has("corvinEnemy")?"The guests grumble all night behind locked gates.":"The guests grumble all night behind locked gates. Corvin grumbles loudest."):"The cupbearer lives, barely. "+(has("corvinEnemy")?"The guests grumble all night behind locked gates.":"The guests grumble all night behind locked gates. Corvin grumbles loudest.")}},
   {t:"Hush it up. Carry on with the feast.",go:()=>{set("poisonQuiet");note("Someone tried to poison you at the harvest feast.");return "Your cupbearer is carried out, still breathing. The music starts again. Somebody in your hall is very disappointed."}}]},
 {m:8,who:"corvin",req:()=>has("corvinClaim")&&!has("marenWed")&&!has("marenGone")&&!has("marenBetrothed")&&famHere("maren"),text:"\"Cousin, let's be sensible. Marry Maren to my son Edwy. Join our claims, and I'll burn this will in your own fireplace. No vote, no council, no unpleasantness.\"",
@@ -2107,10 +2110,10 @@ const E=[
  choices:[{t:"Pay for the bell tower",cost:{gold:25},go:()=>{fx({gold:-25,favor:3});set("anselmWon");return "The bells ring for an hour the day the scaffolding comes down. The Bishop's conscience is greatly eased."}},
   {t:"\"The church shouldn't sell its vote.\"",go:()=>{if(has("church")&&!has("churchAngry"))return "\"Quite right,\" says the Bishop, unexpectedly. \"You've already been generous to the abbey. I simply wanted to see if you'd say it.\"";set("churchAngry");return "Cuthbert winces. The Bishop's smile doesn't move at all."}}]},
 /* ---- DECEMBER ---- */
-{m:9,who:"corvin",req:()=>has("corvinClaim")&&!has("corvinPact")&&!has("corvinEnemy"),text:"\"The river will freeze any day now, cousin, and the roads with it. My honor guard has ridden in from Greymarch. Forty good men. Surely they can sleep inside the walls? It's so very cold.\"",
+{m:9,who:"corvin",req:()=>has("corvinClaim")&&!has("corvinPact")&&!has("corvinEnemy")&&!has("corvinValet"),text:"\"The river will freeze any day now, cousin, and the roads with it. My honor guard has ridden in from Greymarch. Forty good men. Surely they can sleep inside the walls? It's so very cold.\"",
  choices:[{t:"Let them in",go:()=>{set("corvinGuardIn");return "Forty men in Greymarch grey file through your gate. Wynn counts them twice. They count your soldiers too."}},
   {t:"\"They can camp by the river.\"",go:()=>{fx({favor:1});return "\"How hospitable.\" Corvin's men pitch their tents in the snow below the walls, and glare at the gate all night."}}]},
-{m:10,who:"ulric",req:()=>!hasClue("apothecary")&&(clueCount()>=3||has("spy")),text:"A thin, shaking man in a Greymarch apothecary's apron, smuggled in under a cart of turnips. \"Master Ulric, my lord. Lord Corvin bought nightshade from me twice: once before your father died, and once this autumn. He'll kill me next. Please.\"",
+{m:10,who:"ulric",req:()=>!hasClue("apothecary")&&(clueCount()>=3||has("spy")||has("ulricLead")),text:"A thin, shaking man in a Greymarch apothecary's apron, smuggled in under a cart of turnips. \"Master Ulric, my lord. Lord Corvin bought nightshade from me twice: once before your father died, and once this autumn. He'll kill me next. Please.\"",
  choices:[{t:"Grant him sanctuary",go:()=>{set("ulricSafe");addClue("apothecary");note("Master Ulric, Corvin's apothecary, asked for sanctuary.");return "Aldric hides him in the treasury vault, with a candle, a blanket and a very large guard."}},
   {t:"\"Why should I trust you?\"",go:()=>{if(has("spy")&&agentFree("spy")){addClue("apothecary");set("ulricSafe");return "The Whisper steps out of the shadows. \"He's telling the truth, my lord. I've watched his shop for a month.\""}return "He weeps and swears on everything he can think of. Within the hour he's gone. You'll never know."}}]},
 /* ---- JANUARY ---- */
@@ -2176,7 +2179,7 @@ const R=[
   {t:"Send them grain",cost:{food:8},go:()=>{fx({food:-8,favor:4});return "The abbey bells ring an extra hour in your honor."}},{t:"\"Pray harder.\"",go:()=>{fx({favor:-3});set("churchAngry");return "Brother Cuthbert's sermon on Sunday is about the camel and the eye of the needle. Everyone knows who it's about."}}]},
  {s:"summer",who:"merchant",req:()=>!has("osricCaught"),text:"A travelling menagerie wants to perform in the square, my lord. A real bear! They'll pay the crown 6 gold.",choices:[
   {t:"Let them perform",go:()=>{if(roll(.25)){fx({gold:2,favor:-3});return "The bear gets loose and eats the mayor's prize cabbages. It's very funny for everyone except the mayor."}fx({gold:6,favor:3});return "Children follow the bear around for days. So do several adults."}},{t:"No bears",go:()=>"\"Your loss, my lord. It dances.\""}]},
- {s:"autumn",who:"peasant",text:"The late barley's still standing, m'lord, and there aren't enough hands to bring it in before the rain. Can your soldiers help?",choices:[
+ {s:"autumn",who:"peasant",text:()=>has("ironLaw")?"Your Iron Law took every man who could swing a scythe, m'lord. The late barley's still standing, and the rain is coming. Can your soldiers help bring it in?":"The late barley's still standing, m'lord, and there aren't enough hands to bring it in before the rain. Can your soldiers help?",choices:[
   {t:"Send the soldiers",go:()=>{fx({food:12,favor:3});return "Soldiers with scythes. The sheaves are in before the first drop falls."}},{t:"\"Soldiers aren't farmhands.\"",go:()=>{fx({food:4,favor:-2});return "Half the barley rots in the fields."}}]},
  {s:"autumn",who:"elinor",req:()=>famHere("tobin"),text:"A scholar from the Royal College is passing through. He'd stay the winter and teach Tobin law and Latin, for 12 gold.",choices:[
   {t:"Hire him",cost:{gold:12},go:()=>{S.bond.tobin++;S.bond.elinor++;fx({gold:-12});return "Tobin complains bitterly, then starts reading everything in the library. Elinor is smug about it."}},{t:"\"He can learn swordplay instead.\"",go:()=>"Elinor gives you a long look and says nothing at all."}]},
@@ -2219,12 +2222,13 @@ function buildMonth(){
  {const isAg=q=>typeof q==="number"&&WHO_AGENT[E[q].who];S.queue=[...S.queue.filter(isAg),...S.queue.filter(q=>!isAg(q))]}
  S.queue.unshift(...seatQueue());
  if(warDay())S.queue.unshift("war:intro");
+ if(S.month===3&&!has("knelt")&&!has("vexMet"))S.queue.splice(Math.min(2,S.queue.length),0,"cere:vex");
  if(S.month===8&&has("weddingSet")&&!has("marenWed")&&famHere("maren"))S.queue.splice(Math.min(2,S.queue.length),0,"cere:wedding");
  if(S.month===11&&(has("tobinPromise")||has("tobinEarn"))&&!has("tobinKnight")&&famHere("tobin"))S.queue.splice(Math.min(2,S.queue.length),0,"cere:knight");
  if((S.unrest||0)>=2&&S.month!==BATTLE_MONTH&&!warDay()&&(S.lastRiot||0)<S.month-1){S.queue.unshift("riot");S.riots=(S.riots||0)+1;S.lastRiot=S.month}
  S.qi=0}
 function rUsed(g){return (S.usedR||[]).some(u=>R[u]&&R[u].grp===g)}
-function current(){const q=S.queue[S.qi];return typeof q==="string"&&q.startsWith("cere:")?{cere:q.slice(5),who:q==="cere:wedding"?"maren":"tobin"}:q==="war:intro"?warIntro():q==="riot"?RIOT:typeof q==="string"?(q.startsWith("seat:")?SEAT_EV[q.slice(5)]:R[+q.slice(1)]):E[q]}
+function current(){const q=S.queue[S.qi];return typeof q==="string"&&q.startsWith("cere:")?{cere:q.slice(5),who:q==="cere:wedding"?"maren":q==="cere:vex"?"vex":"tobin"}:q==="war:intro"?warIntro():q==="riot"?RIOT:typeof q==="string"?(q.startsWith("seat:")?SEAT_EV[q.slice(5)]:R[+q.slice(1)]):E[q]}
 function next(){
  while(S.qi<S.queue.length){const e=current();if(!e.req||e.req())break;S.qi++}
  if(S.qi>=S.queue.length){if(warDay()){SC.room=null;SC.cast=[];SC.walker=null}return endMonth()}
@@ -2250,7 +2254,17 @@ function cereCut(title,line,mode,done){CS.wox=undefined;setCastle(mode);SFX.fanf
  overlay(`${castleHTML()}</div><div class="ovb cut"><h2>${[...title].map((c,i)=>`<i style="animation-delay:${(.3+i*.05).toFixed(2)}s">${c===" "?"&nbsp;":c}</i>`).join("")}</h2><p>${line}</p><button class="pb" id="cutBtn">Continue</button></div>`);
  $("cutBtn").onclick=()=>{SFX.click();closeOverlay();done()}}
 function cereSay(title,who,text,choices,after){bSay(title,who,text,choices,after);$("role").textContent=who&&C[who]?C[who].r:title}
-function ceremony(kind,done){SC.walker=null;SC.room=null;SC.cast=[];SC.fade=1;
+/* May: Baron Vex rides to the far bank under a white flag, to see what he'll be fighting */
+function parley(done){set("vexMet");BT.on=true;BT.parley=true;BT.view="field";BT.phase="eve";BT.winter=false;BT.units=btUnits().filter((u,i)=>u.side==="us"||i%9===0).map(u=>u.side==="vex"?Object.assign(u,{x:WIDE.LW*.24+Math.random()*WIDE.LW*.1}):u);BT.shots=[];BT.fire=0;BT.green=0;BT.harwin=0;BT.t=0;SC.fade=1;Music.play("night");SFX.toll();
+ const end=()=>{BT.parley=false;battleEnd();SC.fade=1;Music.play(dayTrack());save();render();done()};
+ bSay("The Ford",null,"Word comes at dusk: Baron Vex is on the far bank of the ford, under a white flag, asking for you by name. You ride down with a dozen guards. The river between you is barely thirty paces wide.",
+  [{t:"Ride to the water's edge",go:()=>""}],
+  ()=>bSay("Baron Vex","vex",`"So you're Roderick's pup." Vex is bigger than the stories, grey in the beard, smiling with half his face. ${has("paidVex")?`"Your gold arrived. I came to see what else you've got. I'm not impressed."`:`"I came to see what I'll be fighting in July. I'm not impressed."`}`,
+   [{t:"\"Come across and say that.\"",go:()=>{fx({favor:3});set("vexDefied");return "He laughs, a real laugh, and your guards laugh with him before they can stop themselves. \"Oh, I will, pup. In July.\""}},
+    {t:"\"What do you want, Vex?\"",go:()=>"\"The ford. The road east. Your father's chair, eventually.\" He shrugs. \"The usual.\""},
+    {t:"\"Did you kill my father?\"",go:()=>{set("vexHint");note("Vex swore he didn't kill your father: \"Ask who sat by his bed.\"");return "For a moment he looks almost offended. \"If I'd killed Roderick, I'd have done it with an axe, in daylight, and told everyone.\" He leans on his saddle. \"Ask who sat by his bed at the end. It wasn't me.\""}}],
+   ()=>bSay("Baron Vex","vex",`He turns his horse. "Midsummer, pup. Mend your walls. I'd hate for it to be quick."`,[{t:"Watch him go",go:()=>"His banner disappears into the trees on the far bank. Your guards let out their breath all at once."}],end)))}
+function ceremony(kind,done){if(kind==="vex")return parley(done);SC.walker=null;SC.room=null;SC.cast=[];SC.fade=1;
  const end=()=>{SC.cere=null;save();render();done()};
  if(kind==="wedding"){SC.cere={kind};S.f.lanterns=S.month+1;Music.play("hall");SFX.toll();
   return cereSay("Maren's Wedding","maren",`The great hall is strung with lanterns. Maren stands at the foot of the carpet in her mother's wedding dress, which still fits, mostly.\n\n"Walk with me, Father? ${has("marenLoves")?"I'm not scared. I'm only shaking because it's cold.":"I'm doing this for Emberfall. I want you to see me do it."}"`,
@@ -2276,7 +2290,7 @@ function ceremony(kind,done){SC.walker=null;SC.room=null;SC.cast=[];SC.fade=1;
       {t:"\"To never lie to his lord.\"",go:()=>{set("oathTruth");return "\"To never lie to my lord.\" He grins. \"Starting now: I broke the hawk's cage. Twice.\""}},
       {t:"\"To always come home.\"",go:()=>{set("oathHome");S.bond.tobin++;return "He looks up at you. \"To always come home,\" he says, much more quietly."}}],
      ()=>{SC.cere.dub=true;SFX.clash();cereSay("Sir Tobin",null,`The blade touches one shoulder, then the other. "Rise, Sir Tobin of Emberfall."\n\nThe hall explodes. The old soldiers bang their cups on the tables. Elinor is crying. So, it turns out, are you.`,
-      [{t:"Embrace your son",go:()=>{set("tobinKnight");S.bond.tobin++;fx({favor:4});note(SC.cere.harwin?"Lord Harwin knighted Sir Tobin.":"Knighted Sir Tobin of Emberfall.");return "His armor is cold and too big, and he's taller than you remember."}}],
+      [{t:"Embrace your son",go:()=>{set("tobinKnight");S.bond.tobin++;fx({favor:4});note(SC.cere.harwin?"Lord Harwin knighted Sir Tobin.":"Knighted Sir Tobin of Emberfall.");return "He smells of oil and new leather, and he's taller than you remember."}}],
       ()=>cereCut("Sir Tobin","He sleeps in his armor that night. Nobody has the heart to tell him that isn't how it's done.","dawn",end))})})}
  end()}
 /* ---------------- The day of a battle: no petitioners at the throne. The council gathers in the war room,
@@ -2464,6 +2478,35 @@ const NIGHT_EVENTS=[
 /* Required night scenes. Each night, up to 3 that fit (month + your past choices) must be seen before sleeping.
    m = months it can happen in (none = any month), when = condition, room = where it happens. Each happens once. */
 const SCENES=[
+ {id:"elinorAsks",m:[2],room:"family",who:"elinor",text:"Elinor is waiting up for you, a list of names on her lap. \"The servants who were in the castle the week your father died. I want to ask them questions. Quietly. Somebody saw something, love. Will you let me?\"",
+  choices:[{t:"\"We'll do it together.\"",go:()=>{set("elinorSleuth");S.bond.elinor++;note("Elinor began asking questions about Roderick's death.");return "She smiles for the first time in a week. \"Together, then. I'll start with the kitchens. Cooks see everything.\""}},
+   {t:"\"It isn't safe. Leave it to me.\"",go:()=>"\"Of course,\" she says, and folds the list very small, and keeps it."}]},
+ {id:"cellarRing",m:[3],room:"family",who:"elinor",when:()=>has("elinorSleuth")&&!hasClue("ring"),text:"Elinor comes up from the wine cellar with cobwebs in her hair and something in her fist. \"Under the last cask, where your father's wine was kept.\" A heavy gold ring with a grey stone. The Greymarch crest.",
+  choices:[{t:"\"Someone from Greymarch was in our cellar.\"",go:()=>{addClue("ring");return "\"Someone from Greymarch was in our cellar the week he died,\" Elinor says, \"and lost a ring they couldn't ask about.\""}},
+   {t:"Keep it close. Tell no one.",go:()=>{addClue("ring");S.bond.elinor++;return "You put it on a cord around your neck, under your shirt, where it sits cold all summer."}}]},
+ {id:"aldricRing",m:[4],room:"treasury",who:"aldric",when:()=>!has("elinorSleuth")&&!hasClue("ring"),text:"Aldric sets a ring on the ledger: heavy gold, a grey stone. \"The cellar boys found it under the old casks, my lord. That's the Greymarch crest. I can't think why it would be in your father's cellar.\"",
+  choices:[{t:"\"Nor can I. Keep it safe.\"",go:()=>{addClue("ring");return "Aldric locks it in the strongbox. He looks at it for a long time before he closes the lid."}}]},
+ {id:"edmund",m:[4],room:"war",who:"wynn",when:()=>!hasClue("edmund"),text:"\"Old Edmund is gone, my lord. The cupbearer. He poured your father's wine for twenty years, and nobody has seen him in a week.\"",
+  choices:[{t:"\"Search the river road.\"",go:()=>{addClue("edmund");note("Old Edmund the cupbearer was found drowned.");return "They find him in the reeds below the mill. Drowned, they say. There are three Greymarch silver marks sewn into his coat, and Greymarch coin is rare this far downriver."}},
+   {t:"\"He was old. He wandered.\"",go:()=>{if(has("elinorSleuth")){addClue("edmund");return "Wynn nods. But Elinor sends her own men down the river road anyway, and they find him in the reeds below the mill, with Greymarch silver sewn into his coat."}return "Wynn nods slowly. A week later a fisherman finds Edmund in the reeds. Nobody asks how he got there."}}]},
+ {id:"elinorMaud",m:[8],room:"family",who:"elinor",when:()=>has("elinorSleuth")&&has("corvinClaim")&&!hasClue("apothecary"),text:"\"I wrote to my cousin Maud,\" Elinor says quietly. \"Last winter, she saw Corvin buying nightshade in Greymarch. 'For rats,' he said. She remembered the apothecary's name: Ulric.\"",
+  choices:[{t:"\"Then we find Ulric.\"",go:()=>{set("ulricLead");S.bond.elinor++;return "\"Already done,\" Elinor says. \"Maud's people are looking. If he's alive, he'll come to us.\""}}]},
+ {id:"elinorThreat",m:[9],room:"family",who:"elinor",when:()=>has("elinorSleuth")&&has("corvinClaim")&&!has("corvinPact"),text:"Elinor's door was forced while she was at chapel. Nothing was taken. On her pillow, someone left a sprig of nightshade, tied with grey thread.",
+  choices:[{t:"\"Then we're close. We don't stop.\"",go:()=>{set("elinorBrave");S.bond.elinor++;return "She takes your hand. Hers is shaking. Her voice isn't. \"No. We don't.\""}},
+   {t:"\"We stop. I won't lose you too.\"",go:()=>{delete S.f.elinorSleuth;return "\"Fine,\" she says. She doesn't sleep that night. Neither do you."}},
+   {t:"Put Wynn's best men on her door",go:()=>{fx({men:-2});set("elinorBrave");return "Two guards on her door, day and night. She hates it. She keeps asking questions anyway."}}]},
+ /* the old wrong: why Corvin hated Roderick */
+ {id:"oldRuling",m:[10],room:"family",who:"elinor",when:()=>has("corvinClaim")&&!has("corvinPact")&&!has("roderickSin"),text:"Elinor has your father's old strongbox open on the bed. \"I finally found the key, love. You need to read this.\" A judgment, thirty years old, in your father's hand: the lower valley of Greymarch, taken from Corvin's father over a debt that was never real. Corvin's father died poor the next winter.",
+  choices:[{t:"\"My father was a thief.\"",go:()=>{set("roderickSin");note("Found Roderick's judgment against Corvin's father.");return "\"Your father was a lord,\" Elinor says. \"Sometimes that's the same thing. Corvin's had thirty years to hate him for it.\""}},
+   {t:"\"It doesn't excuse poison.\"",go:()=>{set("roderickSin");note("Found Roderick's judgment against Corvin's father.");return "\"No,\" Elinor says. \"But it explains it. And if we know, Corvin will make sure the lords know too.\""}}]},
+ {id:"aldricConfess",m:[10,11],room:"treasury",who:"aldric",when:()=>has("roderickSin")&&!has("aldricConfessed"),text:"Aldric won't meet your eyes. \"I drew up that judgment, my lord. I was young, and your father was my lord. Every year since, I've wondered when Corvin would come for it. I should have told you.\"",
+  choices:[{t:"\"Yes. You should have.\"",go:()=>{set("aldricConfessed");return "He bows his head. \"I know.\" He stays late over the ledgers that night, and every night after."}},
+   {t:"\"You did what he asked. So would I.\"",go:()=>{set("aldricConfessed");return "The old man's shoulders shake once. Then he straightens, and goes back to work."}}]},
+ /* 4. Brannoc's last bargain */
+ {id:"brannocLast",m:[11],room:"dungeon",who:"brannoc",when:()=>has("corvinFight")&&!has("corvinPact")&&has("brannocJailed")&&!has("brannocExiled")&&!has("brannocPardoned"),text:"Brannoc is sitting very straight in his cell. \"They say you ride to Kingsreach. Take me. I'll tell the King everything, the gate, the money, the man with the Greymarch rings, in front of every lord. In return, I don't hang.\"",
+  choices:[{t:"\"Agreed. Tell the King.\"",go:()=>{set("brannocWitness");addClue("brannoc");note("Brannoc agreed to testify at Kingsreach.");return "He nods once, like a soldier taking an order. \"I'll wash first,\" he says. \"The King deserves that much.\""}},
+   {t:"\"You'll hang either way.\"",go:()=>{set("brannocExiled");note("Brannoc was hanged at dawn.");return "He laughs, short and ugly. \"Then you'll never know the rest.\" They hang him at dawn. He doesn't say another word."}}]},
+
  {id:"letter",m:[1],room:"family",who:"elinor",text:"Elinor is waiting in your chambers with a sealed letter. \"It was in your father's desk. His hand, the night before he died.\"\n\nIt reads: \"Trust Aldric. Pay Vex nothing. Watch the man who keeps the postern keys. And if I die suddenly, my son, it was not God's will.\"",
   choices:[{t:"Read it aloud to the court",go:()=>{fx({favor:4});set("letterRead");addClue("letter");note("Read your father's last letter to the court.");return "The hall goes silent. Whoever keeps those keys now knows you are watching."}},
    {t:"Keep it secret and investigate",go:()=>{set("letterClue");addClue("letter");note("Kept your father's letter secret.");return "You lock it in your desk. Aldric can check the postern keys against the guard rosters."}},
@@ -2539,7 +2582,7 @@ const SCENES=[
   choices:[{t:"Pay every family (15 gold)",cost:{gold:15},go:()=>{fx({gold:-15,favor:7});note("Paid the families of the fallen.");return "Aldric writes every name into the ledger himself. At the market, people stop you to say thank you."}},
    {t:"Carve their names by the gate",cost:{gold:6},go:()=>{fx({gold:-6,favor:4});return "Hildra carves them herself, in letters deep enough to last a thousand winters."}},
    {t:"\"They knew what a soldier's life costs.\"",go:()=>{fx({favor:-6});return "Wynn wipes the wall clean the next morning. He doesn't say anything. Neither does the city."}}]},
- {id:"bedside",m:[6,7],room:"family",who:"elinor",when:()=>has("corvinClaim")&&!hasClue("wine"),text:"Elinor is very still. \"I keep thinking about the week your father died. Corvin came to visit. I'd forgotten. He sat at Roderick's bedside every night... and he brought a cask of Greymarch wine as a gift.\"",
+ {id:"bedside",m:[6,7],room:"family",who:"elinor",when:()=>has("corvinClaim")&&!hasClue("wine"),text:()=>(has("vexHint")?"\"Vex told you to ask who sat by his bed,\" Elinor says. \"I've been asking.\" She is very still. ":"Elinor is very still. ")+"\"I keep thinking about the week your father died. Corvin came to visit. Nobody thought twice. He sat at Roderick's bedside every night... and he brought a cask of Greymarch wine as a gift.\"",
   choices:[{t:"\"Greymarch. Like the vial.\"",go:()=>{addClue("wine");S.bond.elinor++;return hasClue("vial")?"Elinor holds the vial to the candle. Greymarch green. Greymarch wine. Neither of you says his name out loud.":"\"Greymarch,\" she repeats. \"Remember that.\""}},
    {t:"\"Corvin loved him. Leave it.\"",go:()=>"\"Did he?\" Elinor says. \"Then why is he trying to take his son's throne?\""}]},
  {id:"lordsLetters",m:[7],room:"war",who:"aldric",when:()=>has("corvinFight"),text:"Aldric has pinned eleven letters to the map, one for each lord of the river. \"Corvin has written to every one of them, my lord. Here's how they stand. Some can be won with gold, some with honor, some only with the truth.\"",
@@ -2567,7 +2610,7 @@ const SCENES=[
    {t:"Pretend you saw nothing",go:()=>{set("corvinPeek");return "He bows and leaves. In the morning, one map is missing."}}]},
  {id:"forgery",m:[9],room:"treasury",who:"aldric",when:()=>!has("corvinSecret")&&has("willSeen")&&(has("aldricTrusted")||has("letterClue")||has("letterRead")),text:"Aldric lays your father's last letter beside Corvin's will. \"Look at the R's, my lord. Your father wrote them like little crowns. This clerk didn't.\"",
   choices:[{t:"Keep this for the council",go:()=>{set("corvinSecret");addClue("clerk");note("Aldric proved Corvin's will was forged.");return "Aldric locks both papers in the strongbox and gives you the only key."}}]},
- {id:"assassin",m:[9,10],room:"family",who:"elinor",when:()=>(has("vexHumbled")||has("vexRevenge"))&&!has("vexDead"),text:"A shadow in the children's rooms! A man in black with a knife, halfway through the window. Elinor screams.",
+ {id:"assassin",m:[10],room:"family",who:"elinor",when:()=>(has("vexHumbled")||has("vexRevenge"))&&!has("vexDead"),text:"A shadow in the children's rooms! A man in black with a knife, halfway through the window. Elinor screams.",
   choices:[{t:"Shout for the guards",go:()=>{if(has("brannocJailed")||has("brannocExiled")||has("tobinKnight")){set("intel");return "The guards are there in seconds. The man confesses before dawn: Vex sent him."}fx({favor:-3});return "The guards are slow. He's gone over the wall before they arrive."}},
    {t:"Fight him yourself",go:()=>{if(S.bond.tobin>=2){S.bond.tobin++;return "Tobin is through the door behind you with a practice sword. Between you, the man is on the floor in a heartbeat. He spits one word before the guards take him: \"Vex.\""}fx({men:-1});return "He cuts your arm and escapes. The scar will be a good story someday."}}]},
  {id:"firstSnow",m:[10],room:"family",who:"tobin",when:()=>!has("tobinHostage")&&!has("winterDone"),text:"Fresh snow overnight. Tobin and the castle children have built a fort in the courtyard and are bombarding the guards. \"Father! Whose side are you on?\"",
@@ -2576,7 +2619,7 @@ const SCENES=[
  {id:"frostWalls",m:[10,11],room:"mason",who:"mason",when:()=>!!S.b.walls,text:"Hildra runs her hand down a crack in the new wall. \"The frost gets into the mortar, my lord. Ten gold now, or a breach by spring.\"",
   choices:[{t:"Repair the walls",cost:{gold:10},go:()=>{fx({gold:-10});return "Fires burn against the stone all night to keep the mortar warm."}},
    {t:"\"Spring can fix it.\"",go:()=>{set("wallsCracked");return "Hildra says nothing. She writes the date on the crack in chalk."}}]},
- {id:"brannocWinter",m:[10,11],room:"dungeon",who:"brannoc",when:()=>has("brannocJailed")&&!has("brannocExiled"),text:"Brannoc coughs in the cold. \"Hang me or free me, boy. I'm too old to rot slowly.\"",
+ {id:"brannocWinter",m:[9,10],room:"dungeon",who:"brannoc",when:()=>has("brannocJailed")&&!has("brannocExiled"),text:"Brannoc coughs in the cold. \"Hang me or free me, boy. I'm too old to rot slowly.\"",
   choices:[{t:"Send him to the King's justice",go:()=>{fx({favor:2});set("brannocExiled");return "He goes south in chains. Nobody in Emberfall is sorry."}},
    {t:"Pardon him, and give him a sword",go:()=>{fx({men:1,favor:-2});set("brannocPardoned");delete S.f.brannocJailed;return "He kneels, and for the first time it might be real."}},
    {t:"Leave him",go:()=>"The cell door closes. The coughing goes on."}]},
@@ -2648,7 +2691,7 @@ function nightLeft(){const N=S.night||{},r=new Set();(N.req||[]).forEach(id=>{if
  (N.evs||[]).forEach(i=>{if(!(N.evDone||{})[i])r.add(NIGHT_EVENTS[i].room)});return [...r]}
 function nightMood(){return S.hunger?"The castle went to bed hungry tonight.":S.food<15?"The granary is nearly empty, my lord.":S.gold<10?"The treasury is nearly bare, my lord.":S.favor<20||(S.unrest||0)>=1?"There is angry muttering in the taverns.":S.month===4?(has("knelt")?"Vex's riders are coming to collect your oath.":"Scouts say Vex's army is on the march."):S.month===BATTLE_MONTH-1?"The soldiers sleep in their armor tonight.":S.month===9?"The river is starting to freeze.":S.month>=10?"The lords' banners are on the roads.":"Emberfall sleeps."}
 function showNight(){
- ensureState();const N=S.night,leftRooms=nightLeft(),left=leftRooms;
+ ensureState();recheckScenes();const N=S.night,leftRooms=nightLeft(),left=leftRooms;
  SC.room=null;SC.cast=[];SC.walker=null;SC.speaker=null;SC.emote=null;clearDialog();
  nmSize();const LW=NM.LW,R=nmLayout(LW).rooms;
  const pct=([x,y,w,h])=>`left:${(x/LW*100).toFixed(2)}%;top:${(y/1.2).toFixed(2)}%;width:${(w/LW*100).toFixed(2)}%;height:${(h/1.2).toFixed(2)}%`;
@@ -2689,7 +2732,8 @@ function choiceBtn(o,i,fn){const b=document.createElement("button");b.className=
  b.innerHTML=o.t+(o.sub?`<span class="cost sub">${o.sub}</span>`:"")+(o.cost?`<span class="cost">${Object.entries(o.cost).map(([k,v])=>`<span><img class="px" src="${ICONURL[k]}">−${v}</span>`).join("")}${can(o)?"":"<span>(not enough)</span>"}</span>`:"")+(o.agent?(setTimeout(()=>showTip("agents"),400),"")+`<span class="cost agent">${agentFree(o.agent)?`Sends ${AGENTS[o.agent].name().replace(/^(Captain|Sergeant|Lady|Lord|Sir|Master) /,"")} away for a month`:`${AGENTS[o.agent].name()} is away`}</span>`:"");
  b.disabled=!can(o)||!!o.off;b.onclick=fn;return b}
 function goBtn(label,fn){const b=document.createElement("button");b.className="ch go";b.textContent=label;b.onclick=()=>{SFX.click();$("choices").innerHTML="";fn()};$("choices").appendChild(b)}
-function roomStep(){
+function recheckScenes(){if(S.night&&S.night.req&&S.night.reqDone)S.night.req.forEach(k=>{const sc=SCENES.find(x=>x.id===k);if(sc&&sc.when&&!S.night.reqDone[k]&&!sc.when())S.night.reqDone[k]="skipped"})}
+function roomStep(){recheckScenes();
  const id=SC.room,N=S.night;if(!id)return;
  if(N.follow&&id==="family"&&N.follow.when&&!N.follow.when())N.follow=null;
  if(N.follow&&id==="family"){const F=N.follow;N.follow=null;return matter(F.k,typeof F.text==="function"?F.text():F.text,F.choices,c=>{const r=c.go();SC.emote={type:"heart",t:0};return r})}
@@ -2830,6 +2874,8 @@ const CLUES={
  vexLetters:["Letters signed \"C.\"","Someone promised Vex the ford if he attacked you this summer."],
  cupbearer:["The poisoned cup","At your own feast, a Greymarch man in Corvin's pay poured the same poison into your wine."],
  clerk:["The forged will","Corvin's will isn't in your father's hand. Someone in Greymarch wrote it for him."],
+ ring:["A Greymarch ring","Found under the old lord's wine casks, the week he died. Grey stone, Greymarch gold."],
+ edmund:["The drowned cupbearer","Old Edmund, who poured your father's last cup, was found in the river with Greymarch silver sewn into his coat."],
  apothecary:["The apothecary's oath","Master Ulric sold Corvin nightshade, twice, and will swear to it."],
  orders:["Corvin's battle orders","In his own hand: \"Take the boy alive. The lords must believe he fled, as his father died: quietly.\""]
 };
@@ -2917,7 +2963,7 @@ function btUnits(){const u=[],LW=WIDE.LW;
  for(let i=0;i<70;i++)u.push({side:"vex",x:LW*.04+Math.random()*LW*.26,y:64+Math.random()*20,ph:Math.random()*9,hp:1,v:.08+Math.random()*.06});
  for(let i=0;i<Math.min(26,6+S.men/2);i++)u.push({side:"us",wall:1,x:LW*.66+Math.random()*LW*.3,y:41,ph:Math.random()*9,hp:1});
  return u}
-function battleBegin(){BT.champ=BT.winter?BT.champ:"vex";BT.crack=0;BT.on=true;BT.view="field";BT.phase="eve";BT.units=btUnits();BT.shots=[];BT.fire=0;BT.green=0;BT.harwin=0;BT.t=0;SC.room=null;SC.walker=null;SC.cast=[];SC.parts=[];SC.fade=1}
+function battleBegin(){BT.bdone=0;BT.parley=false;BT.champ=BT.winter?BT.champ:"vex";BT.crack=0;BT.on=true;BT.view="field";BT.phase="eve";BT.units=btUnits();BT.shots=[];BT.fire=0;BT.green=0;BT.harwin=0;BT.t=0;SC.room=null;SC.walker=null;SC.cast=[];SC.parts=[];SC.fade=1}
 function battleEnd(){BT.on=false;BT.units=[];BT.shots=[]}
 function soldier(x,u,col,shield,dir){x.save();x.translate(u.x,u.y);x.scale(1.35,1.35);x.translate(-u.x,-u.y);soldier0(x,u,col,shield,dir);x.restore()}
 function soldier0(x,u,col,shield,dir){const X=Math.round(u.x*2)/2,Y=Math.round(u.y*2)/2,bob=(Math.floor((BT.t+u.ph*10)/8)%2)*.5;
@@ -3030,7 +3076,7 @@ function drawGateDuel(x){const LW=WIDE.LW,t=++BT.t,E=WIDE.E;
 /* ---------------- the beats ---------------- */
 let BSCORE=0;
 function bSay(title,who,text,choices,after){
- $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:(BT.on?(BT.winter?"The Longest Night":"The Battle of the Ford"):"The Lords' Council");PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
+ $("who").textContent=who?C[who].n:title;$("role").textContent=who?C[who].r:(BT.parley?"Under a white flag":BT.on?(BT.winter?"The Longest Night":"The Battle of the Ford"):"The Lords' Council");PCHAR=who?C[who]:null;$("pbox").style.display=who?"":"none";SC.speaker=who;
  $("txt").className="";$("choices").innerHTML="";
  typeText(text,who?C[who].voice:150,()=>{const ch=$("choices");
   withFallback(choices.filter(o=>!o.req||o.req())).forEach((o,i)=>ch.appendChild(choiceBtn(o,i,()=>{if(!can(o))return;SFX.click();ch.innerHTML="";LAST={};const r=o.go();render();save();
@@ -3132,6 +3178,11 @@ function winterIce(){BT.phase="ford";BT.volley=40;SFX.war();
    {t:"\"Fire arrows! Hit the oil wagons!\"",req:()=>has("pitch")||has("winterIntel"),go:()=>{BT.fire=1;BSCORE+=18;return "A flaming arrow finds the wagons in the middle of the river. The explosion lights the whole valley. The ice beneath them softens and cracks."}},
    {t:"\"Charge them on the ice!\"",go:()=>{const ok=winterPower()>=75;BSCORE+=ok?16:-14;fx({men:ok?-4:-9});SC.shake=4;return ok?"You lead the charge across the slippery ice. Their line, packed tight and sliding, breaks before yours does.":"The ice is as treacherous for you as for them. You fall back to the gate with fewer men than you went out with."}}],winterGate)}
 function winterGate(){BT.phase="postern";
+ if(has("brannocFled")&&!BT.bdone){BT.bdone=1;return bSay("The Traitor","wynn","\"My lord! There, on the ice, leading the sellswords: Brannoc!\" Your old captain, in Greymarch grey now, waving men towards your ladders.",
+  [{t:"\"Crossbows. Bring him down.\"",go:()=>{if(Math.random()<.6){set("brannocSlain");BSCORE+=8;note("Brannoc fell on the ice, fighting for Corvin.");return "Three bolts. He goes down on the ice and doesn't get up. The sellswords around him lose their nerve."}return "The bolts hiss past him. Brannoc salutes you, mockingly, and disappears into the smoke."}},
+   {t:"\"Leave him. Hold the wall.\"",go:()=>{BSCORE+=4;return "You turn your back on him. It's the hardest order you give all night."}}],winterGate)}
+ if(has("brannocPardoned")&&!BT.bdone){BT.bdone=1;set("brannocFell");BSCORE+=15;note("Brannoc died holding the gate passage.");return bSay("The Gate Passage","brannoc","Brannoc, in his old armor, plants himself in the gate passage with a dozen men. \"Go on, my lord. Somebody has to pay what I owe.\"",
+  [{t:"\"Hold it, Captain.\"",go:()=>"He holds it. When the sun comes up, they find him there, still holding it."}],()=>{BT.bdone=2;winterGate()})}
  if(has("corvinGuardIn"))return bSay("Inside the Walls","wynn","\"My lord! Corvin's honor guard, the forty you let sleep in the barracks! They've killed the gatekeepers and they're lifting the bar on the main gate!\"",
   [{t:"Throw everything at the gatehouse",go:()=>{BSCORE-=8;fx({men:-5});set("winterGateHeld");return "A savage, close fight in the gate passage. The bar stays down. Corvin's forty are dead or in chains, and you know now exactly who sent them."}},
    {t:"Sir Tobin leads the household knights",req:()=>has("tobinKnight"),go:()=>{BSCORE+=4;S.bond.tobin++;set("winterGateHeld");return "Your son, in his first real armor, at the head of a dozen knights. The honor guard never reaches the gate."}},
@@ -3153,7 +3204,7 @@ function winterFinal(){BT.phase="vex";BT.view="gate";BT.duel=false;SC.fade=1;
  BT.champ=BT.foes.vex?"vex":"aldous";
  bSay("At the Gate",null,`Through the snow and the smoke comes ${champ}. ${BT.foes.cor?"Behind him, safe on the far bank, a figure in a fur cloak watches: Corvin.":""}`,
   [{t:"Meet him at the gate",go:()=>{BT.duel=true;SFX.clash();const win=Math.random()*100<Math.min(88,28+BSCORE/3+(has("tobinKnight")?8:0)-(has("lordScarred")?8:0));
-    if(win){set("winterChampSlain");BSCORE+=26;if(BT.foes.vex){set("vexDead");note("Baron Vex died at your gate on the Longest Night.")}return BT.foes.vex?"This time you know how he moves. When he swings, you're already inside his reach. Baron Vex dies on the ice-slick stones of your gate, and this time it's over.":"He's bigger. You're quicker, and you're fighting for your home. Sir Aldous goes down in the snow, and the grey banners waver."}
+    if(win){set("winterChampSlain");BSCORE+=26;if(BT.foes.vex){set("vexDead");note("Baron Vex died at your gate on the Longest Night.")}return BT.foes.vex?"You know how he moves by now. When he swings, you're already inside his reach. Baron Vex dies on the ice-slick stones of your gate, and this time it's over.":"He's bigger. You're quicker, and you're fighting for your home. Sir Aldous goes down in the snow, and the grey banners waver."}
     BSCORE-=12;return "His blow knocks you flat and your sword skids away over the frozen stones. Wynn and three others drag you back behind the shields."}},
    {t:"\"Shield wall. Hold the gate till dawn.\"",go:()=>{BSCORE+=12;return "Shields locked, frozen hands on frozen spears. They break on you again and again, and at dawn they stop coming."}},
    {t:"Send riders to seize Corvin on the far bank",req:()=>BT.foes.cor&&(has("spy")||has("foxPardoned")),go:()=>{BSCORE+=8;if(roll(.5)){set("corvinOrders");addClue("orders");return "They don't catch Corvin: he runs. But they bring back his tent, his strongbox, and his orders for the night, in his own hand."}return "Corvin is already gone, and so is everything in his tent."}}],winterEnd)}
@@ -3185,7 +3236,7 @@ function finalEnding(){
  if(has("kingChampion")&&S.favor>=45)return"kingsHand";
  if(has("marenWed")&&has("harwinAlly")&&S.favor>=45)return"twoHouses";
  if(S.favor>=80)return"emberLord";
- if(S.men>=45&&S.favor<45)return"ironYear";
+ if((S.men>=45&&S.favor<45)||(has("ironLaw")&&S.men>=35&&S.favor<55))return"ironYear";
  return"longYear"}
 function finale(){
  closeOverlay();SC.room=null;SC.cast=[];SC.place=null;setPhase("day","winter");Music.play("council");SFX.toll();
@@ -3227,6 +3278,12 @@ function trialWill(){
   [{t:"\"The will is forged. I can prove it.\"",req:()=>has("corvinSecret"),go:()=>{set("willExposed");SFX.clue&&SFX.clue();return has("clerkFound")?"You call your witness. The Greymarch clerk walks up the hall with his hat in his hands and confesses in front of the King: twenty silver pieces and a copy of your father's seal. Half the hall is on its feet.":"Aldric lays your father's letters beside the will and shows the lords the R's. Your father wrote them like little crowns. The will's are plain. One by one, the lords lean in to look."}},
    {t:"\"My father never trusted you.\"",req:()=>hasClue("letter")&&!has("letterBurned"),go:()=>{TRIAL.sway+=1;return "You read his last letter aloud. Your father's voice, in a hall full of people who knew it. Old Rhun bows his head."}},
    {t:"\"Let the lords judge the will.\"",go:()=>"Corvin passes it along the benches. Some lords squint at the seal. Most of them are watching you."}],
+  trialWrong)}
+function trialWrong(){
+ bSay("The Old Wrong","corvin",`Corvin turns to the benches. "And ask him why the lower valley of Greymarch flies Emberfall's banner. Ask him what Roderick did to my father."`,
+  [{t:"\"It's true. And I'll give it back.\"",req:()=>has("roderickSin"),go:()=>{TRIAL.sway+=2;set("landsReturned");return "The hall goes very quiet. Nobody expected a lord to say it out loud. Old Rhun nods slowly. Corvin's mouth opens, and nothing comes out."}},
+   {t:"\"My father's wrongs aren't mine.\"",req:()=>has("roderickSin"),go:()=>{TRIAL.sway+=.5;return "\"No,\" says the King. \"But a son inherits his father's debts, along with his chair.\""}},
+   {t:"\"I don't know what you mean.\"",req:()=>!has("roderickSin"),go:()=>{TRIAL.sway-=1;return "Corvin tells them, every word, with the judgment in your father's hand. You didn't know. The lords can see you didn't know. Some of them look away."}}],
   ()=>has("corvinAttacked")?trialIce():trialMurder())}
 function trialIce(){
  bSay("The Longest Night","osmund",`"Now. The ice. Men died at Emberfall's gate on the longest night of the year. Lord Corvin says he came as a friend."`,
@@ -3243,7 +3300,7 @@ function trialMurder(){
 function trialEvidence(){const steps=[];
  steps.push(["The Evidence",null,"You lay it out piece by piece, in front of the King:"+(S.clues||[]).map(k=>"\n• "+CLUES[k][0]).join("")]);
  if(hasClue("apothecary"))steps.push(["The Apothecary","ulric",`Master Ulric stands up in the gallery, shaking${has("ulricBrave")?", but with his daughters safe at last":""}. "I sold Lord Corvin nightshade. Twice. Once before Lord Roderick died, and once this autumn. I swear it on my life, Your Majesty, which is worth very little in Greymarch."`]);
- if(hasClue("brannoc")&&!has("brannocExiled"))steps.push(["The Traitor","brannoc",`Brannoc is brought in, in chains. He grins at the lords. "Vex paid for the gate. The man with the Greymarch rings paid for the wine." He nods at Corvin's hands. "Those rings."`]);
+ if(hasClue("brannoc")&&!has("brannocExiled")&&!has("brannocFell")&&!has("brannocSlain"))steps.push(["The Traitor","brannoc",`${has("brannocPardoned")?"Brannoc walks in a free man, his sword left at the door":"Brannoc is brought in, in chains"}. He grins at the lords. "Vex paid for the gate. The man with the Greymarch rings paid for the wine." He nods at Corvin's hands. "Those rings."`]);
  if(hasClue("cupbearer"))steps.push(["The Poisoned Cup",null,"Wynn lays the twist of green paper on the King's table: the poison sewn into the sleeve of Corvin's valet, at your harvest feast."]);
  steps.push(["The King's Hall","corvin",`Corvin is on his feet, backing towards the doors, where the King's guards are already waiting. "Cousin. Cousin, listen. We're family. Roderick wouldn't want..."`]);
  const go=i=>{const[t,w,x]=steps[i];if(i===steps.length-1)return bSay(t,w,x,[{t:"\"Chain him for the King's justice.\"",go:()=>{set("corvinJustice");return "The King nods once. They lead Corvin out in irons through a silent hall. Old Rhun, your father's friend, bows first. Then all of them do."}},
@@ -3778,8 +3835,20 @@ function ending(k){SC.court=null;SC.place=null;WIDE.key="";
  Music.play(GOOD.includes(k)?"hall":"night");GOOD.includes(k)?SFX.fanfare():SFX.doom();
  const first=(d.match(/^.*?[.!?](\s|$)/)||[d])[0].trim();
  overlay(`${castleHTML()}</div><div class="ovb cut"><h2>${[...t].map((c,i)=>`<i style="animation-delay:${(.4+i*.06).toFixed(2)}s">${c===" "?"&nbsp;":c}</i>`).join("")}</h2><p>${first}</p><button class="pb" id="cutBtn">Continue</button></div>`);
- $("cutBtn").onclick=()=>{SFX.click();endingCard(k,t,d)};return true}
-function familyFate(k){const bad=BAD.includes(k)||["famine","exile","lastStandSafe","vassalForever"].includes(k);const out=[];
+ $("cutBtn").onclick=()=>{SFX.click();graveScene(k,()=>endingCard(k,t,d))};return true}
+function graveScene(k,done){const dead=["fallen","lastStandSafe","witchFall"].includes(k),gone=["exile","usurped","chained","winterCoup"].includes(k),kid=has("tobinKnight")?"Sir Tobin":famHere("tobin")?"Tobin":"",mar=has("marenWed")?"Maren, home from the Marches for the day,":famHere("maren")?"Maren":"";
+ const txt=dead?`Elinor stands at a new grave beside your father's, behind the abbey${kid?`, with ${kid} beside her`:""}. She tells you both everything that happened after. ${hasClue("ring")?"She leaves the Greymarch ring on the stone.":""}`
+  :k==="exile"?"Far from Emberfall, you carve your father's name on a flat stone by a stranger's river, and tell him you're sorry, and that the children are safe.":
+  gone?"They won't let you near the abbey any more, so you go at night. Your father's stone is cold. \"I tried,\" you tell him. The wind doesn't answer.":
+  k==="pricePeace"?"You stand at your father's grave behind the abbey. Corvin's wedding bells are already being hung. You don't tell your father who poured his wine. You think he knows.":
+  k==="vassalForever"?"You stand at your father's grave behind the abbey, under a black and red banner. You tell him the city is fed and quiet. You don't tell him who it belongs to.":
+  BAD.includes(k)||["famine","revolt","debt"].includes(k)?"You stand at your father's grave behind the abbey. There isn't much to tell him that he'd want to hear. You tell him anyway.":
+  `You stand at your father's grave behind the abbey, Elinor's hand in yours${kid?`, ${kid} on your other side`:""}${mar?`, ${mar} close by`:""}. You tell him everything: ${fought()?"the ford, ":""}${has("winterDone")?"the ice, ":""}${has("corvinFight")?"the King's hall, ":""}the year. You think he'd have been proud. You think he'd have done it differently. Both are probably true.`;
+ CS.wox=undefined;setCastle(dead||gone?"snow":"dawn");
+ overlay(`${castleHTML()}</div><div class="ovb cut"><h2>${[..."Spring"].map((c,i)=>`<i style="animation-delay:${(.3+i*.08).toFixed(2)}s">${c}</i>`).join("")}</h2><p>${txt}</p><button class="pb" id="cutBtn">Continue</button></div>`);
+ $("cutBtn").onclick=()=>{SFX.click();done()}}
+function familyFate(k){if(has("landsReturned")&&!BAD.includes(k))return familyFate0(k)+" The lower valley went back to Greymarch, as you promised the King. The farmers there still can't quite believe it.";return familyFate0(k)}
+function familyFate0(k){const bad=BAD.includes(k)||["famine","exile","lastStandSafe","vassalForever"].includes(k);const out=[];
  if(has("tobinHostage")&&!has("freed"))out.push("Tobin is still at Blackmoor, learning to read Vex's letters.");
  else if(has("tobinKnight"))out.push(bad?"Sir Tobin kept his oath, and kept your family alive on the long road out.":"Sir Tobin rode at the head of Emberfall's knights by summer"+(has("oathHome")?", and he always came home.":"."));
  else if(famHere("tobin"))out.push(bad?"Tobin never did get his knighthood.":"Tobin is still waiting for his knighthood. He reminds you every day.");
