@@ -6,7 +6,7 @@
 | Subtitle (30) | Rule the throne. Choose a fate. |
 | Bundle ID | com.wolfhope.emberfall |
 | Category | Games → Role Playing (secondary: Games → Simulation) |
-| Price | Free download; Chapter One (March to the July battle) is free |
+| Price | Free download; March to June is free (the game asks for the unlock on the eve of the July battle) |
 | In-App Purchase | Non-Consumable · Product ID `emberfall_full_unlock` · Reference name "Full Year Unlock" · **$1.99** (Tier 2) |
 | Privacy Policy URL | https://wolfhopecom.github.io/emberfall/privacy.html |
 | Support URL | https://wolfhopecom.github.io/emberfall/support.html |
@@ -50,12 +50,12 @@ No account or login. The game is fully offline. Tap New Reign, then pick an answ
 1. App → **Monetization → In-App Purchases → +** → **Non-Consumable**.
 2. Reference name: `Full Year Unlock` · Product ID: `emberfall_full_unlock` (must match exactly).
 3. Price: **$1.99**. Availability: all countries.
-4. Display name: `The Full Year` · Description: `Unlock Chapter Two, August to February: Corvin's claim, the poisoner, the King's war, winter and all 19 endings.`
-5. Review screenshot: the unlock screen at the end of Chapter One ("The summer is over"). Review notes: "Play March to July (about 40 minutes) through the battle for Emberfall; after the battle, press Onward to August and the unlock screen appears. Restore Purchase is in Settings and on the unlock screen."
+4. Display name: `The Full Year` · Description: `Unlock Chapter Two, August to February: Corvin's claim, the poisoner, the King's war, winter and all 21 endings.`
+5. Review screenshot: the unlock screen on the eve of the July battle ("The Banners Are Coming"). Review notes: "Play March to June (about 30 minutes). At the end of June, tap Sleep on the night map and the unlock screen appears before the July battle. Restore Purchase is in Settings and on the unlock screen."
 6. Attach the IAP to the version on the version page before submitting.
 
 ## Review notes (add to the IAP note above)
-Spring (months 1–3) is free. The unlock is a one-time non-consumable; Restore purchase is in Settings and on the unlock screen. No account, no server: StoreKit only.
+March to June (months 1–4) is free. The unlock is a one-time non-consumable; Restore purchase is in Settings and on the unlock screen. No account, no server: StoreKit only.
 
 
 ## Testing the unlock before the in-app purchase exists
