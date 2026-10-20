@@ -714,9 +714,10 @@ function drawBody(ctx,c,x,y,dir,o={}){
    eyes blink and the mouth moves while someone talks. */
 const PORT=new Map();
 function drawPortrait(ctx,c,o){
- const cv=ctx.canvas;if(cv.width!==64){cv.width=64;cv.height=64}
+ const cv=ctx.canvas;if(cv.width!==64){cv.width=64;cv.height=64;cv._pk=null}
+ const key=c?[c.n||c.skin+c.robe,o.blink?1:0,o.mouth|0].join("|"):"";if(cv._pk===key&&cv._pc===c)return;cv._pk=key;cv._pc=c;// already showing this exact face
  ctx.clearRect(0,0,64,64);if(!c)return;
- const key=[c.n||c.skin+c.robe,o.blink?1:0,o.mouth|0].join("|");let m=PORT.get(c);if(!m){m=new Map();PORT.set(c,m)}
+ let m=PORT.get(c);if(!m){m=new Map();PORT.set(c,m)}
  let img=m.get(key);if(!img){img=document.createElement("canvas");img.width=64;img.height=64;paintPortrait(img.getContext("2d"),c,o);m.set(key,img)}
  ctx.drawImage(img,0,0)}
 function paintPortrait(ctx,c,o){
@@ -1181,13 +1182,13 @@ function drawRoom(x,w){
 }
 function focusX(){if(SC.room){const m=SC.cast.find(m=>m.k===SC.speaker)||SC.cast[0];return m?m.x:(SC.walker?SC.walker.x:96)}return SC.walker?SC.walker.x:112}
 function drawScene(){
- stageSize();const LW=WIDE.LW,E=WIDE.E,x=wctx;SC.t++;
+ if(stageSize())LOOP.nul=false;const LW=WIDE.LW,E=WIDE.E,x=LOOP.nul?NUL:wctx;SC.t++;
  const key=[LW,SC.room||"throne",SC.phase,SC.season,!!coreBG()].join("|");if(key!==WIDE.key){WIDE.cache=enhance(buildWide());WIDE.key=key;WIDE.parts=[]}
  x.setTransform(K,0,0,K,0,0);x.imageSmoothingEnabled=false;x.globalAlpha=1;x.globalCompositeOperation="source-over";
  x.save();
  if(SC.shake>0&&RM.matches)SC.shake=0;if(SC.shake>0){x.translate(Math.round((Math.random()-.5)*SC.shake),Math.round((Math.random()-.5)*SC.shake));SC.shake*=.86;if(SC.shake<.6)SC.shake=0}
  if(BT.on){drawBattle(x);drawParts(x,false);x.restore();drawParts(x,true);
-  if(!WIDE.vig)WIDE.key="";else{x.imageSmoothingEnabled=true;x.drawImage(WIDE.vig,0,0,LW,H);x.imageSmoothingEnabled=false}
+  x.imageSmoothingEnabled=true;x.drawImage(wideVig(LW),0,0,LW,H);x.imageSmoothingEnabled=false;
   if(SC.fade>0){x.fillStyle=`rgba(0,0,0,${SC.fade})`;x.fillRect(0,0,LW,H);SC.fade=Math.max(0,SC.fade-(FAST?1:.04))}return}
  x.drawImage(WIDE.cache,0,0,LW,H);
  x.translate(E,0);
@@ -1198,8 +1199,7 @@ function drawScene(){
  x.restore();
  lightPass(x);
  x.save();x.translate(E,0);drawParts(x,true);drawEmote(x,w);x.restore();
- if(!WIDE.vig){const v=document.createElement("canvas");v.width=LW;v.height=H;const vx=v.getContext("2d");const r=vx.createRadialGradient(LW/2,H*.55,H*.45,LW/2,H*.55,LW*.62);r.addColorStop(0,"rgba(0,0,0,0)");r.addColorStop(1,"rgba(0,0,0,.55)");vx.fillStyle=r;vx.fillRect(0,0,LW,H);WIDE.vig=v}
- x.imageSmoothingEnabled=true;x.drawImage(WIDE.vig,0,0,LW,H);x.imageSmoothingEnabled=false;
+ x.imageSmoothingEnabled=true;x.drawImage(wideVig(LW),0,0,LW,H);x.imageSmoothingEnabled=false;
  if(SC.fade>0){x.fillStyle=`rgba(0,0,0,${SC.fade})`;x.fillRect(0,0,LW,H);SC.fade=Math.max(0,SC.fade-(FAST?1:.05))}
  if(w){const spd=FAST?10:1.7;
   if(w.waitDoor){if(SC.door>=.95||FAST)w.waitDoor=false}
@@ -1209,6 +1209,7 @@ function drawScene(){
    if(Math.abs(w.target-w.x)<=.5){w.x=w.target;const a=w.arrive;w.arrive=null;a&&a()}}}
  SC.door+=(SC.doorT-SC.door)*(FAST?1:.12);
 }
+function wideVig(LW){if(!WIDE.vig){const v=document.createElement("canvas");v.width=LW;v.height=H;const vx=v.getContext("2d");const r=vx.createRadialGradient(LW/2,H*.55,H*.45,LW/2,H*.55,LW*.62);r.addColorStop(0,"rgba(0,0,0,0)");r.addColorStop(1,"rgba(0,0,0,.55)");vx.fillStyle=r;vx.fillRect(0,0,LW,H);WIDE.vig=v}return WIDE.vig}
 /* particles: glowing ones (sparks, embers) are drawn after the lighting so they shine in the dark */
 function drawParts(x,glow){
  for(let i=SC.parts.length-1;i>=0;i--){const p=SC.parts[i];if(!!p.glow!==glow)continue;p.x+=p.vx;p.y+=p.vy;p.vy+=p.grav;p.life--;
@@ -1235,7 +1236,7 @@ function lightList(){const E=WIDE.E,L=[],room=SC.room,night=room||SC.phase==="ni
  return L}
 function lightPass(x){const LW=WIDE.LW;
  if(!WIDE.light||WIDE.light.width!==LW){WIDE.light=document.createElement("canvas");WIDE.light.width=LW;WIDE.light.height=H;WIDE.lx=WIDE.light.getContext("2d")}
- const L=WIDE.lx,room=SC.room,ph=SC.phase;
+ const L=LOOP.nul?NUL:WIDE.lx,room=SC.room,ph=SC.phase;
  const amb=room?(room==="mason"?"#727898":room==="dungeon"?"#545874":"#706c8a"):ph==="night"?"#545c8c":ph==="dusk"?"#b88c90":{winter:"#d8dce8",autumn:"#e8d4c4"}[SC.season]||"#e4dcd4";
  L.globalCompositeOperation="source-over";L.fillStyle=amb;L.fillRect(0,0,LW,H);L.globalCompositeOperation="lighter";
  const lights=lightList();
@@ -1692,7 +1693,7 @@ const WIDE={on:true,LW:W,E:0,cache:null,key:"",vig:null,torches:[],light:null,lx
 const wcv=$("sceneWide"),wctx=wcv.getContext("2d");
 function stageSize(){const cw=wcv.clientWidth,ch=wcv.clientHeight;
  const LW=(!cw||!ch)?W:Math.max(W,Math.min(420,Math.round(H*cw/ch/2)*2));
- if(wcv.width!==LW*K||wcv.height!==H*K){wcv.width=LW*K;wcv.height=H*K;WIDE.LW=LW;WIDE.E=(LW-W)>>1;WIDE.key="";WIDE.vig=null}}
+ if(wcv.width!==LW*K||wcv.height!==H*K){wcv.width=LW*K;wcv.height=H*K;WIDE.LW=LW;WIDE.E=(LW-W)>>1;WIDE.key="";WIDE.vig=null;return true}return false}
 /* 1x background -> 2x: scale2x smooths diagonals and rounds stone corners, then every shape gets a thin bevel and a fine grain */
 function hsh(i,j){let h=(i*374761393+j*668265263)|0;h=(h^(h>>>13))*1274126177|0;return (h^(h>>>16))>>>0}
 function enhance(src){const w=src.width,h=src.height,sd=src.getContext("2d").getImageData(0,0,w,h).data;
@@ -1804,16 +1805,43 @@ function fitDialog(){const d=$("dialog"),ch=$("choices"),tx=$("txt");
  if(over())d.classList.add("ftP");
  if(over()){const bs=[...ch.children],f0=bs.map(b=>parseFloat(getComputedStyle(b).fontSize));let k=1;while(over()&&k>.88){k-=.04;bs.forEach((b,i)=>{b.style.fontSize=(f0[i]*k).toFixed(1)+"px";b.style.paddingTop=b.style.paddingBottom=(k>.9?"":"3px");b.style.lineHeight="1.12"})}}
  if(txOver()){let fs=parseFloat(getComputedStyle(tx).fontSize);while(txOver()&&fs>12){fs-=.5;tx.style.fontSize=fs+"px";tx.style.lineHeight="1.2"}}}
+/* Battery: while nothing on screen moves quickly, only every other frame is painted (30 fps). The skipped frame
+   still runs every update (ticks, particles, walkers, random flicker) against a context that draws nothing, so
+   every animation keeps its speed and every painted frame is the same picture it would have been at 60 fps. */
+const NUL=(()=>{const n={},P=CanvasRenderingContext2D.prototype,gr={addColorStop(){}};
+ for(const k of Object.getOwnPropertyNames(P)){const d=Object.getOwnPropertyDescriptor(P,k);if(typeof d.value==="function")n[k]=()=>{};else if(d.get&&k!=="canvas")n[k]=wctx[k]}
+ n.createLinearGradient=n.createRadialGradient=n.createConicGradient=()=>gr;n.createPattern=()=>null;n.measureText=()=>({width:0});n.getLineDash=()=>[];n.isPointInPath=n.isPointInStroke=()=>false;
+ n.getTransform=()=>new DOMMatrix();n.getContextAttributes=()=>({});return n})();
+const LOOP={n:0,nul:false,off:false,full:true,drawn:new WeakSet()};
+// anything quick enough to judder at 30 fps (the limits are in each canvas's own pixels, about 2 screen points per frame)
+const fastParts=(a,lim)=>{if(a)for(const p of a)if(Math.abs(p.vx||0)+Math.abs(p.vy||0)>lim)return true;return false};
+function busy(full,cc,wm,nm){
+ const w=SC.walker;// a petitioner standing still only breathes and blinks
+ if((w&&(w.waitDoor||Math.abs(w.target-w.x)>.5))||SC.fade>0||SC.shake>0||SC.emote||SC.talk||SC.cere||Math.abs(SC.door-SC.doorT)>.005||BT.on||(TY&&TY.typing)||WMAP.march)return true;
+ if(!full&&fastParts(SC.parts,.6))return true;
+ if(cc&&(CS.mode.startsWith("world")||fastParts(CS.parts,.38)))return true;
+ if(nm&&fastParts(NM.parts,.55))return true;
+ if(wm&&fastParts(WMAP.parts,.55))return true;
+ return false}
 function loop(){
+ if(document.hidden){LOOP.off=true;return}// stopped while the app is in the background; visibilitychange restarts it
  /* a screen that covers everything doesn't need the hall painted underneath it */
  const ov=$("overlay"),full=ov.style.display==="flex"&&/^(nm|wm|ts|fb|pl)$/.test(ov.className);
+ const skip=(++LOOP.n&1)===1&&!busy(full,$("castle"),$("wmap"),$("nmap"));
+ LOOP.nul=skip&&!(LOOP.full&&!full);// the hall is always painted on the first frame it shows again
  if(!full)drawScene();else SC.t++;
+ LOOP.full=full;
  if(SC.t%6===0)fitDialog();
- const cc=document.getElementById("castle");if(cc){const cx=cc.getContext("2d");cx.setTransform(2,0,0,2,0,0);cx.imageSmoothingEnabled=false;drawCastle(cx)}
- const wm=document.getElementById("wmap");if(wm){const wx=wm.getContext("2d");wx.setTransform(2,0,0,2,0,0);wx.imageSmoothingEnabled=false;wmFrame(wx)}
- const nm=document.getElementById("nmap");if(nm&&S){const nx=nm.getContext("2d");nx.setTransform(2,0,0,2,0,0);nx.imageSmoothingEnabled=false;drawNightMap(nx)}
+ // looked up again: the scene may have just opened an overlay. A canvas that was just created is painted at once.
+ const ctxOf=c=>{if(skip&&LOOP.drawn.has(c))return NUL;LOOP.drawn.add(c);return c.getContext("2d")};
+ const cc=document.getElementById("castle"),wm=document.getElementById("wmap"),nm=document.getElementById("nmap");
+ if(cc){const cx=ctxOf(cc);cx.setTransform(2,0,0,2,0,0);cx.imageSmoothingEnabled=false;drawCastle(cx)}
+ if(wm){const wx=ctxOf(wm);wx.setTransform(2,0,0,2,0,0);wx.imageSmoothingEnabled=false;wmFrame(wx)}
+ if(nm&&S){const nx=ctxOf(nm);nx.setTransform(2,0,0,2,0,0);nx.imageSmoothingEnabled=false;drawNightMap(nx)}
+ LOOP.nul=false;
  drawPortrait(pctx,PCHAR,{mouth:SC.talk?mouthOf():0,blink:((SC.t)%200)<6});
  requestAnimationFrame(loop)}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&LOOP.off){LOOP.off=false;requestAnimationFrame(loop)}});
 
 /* =========================================================
    STATE + STORY
