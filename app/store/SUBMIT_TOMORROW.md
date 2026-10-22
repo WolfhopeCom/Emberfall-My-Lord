@@ -9,12 +9,36 @@ Allow about 2 hours, plus time to upload the build. Your phone needs to be charg
 ## 0. Before anything else (5 min)
 
 1. **Agreements.** In App Store Connect, open **Business** (on older layouts, **Agreements, Tax, and Banking**). The **Paid Apps** agreement must show **Active**, with bank and tax info filled in. If it doesn't, in-app purchases can't be sold, and Apple will reject the app because the purchase fails. Finish it first; it can take a while to activate.
-2. **The build must be a store build, not a tester build.** On the Mac:
+2. **Build the store version on the Mac.** In Terminal, one line at a time (press Return after each and wait for it to finish):
    ```
-   cd emberfall-my-lord/app
-   python3 build_app.py          # NOT --tester
+   cd ~/Emberfall-My-Lord
    ```
-   The checklist it prints must say "www/ is a store build (no tester unlock)" and "UIScene life cycle adopted". A `--tester` build shows **"TESTER BUILD · everything unlocked · not for the App Store"** on the title screen, which would be rejected immediately.
+   (If that folder isn't there, find it with `find ~ -maxdepth 4 -type d -name "Emberfall-My-Lord" 2>/dev/null` and `cd` to what it prints.)
+   ```
+   git pull
+   ```
+   ```
+   cd app
+   ```
+   ```
+   npm install
+   ```
+   ```
+   python3 build_app.py --set-version 1.0.0 --build 10
+   ```
+   This keeps version 1.0.0 and sets build number 10, safely higher than anything uploaded before (Apple refuses a build number it has already seen for this version; if it ever says so, run it again with `--build 11`). The version here must match the version on the App Store Connect page (step 3.4).
+   ```
+   python3 build_app.py
+   ```
+   **Never add `--tester` for this one.** The checklist at the end must finish with **READY to archive** and show, among others:
+   - "www/ is a store build (no tester switch at all)"
+   - "app icon is the Emberfall crown"
+   - "UIScene life cycle adopted" (this is the fix for the iOS 27 launch crash that hit TypeMonkey)
+
+   If anything says **FAIL**, stop and send me the whole output.
+   ```
+   npx cap open ios
+   ```
 3. In Xcode: **Product → Clean Build Folder**, then **Product → Archive**, then **Distribute App → App Store Connect → Upload**. Wait for the email "has completed processing" (10–30 min).
 4. Quick check on the iPhone with the TestFlight copy of this build: launch it, look at the title screen (no TESTER text), and open **Settings**: the bottom line should say "Build" followed by a code, not "preview".
 
