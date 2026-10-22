@@ -46,7 +46,11 @@ The Privacy Policy, Terms, Support and marketing pages live on the public websit
 Open `index.html` in Safari or Chrome. Tap **New Reign** (the tap also starts the music).
 Add `?fast` to the address to skip animations when testing.
 
-## Build the iPhone app (on the Mac)
+## iPad (version 1.1)
+
+The app is universal from 1.1. iPhone stays landscape-only and its layout is unchanged; iPad runs in every orientation, in Split View and in resizable Stage Manager windows. Every iPad window at least 320×500 uses the wide layout (an iPhone is never 500px tall in landscape, so its rules never see these); tall windows get their own reflow (the hall across the top, the text below, a list of rooms under the night map), and phone-sized boxes are drawn larger. `node tests/run.js ipad` checks 14 iPad window sizes.
+
+## Build the iPhone and iPad app (on the Mac)
 
 ```
 cd app
