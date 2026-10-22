@@ -11,8 +11,8 @@
 @font-face{font-family:'Alegreya';src:url('fonts/Alegreya.ttf') format('truetype');font-weight:400 900;font-display:block}
 @font-face{font-family:'Alegreya';src:url('fonts/Alegreya-Italic.ttf') format('truetype');font-weight:400 900;font-style:italic;font-display:block}
 :root{--pixel:'Pixelify Sans',monospace;--display:'Cinzel',Georgia,serif;--book:'Alegreya',Georgia,serif;--ink:#2a1810;--parch:#efdcb2;--parch2:#e2c896;--gold:#f2c14e;--blood:#8a1f2a;--night:#0b0710}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
-html,body{margin:0;height:100%;background:var(--night);font-family:var(--book);overflow:hidden;color:var(--ink)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+html,body{margin:0;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--night);font-family:var(--book);overflow:hidden;color:var(--ink)}
 canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 img.px{image-rendering:pixelated}
 #app{position:relative;height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;background:#120b16;overflow:hidden}
@@ -1825,6 +1825,10 @@ function busy(full,cc,wm,nm){
  return false}
 function loop(){
  if(document.hidden){LOOP.off=true;return}// stopped while the app is in the background; visibilitychange restarts it
+ // a drawing error must never stop the loop: the frame is skipped and the next one carries on
+ try{loopFrame()}catch(e){LOOP.nul=false;if((LOOP.errs=(LOOP.errs||0)+1)<4)console.error(e)}
+ requestAnimationFrame(loop)}
+function loopFrame(){
  /* a screen that covers everything doesn't need the hall painted underneath it */
  const ov=$("overlay"),full=ov.style.display==="flex"&&/^(nm|wm|ts|fb|pl)$/.test(ov.className);
  const skip=(++LOOP.n&1)===1&&!busy(full,$("castle"),$("wmap"),$("nmap"));
@@ -1839,8 +1843,7 @@ function loop(){
  if(wm){const wx=ctxOf(wm);wx.setTransform(2,0,0,2,0,0);wx.imageSmoothingEnabled=false;wmFrame(wx)}
  if(nm&&S){const nx=ctxOf(nm);nx.setTransform(2,0,0,2,0,0);nx.imageSmoothingEnabled=false;drawNightMap(nx)}
  LOOP.nul=false;
- drawPortrait(pctx,PCHAR,{mouth:SC.talk?mouthOf():0,blink:((SC.t)%200)<6});
- requestAnimationFrame(loop)}
+ drawPortrait(pctx,PCHAR,{mouth:SC.talk?mouthOf():0,blink:((SC.t)%200)<6})}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&LOOP.off){LOOP.off=false;requestAnimationFrame(loop)}});
 
 /* =========================================================
