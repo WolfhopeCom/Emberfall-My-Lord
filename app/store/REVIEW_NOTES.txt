@@ -1,0 +1,34 @@
+Emberfall: My Lord 1.0 - notes for App Review
+
+1. SCREEN RECORDING
+Attached: a recording from a physical iPhone (TestFlight build of this version, sandbox Apple Account). It starts at app launch and shows the title screen, Settings, the night castle map, the unlock screen, a sandbox purchase, the paid content that follows (July and the Battle of the Ford) and Restore purchase. To stay under 3 minutes it continues a reign that was saved at the end of June.
+
+2. PURPOSE AND AUDIENCE
+A single-player story game for teens and adults (general audience, not made for children). You rule a fictional medieval city for one in-game year: answer petitioners at the throne, manage gold, grain, soldiers and favor, defend the city in a battle and solve your father's murder before a council of lords votes on your crown. 21 endings.
+
+3. SETUP AND ACCESS
+No account, login or sign-in, so no demo account is needed. Works fully offline. Landscape only. Launch, tap New Reign (the prologue has a Skip button), then tap an answer for each visitor. At the end of each month a night castle map opens: rooms marked "!" must be visited (tap the room, read, choose, Leave), then tap "Sleep until [next month]". Settings is on the title screen and the gear icon in the top bar. Tip: Settings > Text speed > Instant makes play much faster.
+
+4. EXTERNAL SERVICES
+None. No server, backend, analytics, advertising, tracking, web content or third-party SDKs. The only network use is Apple's StoreKit for the in-app purchase (through the open-source Capacitor plugin @capgo/native-purchases, which calls StoreKit directly and sends nothing anywhere else). The saved game stays on the device.
+
+5. REGIONAL DIFFERENCES
+None. Same content and features in every storefront. English only. The price is shown in local currency from StoreKit.
+
+6. REGULATED INDUSTRY / PROTECTED MATERIAL
+Not in a regulated industry. Story, characters, pixel art (drawn in code) and music (synthesized in code) are original works by Wolfhope (Harrison Wolfhope). The bundled fonts (Cinzel, Alegreya, Pixelify Sans) are under the SIL Open Font License 1.1. No third-party copyrighted or trademarked material.
+
+7. IN-APP PURCHASE
+One non-consumable: "The Full Year" (emberfall_full_unlock), $1.99. No subscriptions, consumables or ads. March to June (months 1-4 of 12) are free. The purchase unlocks July to February: the Battle of the Ford, Chapter Two and all 21 endings.
+
+How to reach it:
+a) Fastest, 2 taps from launch: title screen > Settings > "Unlock the full game · $1.99". "Restore purchase" is just below it.
+b) Where players meet it: play March to June. At the end of June, on the night castle map, tap "Sleep until July". The unlock screen "The Banners Are Coming" opens with "Unlock the full game · $1.99", "Restore purchase" and "Not now". This is about 50 decisions (around 230 taps): roughly 10-15 minutes tapping quickly with Text speed set to Instant, or 30-40 minutes reading normally. There is no shortcut or debug unlock in this build.
+
+After purchase the game continues straight into July, and Settings shows "The full game is unlocked. Thank you!". "Not now" saves the reign at the end of June and returns to the title screen.
+Restore: Settings > Restore purchase, or Restore purchase on the unlock screen.
+
+DEVICES
+iPhone only. On iPad it runs in iPhone compatibility mode, in landscape.
+
+Contact: Harrison Wolfhope, wolfhopeco@gmail.com

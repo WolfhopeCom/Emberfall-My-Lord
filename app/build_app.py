@@ -28,6 +28,8 @@ APP_ID = CONFIG["appId"]
 MIN_IOS = "15.0"          # @capgo/native-purchases uses StoreKit 2 (iOS 15+); its newer releases require 15.0
 LANDSCAPE = ["UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationLandscapeLeft"]
 TESTER_MARK = "window.EF_TESTER=true"
+TESTER_FN = "function testerOn(){return !!window.EF_TESTER&&!!window.EF_TESTER_UNTIL&&Date.now()<window.EF_TESTER_UNTIL}"
+TESTER_BANNER = """${testerOn()?'<p class="dim" style="color:#ff8a6a;font-size:12px;margin:-6px 0 6px">TESTER BUILD · everything unlocked · not for the App Store</p>':""}"""
 # Native plugin classes that must be registered (ios/App/App/capacitor.config.json "packageClassList").
 REQUIRED_PLUGINS = {"NativePurchasesPlugin": "@capgo/native-purchases", "HapticsPlugin": "@capacitor/haptics"}
 EXPECTED_PLUGINS = {"SplashScreenPlugin": "@capacitor/splash-screen", "StatusBarPlugin": "@capacitor/status-bar"}
@@ -72,6 +74,14 @@ def build_web(tester=False):
         until = int((time.time() + 3 * 86400) * 1000)
         html = html.replace("<script>", f"<script>{TESTER_MARK};window.EF_TESTER_UNTIL={until};</script>\n<script>", 1)
         print("\n" + "!" * 70 + "\nTESTER BUILD: the whole game is unlocked for 3 days.\nDO NOT upload this build. Run plain `python3 build_app.py` before archiving for the App Store.\n" + "!" * 70 + "\n")
+    else:
+        # Store build: the tester switch and its title-screen banner are removed outright, so the shipped game has no
+        # dormant unlock path at all (App Review Guideline 2.5 on hidden/dormant features).
+        n = html.count(TESTER_FN) + html.count(TESTER_BANNER)
+        html = html.replace(TESTER_FN, "function testerOn(){return false}").replace(TESTER_BANNER, "")
+        if n != 2 or "EF_TESTER" in html:
+            die("could not remove the tester switch from the store build (index.html changed?). Update TESTER_FN/TESTER_BANNER in build_app.py.")
+        print("store build: tester switch removed")
     (WWW / "index.html").write_text(html)
     if (WWW / "fonts").exists():
         shutil.rmtree(WWW / "fonts")
@@ -373,7 +383,7 @@ def verify_web(ck, tester):
     if tester:
         ck.check(TESTER_MARK in html, "www/ is a TESTER build, as asked (never upload it)", "www/ should be a tester build but has no tester flag")
     else:
-        ck.check(TESTER_MARK not in html, "www/ is a store build (no tester unlock)", "www/index.html is a TESTER build: the whole game would be free")
+        ck.check(TESTER_MARK not in html and "EF_TESTER" not in html, "www/ is a store build (no tester switch at all)", "www/index.html is a TESTER build: the whole game would be free")
     ck.check(html.count('window.EF_BUILD="') == 1, "build stamp present once", "build stamp missing or duplicated in www/index.html")
 
 

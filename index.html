@@ -1294,7 +1294,7 @@ function castleBase(mode){if(CBASE[mode])return CBASE[mode];const M=CM[mode],c=d
  for(let y=103;y<CH;y++)cfill(x,`rgba(0,0,0,${(y-103)/80})`,0,y,CW,1);
  return CBASE[mode]=enhance(c)}
 const CLOUDS=Array.from({length:7},(_,i)=>({x:i*31,y:8+((i*13)%30),w:22+((i*17)%18),s:.04+((i*7)%5)*.012}));
-function drawWorldView(x){const k=CS.mode.split(":")[1],P=PLACES[k]||PLACES.emberfall,tx=Math.max(0,Math.min(WW-CW,P.x-CW/2)),ty=Math.max(-10,P.y-46);
+function drawWorldView(x){const k=CS.mode.split(":")[1],P=PLACES[k]||PLACES.emberfall,tx=Math.max(0,Math.min(WW-CW,P.x-CW/2)),ty=Math.max(-10,Math.min(WH-CH,P.y-46));
  if(CS.wox===undefined){CS.wox=tx;CS.woy=ty}CS.wox+=(tx-CS.wox)*.04;CS.woy+=(ty-CS.woy)*.04;cfill(x,"#14100c",0,0,CW,CH);x.save();x.translate(-CS.wox,-CS.woy);drawWorld(x,{focus:[P.x,P.y]});x.restore()}
 function drawCastle(x){if(CS.mode.startsWith("world"))return drawWorldView(x);
  const M=CM[CS.mode],t=++CS.t;x.imageSmoothingEnabled=false;
