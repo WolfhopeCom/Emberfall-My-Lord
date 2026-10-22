@@ -237,9 +237,47 @@ def patch_scene(data):
     return True
 
 
+def patch_native_assets():
+    """Copy the app icon and launch image into the iOS project on every build.
+    A freshly created ios/ folder (npx cap add ios) holds Capacitor's blank placeholder icon, and the old way of
+    replacing it needed an image library (Pillow) that a Mac may not have: that is how a placeholder icon ships.
+    Xcode 14+ builds every size from one 1024x1024 image, so no resizing is needed."""
+    xc = IOS / "App" / "App" / "Assets.xcassets"
+    res = APP / "resources"
+    if not xc.is_dir() or not (res / "icon.png").exists():
+        return
+    icon_dir = xc / "AppIcon.appiconset"
+    icon_dir.mkdir(exist_ok=True)
+    target = icon_dir / "AppIcon-512@2x.png"
+    src = (res / "icon.png").read_bytes()
+    changed = not target.exists() or target.read_bytes() != src
+    for old in icon_dir.glob("*.png"):
+        if old != target:
+            old.unlink()
+            changed = True
+    contents = json.dumps({"images": [{"filename": "AppIcon-512@2x.png", "idiom": "universal", "platform": "ios", "size": "1024x1024"}],
+                           "info": {"author": "xcode", "version": 1}}, indent=2) + "\n"
+    cj = icon_dir / "Contents.json"
+    if changed or not cj.exists() or cj.read_text() != contents:
+        target.write_bytes(src)
+        cj.write_text(contents)
+        print("set the app icon in ios/App/App/Assets.xcassets/AppIcon.appiconset")
+    splash_dir = xc / "Splash.imageset"
+    if splash_dir.is_dir() and (res / "splash.png").exists():
+        sp = (res / "splash.png").read_bytes()
+        n = 0
+        for f in splash_dir.glob("*.png"):
+            if f.read_bytes() != sp:
+                f.write_bytes(sp)
+                n += 1
+        if n:
+            print(f"set the launch image in ios/App/App/Assets.xcassets/Splash.imageset ({n} files)")
+
+
 def patch_ios(scene=True):
     patch_podfile()
     patch_storekit()
+    patch_native_assets()
     plist = IOS / "App" / "App" / "Info.plist"
     if not plist.exists():
         return
@@ -342,6 +380,11 @@ def verify_web(ck, tester):
 def verify_ios(ck, tester, strict, scene):
     """Everything here was a way to ship an app that dies at launch or is missing its store."""
     app_dir = IOS / "App" / "App"
+    icon = app_dir / "Assets.xcassets" / "AppIcon.appiconset" / "AppIcon-512@2x.png"
+    src_icon = APP / "resources" / "icon.png"
+    if src_icon.exists():
+        ck.check(icon.exists() and icon.read_bytes() == src_icon.read_bytes(), "app icon is the Emberfall crown",
+                 "the app icon in the iOS project is NOT the Emberfall icon (Capacitor placeholder would ship)", "fail")
     # 1. web assets: Capacitor calls exit(1) at launch if public/index.html is missing (CAPBridgeViewController.loadWebView)
     pub = app_dir / "public" / "index.html"
     www = (WWW / "index.html").read_bytes()
