@@ -1658,7 +1658,10 @@ let WSEL=null;
 function wCard(k,ch2){const P=PLACES[k],L=LORDS.find(l=>l.id===k),kn=L&&lordKnown(L);const s=kn?lordStance(L):0;
  const arm=worldArmies().filter(a=>Math.hypot(a.at[0]-P.x,a.at[1]-P.y)<14).map(a=>a.lab);
  return `<div class="wcard"><b>${P.n}</b>${L?`<span class="wl">${L.n}${ch2?` · <em class="${s>0?"sy":s<0?"sn":"su"}">${!kn?"hard to read":s>0?"leaning your way":s<0?"leaning to Corvin":"undecided"}</em>`:""}</span>`:""}<p>${P.d}${L&&ch2?` <i>${L.why(kn?s:0)}</i>`:""}${arm.length?` <b class="warn">${arm.join(", ")} ${arm.length>1?"are":"is"} here.</b>`:""}</p></div>`}
-function openWorld(sel){const ch2=S.month>BATTLE_MONTH||has("corvinClaim");
+/* the river map can be opened from the throne room or the night castle map, never over a story moment */
+function mapAllowed(){const o=$("overlay"),shown=o&&o.style.display==="flex";if(!S||HOLD||BT.on||SC.cere)return false;
+ if(shown)return o.className==="nm"||o.className==="wm"&&!!$("wmClose");return !SC.room&&!(SC.walker&&SC.walker.arrive)}
+function openWorld(sel){if(!sel&&!$("wmClose")&&!mapAllowed()){toast("The map can wait until this is settled.");return}const ch2=S.month>BATTLE_MONTH||has("corvinClaim");
  if(sel&&$("wmap")&&!WMAP.march){WSEL=WSEL===sel?null:sel;SFX.blip?SFX.blip(520):SFX.click();document.querySelectorAll(".wpl").forEach(b=>b.classList.toggle("on",b.dataset.k===WSEL));
   const old=document.querySelector("#overlay .wcard");if(old)old.remove();if(WSEL)$("overlay").insertAdjacentHTML("beforeend",wCard(WSEL,ch2));return}
  SFX.page();WSEL=sel||null;
@@ -3011,7 +3014,7 @@ function openJournal(tab){SFX.page();const m=S.month,ch2=m>BATTLE_MONTH||has("co
    <p class="note" id="lordWhy" style="color:#f2d080">Tap a lord to see what will move them.</p><div class="lords">${LORDS.map(L=>{const k=lordKnown(L),s=k?lordStance(L):0;return `<div class="lord ${!k?"unk":s>0?"yes":s<0?"no":"und"}" onclick="SFX.click();$('lordWhy').textContent='${L.n} of ${L.seat}: '+this.querySelector('small').textContent"><i>${!k?"…":s>0?"✔":s<0?"✖":"?"}</i><span><b>${L.n}</b><small>${k?(s>0?"Leaning your way. ":s<0?"Leaning to Corvin. ":"Undecided. ")+L.why(s):"You can't read this one yet. "+L.why(0)}</small></span></div>`}).join("")}</div></section>`}
  if(tab==="table")body=`<section style="grid-column:1/-1"><h4>The Council Table</h4><p class="note">Five seats. Who sits at your table changes what you can do, and how the story goes. Visit the Council Table at night to hear one of them.</p>${tableHTML()}</section>`;
  if(tab==="chron")body=`<section style="grid-column:1/-1"><h4>The Chronicle of Emberfall</h4><ul class="chron">${(S.chron||[]).slice().reverse().map(c=>`<li>${c}</li>`).join("")||"<li>Nothing yet written.</li>"}</ul></section>`;
- modal(`<div class="phead"><div><h3>The Journal</h3><div class="jtabs">${tabs.map(([k,l])=>`<button class="${k===tab?"on":""}" onclick="openJournal('${k}')">${l}</button>`).join("")}<button onclick="closeModal();openWorld()">Map ›</button></div></div><button class="pb done" onclick="closeModal()">Close</button></div><div class="pbody ${tab==="baron"?"t3":"t1"} jr">${body}</div>`,"pnl");document.querySelectorAll(".seats canvas").forEach(c=>{const k=c.dataset.k;if(k&&C[k])drawPortrait(c.getContext("2d"),C[k],{})})}
+ modal(`<div class="phead"><div><h3>The Journal</h3><div class="jtabs">${tabs.map(([k,l])=>`<button class="${k===tab?"on":""}" onclick="openJournal('${k}')">${l}</button>`).join("")}<button onclick="closeModal();openWorld()" style="${mapAllowed()?"":"display:none"}">Map ›</button></div></div><button class="pb done" onclick="closeModal()">Close</button></div><div class="pbody ${tab==="baron"?"t3":"t1"} jr">${body}</div>`,"pnl");document.querySelectorAll(".seats canvas").forEach(c=>{const k=c.dataset.k;if(k&&C[k])drawPortrait(c.getContext("2d"),C[k],{})})}
 
 /* =========================================================
    THE BATTLE OF THE FORD — a playable siege in four beats.
@@ -3270,7 +3273,7 @@ function winterAllies(){
  if(has("foxPardoned"))helps.push(["The Fox's Men","Out of the dark forest on the far bank, a whistle, then dozens more. The Fox's old band, the outlaws you pardoned, hits their supply line from behind.",12]);
  if(has("sentKing")&&!has("sentKingBack"))helps.push(["Home from the North","Through the snow, a column you know: your own soldiers, home from the King's war, a day early. They march straight into the fight.",14]);
  if(!helps.length)return winterFinal();
- const [t,d,v]=helps[0];BT.harwin=1;BT.allyKind=t==="The Marches Ride"?"harwin":t==="The Fox's Men"?"fox":"king";SFX.fanfare();if(helps.some(h=>h[0]==="Home from the North")){set("sentKingBack");fx({men:14})}
+ const [t,d,v]=helps[0];BT.harwin=1;BT.allyKind=t==="The Marches Ride"?"harwin":t==="The Fox's Men"?"fox":"king";SFX.fanfare();if(helps.some(h=>h[0]==="Home from the North")){set("sentKingBack");fx({men:14});render()}
  bSay(t,BT.allyKind==="harwin"?"eastlord":BT.allyKind==="fox"?"pip":null,d+(helps.length>1?` And they aren't the only ones: ${helps.slice(1).map(h=>({"The Marches Ride":"Harwin's riders","The Fox's Men":"the Fox's outlaws","Home from the North":"your own soldiers, home from the north"})[h[0]]||h[0]).join(", and ")}.`:""),[{t:"\"For Emberfall!\"",go:()=>{BSCORE+=helps.reduce((a,h)=>a+h[2],0);return "The enemy line buckles. But at the gate, their champion is still coming."}}],winterFinal)}
 function winterFinal(){BT.phase="vex";BT.view="gate";BT.duel=false;SC.fade=1;
  const champ=BT.foes.vex?(has("vexWounded")?"Baron Vex himself, half-healed and furious, his black armor rimed with frost":"Baron Vex himself, in black armor rimed with frost, come to take back what the King's peace cost him"):"Corvin's champion, Sir Aldous of Greymarch, a giant in grey steel";
@@ -3868,7 +3871,7 @@ function statInfo(k){if(!S)return;SFX.click();const L=S.lastLedger,P=ledgerRows(
   food:()=>row("Fields &amp; stores",P.crops)+(P.granary?row("Granary",P.granary):"")+row("The castle eats",-P.eat),
   men:()=>(P.recruits?row("Recruits from the barracks",P.recruits):"")+(P.healed?row("Healed in the infirmary",P.healed):"")+row("Wages (gold)",-P.wages),
   favor:()=>row("The people's mood",P.mood)}[k]();
- modal(`<h3><img class="px" src="${ICONURL[k]}" style="width:22px;height:22px;vertical-align:-4px;margin-right:6px">${t}: ${S[k]}</h3><p style="text-align:left;line-height:1.4">${d}</p>
+ modal(`<button class="mx" onclick="closeModal()" aria-label="Close">✕</button><h3><img class="px" src="${ICONURL[k]}" style="width:22px;height:22px;vertical-align:-4px;margin-right:6px">${t}: ${S[k]}</h3><p style="text-align:left;line-height:1.4">${d}</p>
   <h3 class="sm" style="font-size:17px">Each month, as things stand</h3><div class="ledger">${rows}</div>${k==="men"&&S.mission?`<p class="dim">${S.mission.n} more are out on a mission.</p>`:""}
   <button class="pb" onclick="SFX.click();closeModal()">Close</button>`)}
 function savedMonthName(){try{const m=JSON.parse(localStorage.getItem("ef_save3")||"{}").month;return MONTHS[m-1]||"an earlier month"}catch(e){return "an earlier month"}}
@@ -3970,6 +3973,8 @@ function fitCard(){const o=document.querySelector("#overlay .ovb.ending");if(!o)
 function overlay(h){const o=$("overlay");o.className=/id="nmap"/.test(h)?"nm":/id="wmap"/.test(h)?"wm":/class="rooms"/.test(h)?"nt":/class="logo"/.test(h)?"ts":/class="ovb prolog/.test(h)?"pl":/class="ovb (siege|ending|cut)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
 function modal(h,cls=""){const m=$("modal");m.innerHTML=`<div class="box ${cls}">${h}</div>`;m.style.display="flex"}
+// tapping the dark area around a box that has a ✕ closes it, like the ✕ does
+$("modal").addEventListener("click",e=>{if(e.target.id==="modal"&&$("modal").querySelector(".mx")){SFX.click();closeModal()}});
 function closeModal(){const m=$("modal");m.style.display="none";m.innerHTML=""}
 function openChron(){SFX.page();modal(`<button class="mx" onclick="closeModal()" aria-label="Close">✕</button><h3>The Chronicle of Emberfall</h3><ul>${(S&&S.chron||[]).map(c=>`<li>${c}</li>`).join("")||"<li>Nothing yet written.</li>"}</ul><button class="pb" onclick="closeModal()">Close</button>`)}
 function savePrefs(){try{localStorage.setItem("ef_prefs",JSON.stringify({m:AU.musicOn,s:AU.sfxOn,sp:PREF.speed,bt:PREF.big,hp:PREF.haptics,mv:PREF.mvol,sv:PREF.svol}))}catch(e){}applyPrefs()}

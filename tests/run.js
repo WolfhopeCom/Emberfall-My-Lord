@@ -311,6 +311,11 @@ async function fresh(b, vp = { width: 852, height: 393 }) {
     // H. a crowded night keeps the scenes that can't wait
     const h1 = await p.evaluate(() => { closeModal(); S = fresh(); S.month = 4; S.f.plague = 1; S.f.refugees = 1; S.f.tobinRides = 1; S.queue = []; S.qi = 0; endMonth(); const r = S.night.req; closeOverlay(); return r });
     ok('night: single-month scenes are never crowded out', ['pitch', 'elinorFever', 'refugeeLand', 'tobinWound'].every(id => h1.includes(id)), h1.join(','));
+    // I. the river map never opens over a story screen (that used to strand the player)
+    const i1 = await p.evaluate(() => { closeModal(); closeOverlay(); S = fresh(); S.month = 12; render(); HOLD = true; openWorld(); const a = !!$('wmClose'); HOLD = false; closeOverlay();
+      overlay('<div class="ovb ending"><h3>x</h3><button class="pb" id="fateBtn">Go</button></div>'); openWorld(); const b = !!$('wmClose') || !$('fateBtn'); closeOverlay();
+      S.night = { req: [], reqDone: {}, evs: [], evDone: {} }; showNight(); openWorld(); const c = !!$('wmClose'); closeOverlay(); return { a, b, c } });
+    ok('map: refused over a battle/trial/ending, allowed from the night map', !i1.a && !i1.b && i1.c, JSON.stringify(i1));
     ok('no page errors (regressions)', p.errs.length === 0, p.errs.slice(0, 3).join(' | '));
     await p.close();
   }
