@@ -27,6 +27,10 @@ APP_ID = CONFIG["appId"]
 
 MIN_IOS = "15.0"          # @capgo/native-purchases uses StoreKit 2 (iOS 15+); its newer releases require 15.0
 LANDSCAPE = ["UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationLandscapeLeft"]
+# iPad: every orientation. iPadOS needs all four for Split View, Stage Manager and freely resizable windows (Apple TN3192).
+IPAD_ORIENTATIONS = ["UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown",
+                     "UIInterfaceOrientationLandscapeLeft", "UIInterfaceOrientationLandscapeRight"]
+DEVICE_FAMILY = '"1,2"'   # universal: iPhone (1) and iPad (2)
 TESTER_MARK = "window.EF_TESTER=true"
 TESTER_FN = "function testerOn(){return !!window.EF_TESTER&&!!window.EF_TESTER_UNTIL&&Date.now()<window.EF_TESTER_UNTIL}"
 TESTER_BANNER = """${testerOn()?'<p class="dim" style="color:#ff8a6a;font-size:12px;margin:-6px 0 6px">TESTER BUILD · everything unlocked · not for the App Store</p>':""}"""
@@ -160,13 +164,13 @@ def patch_podfile():
         q = re.sub(r"(IPHONEOS_DEPLOYMENT_TARGET = )([\d.]+)(;)", _raise_target, p)
         # Xcode's user-script sandbox blocks CocoaPods' "[CP] Embed Pods Frameworks" step (PhaseScriptExecution failed)
         q = q.replace("ENABLE_USER_SCRIPT_SANDBOXING = YES;", "ENABLE_USER_SCRIPT_SANDBOXING = NO;")
-        # Version 1 is iPhone only (iPads run it in iPhone compatibility mode): no iPad multitasking/orientation rules
-        q = re.sub(r"TARGETED_DEVICE_FAMILY = [^;]+;", "TARGETED_DEVICE_FAMILY = 1;", q)
+        # Version 1.1 is universal: the game has its own iPad layouts (any window size, both orientations)
+        q = re.sub(r"TARGETED_DEVICE_FAMILY = [^;]+;", f"TARGETED_DEVICE_FAMILY = {DEVICE_FAMILY};", q)
         if "ENABLE_USER_SCRIPT_SANDBOXING" not in q:
             q = q.replace(f"IPHONEOS_DEPLOYMENT_TARGET = {MIN_IOS};", f"IPHONEOS_DEPLOYMENT_TARGET = {MIN_IOS};\n\t\t\t\tENABLE_USER_SCRIPT_SANDBOXING = NO;")
         if q != p:
             proj.write_text(q)
-            print(f"Xcode project: iOS Deployment Target {MIN_IOS}, iPhone only, script sandboxing off")
+            print(f"Xcode project: iOS Deployment Target {MIN_IOS}, iPhone and iPad, script sandboxing off")
 
 
 STOREKIT_REF = '<StoreKitConfigurationFileReference\n         identifier = "../../Emberfall.storekit">\n      </StoreKitConfigurationFileReference>'
@@ -294,12 +298,15 @@ def patch_ios(scene=True):
     data = plistlib.loads(plist.read_bytes())
     before = json.dumps(data, sort_keys=True, default=str)
     data["CFBundleDisplayName"] = APP_NAME
-    # Landscape only. The app is iPhone only (TARGETED_DEVICE_FAMILY = 1), so iPads run it in iPhone compatibility
-    # mode; the ~ipad list is set to the same landscape pair so every lookup agrees with what Capacitor's view
-    # controller reports (it reads UISupportedInterfaceOrientations). Portrait on iPad would never be honoured anyway.
+    # iPhone: landscape only. iPad: all four orientations, which iPadOS requires for multitasking and resizable windows.
+    # Capacitor's CAPBridgeViewController answers supportedInterfaceOrientations from
+    # Bundle.main.infoDictionary["UISupportedInterfaceOrientations"]; Foundation resolves the "~ipad" variant into that
+    # key on an iPad, so the view controller reports all four there and the landscape pair on an iPhone. Either way it
+    # always overlaps the plist list, so UIKit never raises UIApplicationInvalidInterfaceOrientation.
     data["UISupportedInterfaceOrientations"] = list(LANDSCAPE)
-    data["UISupportedInterfaceOrientations~ipad"] = list(LANDSCAPE)
-    data.pop("UIRequiresFullScreen", None)   # deprecated in iPadOS 26 and meaningless for an iPhone-only app
+    data["UISupportedInterfaceOrientations~ipad"] = list(IPAD_ORIENTATIONS)
+    data.pop("UIRequiresFullScreen", None)   # deprecated in iPadOS 26 (TN3192); the game resizes instead
+    data.pop("UIRequiresFullScreen~ipad", None)
     # No custom encryption: skips the export-compliance question on every upload.
     data["ITSAppUsesNonExemptEncryption"] = False
     if scene:
@@ -429,8 +436,13 @@ def verify_ios(ck, tester, strict, scene):
 
     # 3. Info.plist
     info = plistlib.loads((app_dir / "Info.plist").read_bytes())
-    ck.check(info.get("UISupportedInterfaceOrientations") == LANDSCAPE and info.get("UISupportedInterfaceOrientations~ipad") == LANDSCAPE,
-             "orientations: landscape left/right (iPhone and iPad compatibility mode)", "Info.plist orientations are not the landscape pair")
+    ck.check(info.get("UISupportedInterfaceOrientations") == LANDSCAPE, "iPhone orientations: landscape left/right",
+             "Info.plist UISupportedInterfaceOrientations (iPhone) is not the landscape pair")
+    ck.check(sorted(info.get("UISupportedInterfaceOrientations~ipad") or []) == sorted(IPAD_ORIENTATIONS),
+             "iPad orientations: all four (multitasking and resizable windows)",
+             "Info.plist UISupportedInterfaceOrientations~ipad must list all four orientations (iPad multitasking)")
+    ck.check("UIRequiresFullScreen" not in info and "UIRequiresFullScreen~ipad" not in info, "no UIRequiresFullScreen (deprecated in iPadOS 26)",
+             "Info.plist still has UIRequiresFullScreen: remove it (deprecated in iPadOS 26, the game supports resizing)")
     ck.check(info.get("ITSAppUsesNonExemptEncryption") is False, "ITSAppUsesNonExemptEncryption = NO", "ITSAppUsesNonExemptEncryption not set")
     ck.check(bool(info.get("UILaunchStoryboardName")), "launch screen storyboard set", "UILaunchStoryboardName missing (required by the iOS 27 SDK)")
     has_scene = "UIApplicationSceneManifest" in info
@@ -446,7 +458,8 @@ def verify_ios(ck, tester, strict, scene):
     pbx_path = IOS / "App" / "App.xcodeproj" / "project.pbxproj"
     pbx = pbx_path.read_text()
     fams = set(re.findall(r"TARGETED_DEVICE_FAMILY = ([^;]+);", pbx))
-    ck.check(fams == {"1"}, "iPhone only (TARGETED_DEVICE_FAMILY = 1)", f"TARGETED_DEVICE_FAMILY is {sorted(fams)}; expected 1 (iPhone only)")
+    ck.check(fams == {DEVICE_FAMILY}, "universal: iPhone and iPad (TARGETED_DEVICE_FAMILY = 1,2)",
+             f"TARGETED_DEVICE_FAMILY is {sorted(fams)}; expected {DEVICE_FAMILY} (iPhone and iPad)")
     targets = set(re.findall(r"IPHONEOS_DEPLOYMENT_TARGET = ([\d.]+);", pbx))
     ck.check(targets and all(ver_tuple(t) >= ver_tuple(MIN_IOS) for t in targets), f"iOS Deployment Target {', '.join(sorted(targets))}",
              f"iOS Deployment Target {sorted(targets)} is below {MIN_IOS}")
@@ -526,7 +539,9 @@ def print_checklist(ck, tester, synced):
         print("READY to archive. Before uploading, by hand:")
         print("  1. Xcode > Product > Scheme > Edit Scheme > Run > Build Configuration: Release, run on your iPhone,")
         print("     force-quit the app and open it again from the Home Screen (not from Xcode).")
-        print("  2. Run it on an iPad simulator (iPad Air, newest iPadOS): App Review tests iPhone apps on iPads too.")
+        print("  2. Run it on iPad simulators (iPad mini and iPad Pro 13-inch, newest iPadOS): full screen in both")
+        print("     orientations, then as a Stage Manager window dragged small, tall and wide. The App Store needs")
+        print("     13-inch iPad screenshots too (app/store/screenshots/ipad-13in/).")
         print("  3. Product > Archive, then Distribute App. Don't run --tester in between.")
     print("=" * 70)
 

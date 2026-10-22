@@ -14,8 +14,8 @@ const PLAY = (process.argv.find(a => a.startsWith('play=')) || '').slice(5);   /
 const results = [];
 const ok = (name, pass, detail = '') => { results.push({ name, pass, detail }); console.log((pass ? 'PASS ' : 'FAIL ') + name + (detail ? '  — ' + detail : '')); };
 
-async function fresh(b, vp = { width: 852, height: 393 }) {
-  const p = await b.newPage({ viewport: vp });
+async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
+  const p = await b.newPage({ viewport: vp, ...opts });
   const errs = [];
   p.on('pageerror', e => errs.push(e.message + ' @ ' + String(e.stack || '').split('\n').slice(1, 3).join(' ').replace(/file:\S+index.html/g, '')));
   await p.goto(FILE + '?fast');
@@ -340,6 +340,72 @@ async function fresh(b, vp = { width: 852, height: 393 }) {
         return out;
       });
       ok(`layout: real choice text with agents fits on ${nm}`, r.length === 0, r.slice(0, 10).join(', '));
+      await p.close();
+    }
+  }
+
+  /* ---------- 10. iPad: every window size iPadOS allows, portrait and landscape ---------- */
+  if (!PLAY) {
+    const IPADS = [['iPad Pro 13" landscape', 1376, 1032], ['iPad Pro 13" portrait', 1032, 1376], ['iPad Air 11" landscape', 1180, 820], ['iPad Air 11" portrait', 820, 1180],
+      ['iPad mini landscape', 1133, 744], ['iPad mini portrait', 744, 1133], ['iPad 9.7" landscape', 1024, 768], ['iPad 9.7" portrait', 768, 1024],
+      ['window 900x700', 900, 700], ['window 700x900', 700, 900], ['window 1100x600', 1100, 600], ['window 600x800', 600, 800], ['window 1000x500', 1000, 500], ['window 500x700', 500, 700]];
+    // screens that must fit inside the window with nothing cut off (lists inside the Journal may scroll, as on iPhone)
+    const SCREENS = {
+      title: `showTitle()`, prologue: `prologue(()=>{},3)`,
+      night: `S=fresh();S.month=4;S.f.plague=1;S.queue=[];S.qi=0;render();endMonth()`,
+      family: `S=fresh();S.month=5;S.night={req:[],reqDone:{},evs:[],evDone:{}};render();showNight();enterRoom('family')`,
+      treasury: `S=fresh();S.month=5;S.lastLedger=ledgerRows();render();panel('treasury')`, war: `S=fresh();S.month=5;render();panel('war')`, mason: `S=fresh();S.month=5;S.night={};render();panel('mason')`,
+      journalTable: `S=fresh();S.month=5;render();openJournal('table')`, journalCouncil: `S=fresh();S.month=9;S.f.corvinClaim=1;render();openJournal('council')`, journalMurder: `S=fresh();S.month=5;render();openJournal('murder')`,
+      settings: `openSettings()`, endings: `openEndings()`, world: `S=fresh();S.month=10;S.f.corvinClaim=1;render();openWorld();openWorld('greymarch')`,
+      warmap: `S=fresh();S.month=5;S.men=30;render();siege()`, paywall: `S=fresh();S.month=4;render();PRO=false;paywall(()=>{})`,
+      endingCard: `S=fresh();S.month=12;S.f.tobinKnight=1;S.f.marenWed=1;for(let i=0;i<14;i++)S.chron.push('March: something memorable happened '+i);render();ending('emberLord');$('cutBtn').click();$('cutBtn').click()`,
+      grave: `S=fresh();S.month=12;render();ending('emberLord');$('cutBtn').click()`, stat: `S=fresh();render();statInfo('gold')`,
+    };
+    const outside = () => {   // visible text and buttons that end up outside the window (after clipping by their scrolling/clipping parents)
+      const vw = innerWidth, vh = innerHeight, bad = [];
+      const vis = el => { for (let a = el; a; a = a.parentElement) { const cs = getComputedStyle(a); if (cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0) return false } return true };
+      for (const el of document.querySelectorAll('#app button, #app h2, #app h3, #app p, #app b, #app small, #app li, #app .lrow, #app #txt')) {
+        if (!el.getClientRects().length || !vis(el)) continue;
+        let r = el.getBoundingClientRect(); if (r.width < 1 || r.height < 1) continue;
+        let x0 = r.left, y0 = r.top, x1 = r.right, y1 = r.bottom;
+        for (let a = el.parentElement; a && a.id !== 'app'; a = a.parentElement) { const cs = getComputedStyle(a); if (cs.overflowX !== 'visible' || cs.overflowY !== 'visible') { const q = a.getBoundingClientRect(); x0 = Math.max(x0, q.left); y0 = Math.max(y0, q.top); x1 = Math.min(x1, q.right); y1 = Math.min(y1, q.bottom) } }
+        if (x1 - x0 < 1 || y1 - y0 < 1) continue;   // scrolled out of sight inside a list that scrolls
+        if (x0 < -1 || y0 < -1 || x1 > vw + 1 || y1 > vh + 1) bad.push((el.id || el.tagName.toLowerCase() + '.' + el.className) + ' "' + el.textContent.trim().slice(0, 24) + '"');
+      }
+      for (const el of document.querySelectorAll('#choices, #overlay .ovb.ending, #overlay .ovb.siege')) if (vis(el) && el.scrollHeight > el.clientHeight + 2) bad.push('scrolls: ' + (el.id || el.className));
+      return bad;
+    };
+    for (const [nm, w, h] of IPADS) {
+      const p = await fresh(b, { width: w, height: h }, { hasTouch: true, isMobile: true });
+      // a. every choice set in the real game text fits without a scrollbar
+      const r = await p.evaluate(async () => {
+        S = fresh(); S.month = 8; S.gold = 0; ['spy', 'foxPardoned', 'witchPact', 'harwinAlly', 'brannocJailed'].forEach(f => S.f[f] = 1); render(); closeOverlay();
+        const sets = []; E.forEach((e, i) => sets.push(['E' + i, e])); R.forEach((e, i) => sets.push(['R' + i, e])); SCENES.forEach(s => sets.push(['SC:' + s.id, s]));
+        const out = [];
+        for (const [tag, e] of sets) {
+          let t = ''; try { t = typeof e.text === 'function' ? e.text() : e.text } catch (x) { continue }
+          PCHAR = C[e.who] || null; $('who').textContent = C[e.who] ? C[e.who].n : ''; $('txt').className = ''; $('txt').style.fontSize = ''; $('txt').textContent = String(t).split('\n\n')[0];
+          const c = $('choices'); c.innerHTML = ''; delete $('dialog').dataset.fit; fitDialog();
+          (e.choices || []).forEach((o, i) => { let ok = true; try { ok = !o.req || o.req() } catch (x) { } if (!ok) return; const bt = choiceBtn(o, i, () => { }); bt.style.animation = 'none'; c.appendChild(bt) });
+          fitDialog(); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const d = $('dialog').getBoundingClientRect();
+          if (c.scrollHeight > c.clientHeight + 2 || d.bottom > innerHeight + 1 || d.right > innerWidth + 1) out.push(tag);
+          else for (const bt of c.children) { const q = bt.getBoundingClientRect(); if (q.height < 40) { out.push(tag + ' (button ' + Math.round(q.height) + 'px tall)'); break } }
+        }
+        $('choices').innerHTML = ''; fitDialog();
+        return out;
+      });
+      ok(`iPad layout: every choice set fits, no scrollbar, targets 40pt+ on ${nm} (${w}x${h})`, r.length === 0, r.slice(0, 8).join(', '));
+      // b. nothing is cut off on the key screens
+      const bad = [];
+      for (const [k, js] of Object.entries(SCREENS)) {
+        await p.evaluate(js => { closeModal(); closeOverlay(); HOLD = false; BT.on = false; eval(js) }, js);
+        await p.waitForTimeout(80);
+        const o = await p.evaluate(outside);
+        if (o.length) bad.push(k + ': ' + o.slice(0, 3).join('; '));
+      }
+      ok(`iPad layout: nothing cut off on ${Object.keys(SCREENS).length} key screens on ${nm} (${w}x${h})`, bad.length === 0, bad.slice(0, 6).join(' | '));
+      ok(`no page errors (iPad ${nm})`, p.errs.length === 0, p.errs.slice(0, 3).join(' | '));
       await p.close();
     }
   }

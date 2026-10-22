@@ -137,7 +137,7 @@ img.px{image-rendering:pixelated}
 @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}}
 @keyframes fade{from{opacity:0}}
 /* ---------- Landscape: the hall fills the screen, a text box runs along the bottom with the choices on its right ---------- */
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  #app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 34%}
  #hud{grid-row:1;grid-column:1;display:flex;align-items:center;gap:20px;padding:calc(env(safe-area-inset-top) + 5px) max(14px,env(safe-area-inset-right)) 5px max(14px,env(safe-area-inset-left))}
  #stats{flex:1;justify-content:flex-start;gap:clamp(14px,3vw,34px)}
@@ -177,7 +177,7 @@ img.px{image-rendering:pixelated}
  #txt{font-size:15.5px;line-height:1.28;margin-top:4px}
  .ch{font-size:14.5px;padding:6px 8px 6px 24px}#choices{gap:6px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  /* title: the castle fills the screen, logo on top, the menu along the bottom */
  #overlay.ts,#overlay.fb{display:block;overflow:hidden}
  #overlay.ts .cwrap,#overlay.fb .cwrap{position:absolute;inset:0;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -201,7 +201,7 @@ img.px{image-rendering:pixelated}
  #overlay.fb .summary h3.sm{font-size:16px;margin:8px 0 4px}#overlay.fb .summary ul{columns:2;column-gap:24px;font-size:14px;margin:4px 0}
  #overlay.fb .summary{max-width:none}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  /* night map: map on the left, a compact list of rooms on the right, Sleep always on screen */
  #overlay.nt .cwrap{flex:1.15 1 0}
  #overlay.nt .ovb{padding:10px max(14px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) 14px;display:flex;flex-direction:column;align-items:stretch}
@@ -229,7 +229,7 @@ img.px{image-rendering:pixelated}
  #overlay.fb .summary h3.sm:nth-of-type(2),#overlay.fb .summary ul{display:none}
  #overlay.nt .council{display:none}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  #overlay.nt .rooms{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px){
@@ -286,20 +286,20 @@ img.px{image-rendering:pixelated}
 .tg.on i{background:#3e6a2c;box-shadow:inset 0 0 0 1px #7ac060}.tg.on i::after{left:18px;background:#f4e2c0}
 .act{flex-direction:row;justify-content:center;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.5px;padding:8px;margin:2px 0;background:#3a2c40;box-shadow:inset 0 0 0 1px #6a5070,0 3px 0 #000}
 .act.gold{background:#a8322a;box-shadow:inset 0 0 0 1px #e0705a,0 3px 0 #000}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.pbody.t3,.pbody.t2{grid-template-columns:1fr}}
+@media (not ((orientation:landscape) and (min-aspect-ratio:5/4))) and (not ((min-width:500px) and (min-height:500px))){.pbody.t3,.pbody.t2{grid-template-columns:1fr}}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
  .phead{padding:6px 10px 6px 14px}.phead h3{font-size:19px}.phead p{font-size:12.5px}.pb.done{padding:6px 16px;font-size:14px}
  .pbody{padding:8px 10px 10px;gap:8px}.pbody section{padding:6px 8px}.lrow{font-size:14px;line-height:1.25}.note{font-size:12px}
  .tg{padding:5px 9px;font-size:14.5px}.seg button{padding:5px 2px;font-size:12.5px}.act{padding:6px;font-size:13px}
  .mis{padding:5px 7px;gap:4px}.mb button{padding:3px 2px}.mb em{font-size:12px}.bcard{padding:5px 8px}.bcard small{font-size:12px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  #dialog.many{grid-template-columns:auto minmax(0,1fr) minmax(0,1.25fr)}
  #dialog.many #choices{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:6px}
  #dialog.many .ch{padding-right:6px}
  #dialog.many .ch.go{grid-column:1/-1}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px),(min-width:600px) and (min-height:500px){
  .pbody.wr{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
  .wr .mh{flex-direction:column;align-items:flex-start;gap:1px}.wr .mh small{max-width:none;text-align:left}
  .wr .mh b{font-size:12.5px}.wr .mb b{font-size:12px}.wr .mb em{font-size:11.5px;white-space:nowrap}.wr .mb button{padding:3px 1px}.wr .mis{gap:3px}
@@ -308,8 +308,8 @@ img.px{image-rendering:pixelated}
  .wr .mis{padding:4px 6px}.wr .mh b{font-size:12px;line-height:1.08}.wr .mh small{font-size:11.5px;line-height:1.1}
  .wr .mb b{font-size:11px}.wr .mb em{font-size:11px}.wr .mb button{padding:2px 1px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:800px){.pbody.wr{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){#modal:has(.pnl){padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}#modal .box.pnl{max-height:100%}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:800px),(min-width:800px) and (min-height:500px){.pbody.wr{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){#modal:has(.pnl){padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}#modal .box.pnl{max-height:100%}}
 /* prologue: the vista fills the screen, the story runs along the bottom */
 #overlay.pl{display:block;overflow:hidden}
 #overlay.pl .cwrap{position:absolute;inset:0;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#05030a}
@@ -325,19 +325,19 @@ img.px{image-rendering:pixelated}
 #overlay.pl .pb{min-width:0;margin:0;padding:9px 18px;font-size:15px}
 .pl-faces{display:flex;gap:12px;margin:2px 0 8px}.pl-faces figure{margin:0;text-align:center}.pl-faces canvas{width:52px;height:52px;background:#2a1d2e;border:2px solid #000;box-shadow:inset 0 0 0 1px #6a4a2a}
 .pl-faces figcaption{font-family:var(--display);font-size:12px;color:var(--gold);margin-top:2px}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){#overlay.pl .ovb{flex-direction:column;align-items:stretch}#overlay.pl .pl-btns{flex-direction:row-reverse;justify-content:space-between}}
+@media (not ((orientation:landscape) and (min-aspect-ratio:5/4))) and (not ((min-width:500px) and (min-height:500px))){#overlay.pl .ovb{flex-direction:column;align-items:stretch}#overlay.pl .pl-btns{flex-direction:row-reverse;justify-content:space-between}}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
  #overlay.pl .ovb{padding-top:40px;padding-bottom:calc(env(safe-area-inset-bottom) + 12px)}#overlay.pl h3{font-size:21px}#overlay.pl p{font-size:15.5px;line-height:1.36}
  .pl-faces canvas{width:40px;height:40px}.pl-faces{margin:0 0 4px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  #pbox{width:92px;height:92px;background:radial-gradient(circle at 60% 35%,#4a3450,#1e1424 75%)}#portrait{width:86px;height:86px}
  #pbox::after{background:radial-gradient(transparent 60%,rgba(0,0,0,.4))}
 }
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){#pbox{width:78px;height:78px}#portrait{width:72px;height:72px}}
 #pbox{background:radial-gradient(circle at 60% 35%,#4a3450,#1e1424 75%)}
 #txt.tight{font-size:calc(1em - 1.5px)!important;line-height:1.2!important}#txt.tight2{font-size:calc(1em - 3px)!important}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
 #dialog.ftW{grid-template-columns:auto minmax(0,1fr) minmax(0,1.5fr)!important}
 #dialog.ftP{grid-template-columns:0 minmax(0,1fr) minmax(0,1.8fr)!important;column-gap:10px}#dialog.ftP #pbox{display:none}}
 #dialog.many2 #choices{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:5px}#dialog.many2 .ch.go{grid-column:1/-1}
@@ -350,7 +350,7 @@ img.px{image-rendering:pixelated}
 #dialog{cursor:pointer}
 /* keep every box clear of the notch and the rounded corners in landscape */
 :root{--sl:max(14px,env(safe-area-inset-left));--sr:max(14px,env(safe-area-inset-right));--safeW:calc(100vw - var(--sl) - var(--sr) - 12px)}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){
  #modal .box.pnl{width:min(900px,var(--safeW))}
  #modal .box.pnl:has(.set){width:min(640px,var(--safeW))}
  #modal .box:not(.pnl){max-width:min(620px,var(--safeW))}
@@ -380,7 +380,7 @@ img.px{image-rendering:pixelated}
 .fz.on{background:#5a2420;box-shadow:inset 0 0 0 2px #f2c14e}
 .fz em.good{color:#b8f0a0}.fz em.ok{color:#f2d080}.fz em.meh{color:#f0a860}.fz em.bad{color:#ffb0a0}
 .act.send{margin-top:auto;font-size:15px;padding:9px}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.pbody.wr2{grid-template-columns:1fr}}
+@media (not ((orientation:landscape) and (min-aspect-ratio:5/4))) and (not ((min-width:500px) and (min-height:500px))){.pbody.wr2{grid-template-columns:1fr}}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.wrow{padding:3px 7px}.wrow b{font-size:12.5px}.wrow small{font-size:11.5px}.fz{padding:3px 2px}.fz b{font-size:16px}}
 /* the Journal */
 .jtabs{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}.jtabs button{font-family:var(--display);font-weight:700;font-size:12.5px;padding:4px 9px;background:#2e2234;color:#d8c8b0;border:2px solid #000;cursor:pointer}.jtabs button.on{background:#a8322a;color:#fff4dc}
@@ -394,7 +394,7 @@ img.px{image-rendering:pixelated}
 .lord.yes{box-shadow:inset 0 0 0 1px #6ac05a}.lord.yes i{color:#8ad070}.lord.no{box-shadow:inset 0 0 0 1px #c04a3a}.lord.no i{color:#ff8a7a}.lord.und i{color:#f2d080}
 ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8;columns:2;column-gap:24px}
 .pbody.jr .neg{color:#ff9a8a}.pbody.jr .pos{color:#a8e08a}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.clues,.lords{grid-template-columns:1fr 1fr}ul.chron{columns:1}}
+@media (not ((orientation:landscape) and (min-aspect-ratio:5/4))) and (not ((min-width:500px) and (min-height:500px))){.clues,.lords{grid-template-columns:1fr 1fr}ul.chron{columns:1}}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.lord small{display:none}.clue small{font-size:11px}.lords{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px){
  #overlay.nt .room small{-webkit-line-clamp:1}#overlay.nt .resbar{margin-bottom:4px}#overlay.nt h3{font-size:16px}
@@ -406,8 +406,8 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 .seat b{display:block;font-family:var(--display);color:var(--gold);font-size:12.5px;margin-top:3px}.seat small{display:block;font-size:12.5px;color:#f4e2c0}.seat em{display:block;font-style:normal;font-size:11px;color:#b8a488;line-height:1.2;margin-top:2px}
 .seat.empty{opacity:.55}.seat.empty canvas{background:#120b16}
 @media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.seat canvas{width:40px;height:40px}.seat em{font-size:10.5px}}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.seats{grid-template-columns:repeat(3,1fr)}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){#dialog.lots{grid-template-columns:auto minmax(0,.8fr) minmax(0,1.5fr)}#dialog.lots #choices{grid-template-columns:1fr 1fr 1fr}#dialog.lots .ch{font-size:13.5px;padding:5px 5px 5px 20px}#dialog.lots .ch::before{left:7px}}
+@media (not ((orientation:landscape) and (min-aspect-ratio:5/4))) and (not ((min-width:500px) and (min-height:500px))){.seats{grid-template-columns:repeat(3,1fr)}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px){#dialog.lots{grid-template-columns:auto minmax(0,.8fr) minmax(0,1.5fr)}#dialog.lots #choices{grid-template-columns:1fr 1fr 1fr}#dialog.lots .ch{font-size:13.5px;padding:5px 5px 5px 20px}#dialog.lots .ch::before{left:7px}}
 
 /* ---------- the night map: the castle fills the screen, rooms are tapped where they're painted ---------- */
 #overlay.nm{display:block;overflow:hidden;background:linear-gradient(#03051a 50%,#120a08 50%);padding:0}
@@ -498,6 +498,104 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 @keyframes fade{from{opacity:0}to{opacity:1}}
 .lord.unk{opacity:.8}.lord.unk i{color:#b8a488}
 .vol{display:flex;flex-direction:column;gap:2px;font-size:13px;color:#b8a488;margin:0 2px 4px}.vol input{width:100%;accent-color:#c8382a;height:22px}.vol input:disabled{opacity:.4}
+/* ---------- iPad and other big windows (never an iPhone: every iPhone is under 500px tall in landscape) ---------- */
+.nlist{display:none}
+/* tall windows (iPad portrait, square-ish Stage Manager windows): the hall across the top at its own shape, the text below */
+@media (min-width:500px) and (min-height:500px) and (max-aspect-ratio:5/4){
+ #app{grid-template-rows:auto min(calc(100vw * .625 - 30px),50%) minmax(0,1fr)}
+ #dialog{display:flex;flex-direction:column;padding:16px 20px 14px;margin-top:0}
+ #dialog .head{display:flex;gap:14px;align-items:center;flex:none}
+ #dialog .head>div:last-child{display:block}
+ #role{margin-top:3px}
+ #txt{flex:1 1 auto;min-height:0;margin:12px 2px 6px;overflow:hidden}
+ #choices{flex:0 0 42%;min-height:0;justify-content:flex-end;border-left:0;padding:12px 2px 6px;border-top:2px dashed rgba(42,24,16,.25)}
+ #dialog.many #choices,#dialog.many2 #choices{align-content:end}
+ #dialog.lots #choices,#dialog.ft3 #choices{grid-template-columns:1fr 1fr!important}
+ #dialog.ftP #pbox{display:block}
+ /* night: the castle across the top, every room as a big button underneath */
+ #overlay.nm .nmwrap{top:calc(env(safe-area-inset-top) + 64px);transform:translate(-50%,0)}
+ @keyframes ovZoomT{from{opacity:0;transform:translate(-50%,0) scale(1.04)}}
+ #overlay.nm .nmwrap{animation-name:ovZoomT}
+ #overlay.nm.going .nmwrap{transform:translate(-50%,0) scale(1.5)}
+ #overlay.nm{background:linear-gradient(#03051a calc(env(safe-area-inset-top) + 64px + 30vw),#120a08 0)}
+ #overlay.nm .nlist{display:grid;position:absolute;left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));top:calc(env(safe-area-inset-top) + 64px + 60vw + 22px);
+  grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+ #overlay.nm.going .nlist{transition:opacity .2s;opacity:0}
+ .nl{font-family:var(--book);text-align:left;background:rgba(30,20,36,.92);color:#f4e2c0;border:3px solid #000;box-shadow:inset 0 0 0 2px #5a4020,0 4px 0 #000;padding:10px 14px;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-height:64px;justify-content:center}
+ .nl:active{transform:translateY(3px);box-shadow:inset 0 0 0 2px #5a4020,0 1px 0 #000}
+ .nl b{font-family:var(--display);color:#f2c14e;font-size:18px;display:flex;align-items:center;gap:8px}.nl small{color:#c8b498;font-size:15px;font-style:italic}
+ .nl em{font-style:normal}.nl em.bang{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#f2c14e;color:#2a1810;font-size:14px;border:1px solid #000}
+ .nl em.heart{color:#ff8aa0}.nl em.ok{color:#8ad07a}
+ .nl.req{box-shadow:inset 0 0 0 2px #f2c14e,0 4px 0 #000}.nl.fam{box-shadow:inset 0 0 0 2px #c85a7a,0 4px 0 #000}.nl.done{opacity:.75}
+ #overlay.nm #nextBtn{left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));justify-content:center;padding:13px 20px;font-size:17px}
+ /* the river country: the map lies framed in the middle of the table, its text above and below */
+ #overlay.wm{background:radial-gradient(ellipse at 50% 50%,#2c4058,#121a26 75%)}
+ #overlay.wm .wmwrap{box-shadow:0 0 0 3px #000,0 0 0 5px #5a4020,0 0 0 8px #000,0 18px 50px rgba(0,0,0,.6)}
+ #overlay.wm .wmtext{top:calc(env(safe-area-inset-top) + 16px);width:calc(100% - 32px);flex-direction:column;align-items:stretch;padding:14px 18px}
+ #overlay.wm .wmtext p{font-size:17px}#overlay.wm .wmtext .dim{font-size:13px}#overlay.wm .wmtext .pb{align-self:center;padding:12px 26px;font-size:17px}
+ #overlay.wm .wcard{left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));width:auto!important;bottom:calc(env(safe-area-inset-bottom) + 16px);padding:12px 16px}
+ #overlay.wm .wcard>b{font-size:19px}#overlay.wm .wcard .wl{font-size:15px}#overlay.wm .wcard p{font-size:16px}
+ /* story screens and endings: centred on the picture, never cut off at the sides */
+ #overlay.fb .ovb.cut{left:50%;width:min(680px,calc(100% - 40px))}
+}
+/* bigger type and targets on iPad-sized windows: read at arm's length, tap with a thumb */
+@media (min-width:500px) and (min-height:640px){
+ #hud{padding-top:calc(env(safe-area-inset-top) + 8px);padding-bottom:8px}
+ #pbox{width:100px;height:100px}#portrait{width:94px;height:94px}
+ #who{font-size:20px}#role{font-size:15px}
+ #txt{font-size:19.5px;line-height:1.38}
+ .ch{font-size:17.5px;padding:10px 12px 10px 28px;line-height:1.25}.ch .cost{font-size:13.5px;margin-top:2px}.ch.go{font-size:16.5px}
+ #choices{gap:9px}
+ .bigtext #txt{font-size:22px}.bigtext .ch{font-size:19.5px}
+ #overlay.nm .ntitle b{font-size:19px}#overlay.nm .ntitle span{font-size:14.5px}#overlay.nm .resbar div{font-size:16.5px}#overlay.nm .nbtns .hb{padding:6px 12px;font-size:14.5px}
+ #overlay.nm .plq{font-size:13.5px}
+ #overlay.wm .ntitle b{font-size:20px}#overlay.wm .ntitle span{font-size:14.5px}
+}
+@media (min-width:760px) and (min-height:640px){
+ .stat img{width:26px;height:26px}.stat b{font-size:23px}.stat small{font-size:11px}
+ #daylbl{font-size:14.5px!important}#daylbl small{font-size:12.5px!important}
+ .hb{font-size:15px;padding:6px 13px}
+}
+@media (min-width:1000px) and (min-height:860px){
+ .stat img{width:30px;height:30px}.stat b{font-size:27px}.stat small{font-size:12px}
+ #daylbl{font-size:16px!important}#daylbl small{font-size:13.5px!important}
+ .hb{font-size:16px;padding:7px 15px}
+}
+@media (min-width:500px) and (min-height:860px){
+ #pbox{width:112px;height:112px}#portrait{width:106px;height:106px}
+ #who{font-size:23px}#role{font-size:16.5px}
+ #txt{font-size:22px}
+ .ch{font-size:19.5px;padding:12px 14px 12px 30px}.ch .cost{font-size:14.5px}.ch.go{font-size:18px}
+ .bigtext #txt{font-size:24.5px}.bigtext .ch{font-size:21.5px}
+}
+/* boxes designed for a phone are drawn larger on an iPad, as a whole (every line keeps its place, nothing re-wraps) */
+@media (min-width:700px) and (min-height:640px){:root{--pz:1.25}}
+@media (min-width:950px) and (min-height:860px){:root{--pz:1.45}}
+@media (min-width:1150px) and (min-height:960px){:root{--pz:1.6}}
+@media (min-width:700px) and (min-height:640px){
+ #modal .box,#tip .box{transform:scale(var(--pz));animation-name:popInT}
+ @keyframes popInT{from{opacity:0;transform:scale(calc(var(--pz) * .94))}}
+ #modal .box{max-height:calc(92% / var(--pz))!important}
+ #tip .box{max-height:calc(90% / var(--pz))!important}
+ #modal .box.pnl{width:min(900px,calc(var(--safeW) / var(--pz)))!important;max-height:calc(100% / var(--pz))!important}
+ #modal .box.pnl:has(.set){width:min(640px,calc(var(--safeW) / var(--pz)))!important}
+ #modal .box:not(.pnl),#tip .box{max-width:min(620px,calc(var(--safeW) / var(--pz)))!important}
+ #overlay.fb .ovb:not(.cut){transform:translate(-50%,-50%) scale(var(--pz));width:min(780px,calc(var(--safeW) / var(--pz)))!important;max-height:calc(94% / var(--pz))}
+ #overlay.fb .ovb.cut{transform:translateX(-50%) scale(var(--pz));transform-origin:50% 100%;width:min(820px,calc(90vw / var(--pz)))}
+ #overlay.ts .ovb{left:50%;right:auto;width:calc(100% / var(--pz));transform:translateX(-50%) scale(var(--pz));transform-origin:50% 100%}
+ #overlay.ts .logo h1{font-size:min(10vw,104px)}#overlay.ts .logo h2{font-size:26px}
+ #overlay.pl .pl-in{max-width:900px}#overlay.pl .pl-k{font-size:16px}#overlay.pl h3{font-size:32px}#overlay.pl p{font-size:21px}
+ .pl-faces canvas{width:68px;height:68px}.pl-faces figcaption{font-size:14px}
+ #overlay.pl .pb{padding:12px 24px;font-size:17px}
+ #card b{font-size:72px}#card span{font-size:20px}#pips i{width:18px;height:18px}
+ #toast{font-size:18px;padding:12px 18px}
+ .wpl{font-size:13px;padding:1px 6px}.wpl.home{font-size:15px}
+ #overlay.wm .wcard{width:min(480px,46%)}#overlay.wm .wcard>b{font-size:19px}#overlay.wm .wcard .wl{font-size:15px}#overlay.wm .wcard p{font-size:16px}
+ #overlay.wm .wmtext p{font-size:17px}#overlay.wm .wmtext .pb{padding:11px 22px;font-size:17px}
+ #overlay.nm #nextBtn{padding:12px 24px;font-size:17px}
+}
+.wctl #hud,.wctl #overlay.nm .nhud,.wctl #overlay.wm .whud{padding-left:max(96px,env(safe-area-inset-left))!important}
+.wctl #modal{padding-top:max(44px,env(safe-area-inset-top))!important}.wctl #overlay.wm .wmtext{top:44px}.wctl #overlay.ts .logo{top:max(44px,5%)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -1689,7 +1787,13 @@ new MutationObserver(()=>{const n=$("choices").children.length,d=$("dialog");d.c
  delete d.dataset.fit;d.classList.remove("ftB","ftC","ftW","ftP","ft3","many2");$("choices").classList.remove("tight");$("txt").style.fontSize="";$("txt").style.lineHeight="";requestAnimationFrame(fitDialog)}).observe($("choices"),{childList:true});
 const pctx=$("portrait").getContext("2d");let PCHAR=null;
 const RM=matchMedia("(prefers-reduced-motion: reduce)");
-const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4)");
+const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4),(min-width:500px) and (min-height:500px)");// the wide layout: every phone in landscape, and every iPad-sized window
+/* iPad windows (Stage Manager, Split View): iPadOS draws its window controls over the top-left corner of the page and
+   web content gets no safe-area inset for them, so the top bars leave that corner free. Only on an iPad, only in a window. */
+(()=>{const ipad=/iPad/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);if(!ipad)return;
+ const chk=()=>{const a=Math.max(screen.width,screen.height),b=Math.min(screen.width,screen.height),w=innerWidth,h=innerHeight,near=(x,y)=>Math.abs(x-y)<4;
+  document.documentElement.classList.toggle("wctl",!((near(w,a)&&near(h,b))||(near(w,b)&&near(h,a))))};
+ chk();addEventListener("resize",chk)})();
 /* ---------------- Wide stage for landscape: the hall is extended to fill the screen ---------------- */
 const K=2;// render scale: each logical pixel is 2x2 device pixels on the stage, so characters, edges and light get finer detail
 const WIDE={on:true,LW:W,E:0,cache:null,key:"",vig:null,torches:[],light:null,lx:null};
@@ -2767,8 +2871,10 @@ function showNight(){
  nmSize();const LW=NM.LW,R=nmLayout(LW).rooms;
  const pct=([x,y,w,h])=>`left:${(x/LW*100).toFixed(2)}%;top:${(y/1.2).toFixed(2)}%;width:${(w/LW*100).toFixed(2)}%;height:${(h/1.2).toFixed(2)}%`;
  const ids=["family","council","treasury","war","mason",...(has("brannocJailed")?["dungeon"]:[])];
- const hot=ids.map(id=>{const k=roomStatus(id);return `<button class="room${k?" "+k:""}" style="${pct(R[id])}" onclick="nmGo('${id}',this)" aria-label="${ROOMNAME[id]}"><span class="plq">${k==="req"?'<em class="bang">!</em>':k==="fam"?'<em class="heart">♥</em>':k==="done"?'<em class="ok">✓</em>':""}<span>${ROOMNAME[id]}</span></span></button>`}).join("");
- overlay(`<div class="nmwrap"><canvas id="nmap" width="${LW*2}" height="240"></canvas><div class="rooms">${hot}</div></div>
+ const hot=ids.map(id=>{const k=roomStatus(id);return `<button class="room${k?" "+k:""}" data-r="${id}" style="${pct(R[id])}" onclick="nmGo('${id}',this)" aria-label="${ROOMNAME[id]}"><span class="plq">${k==="req"?'<em class="bang">!</em>':k==="fam"?'<em class="heart">♥</em>':k==="done"?'<em class="ok">✓</em>':""}<span>${ROOMNAME[id]}</span></span></button>`}).join("");
+ const NOTE={req:"Must be settled tonight",fam:"Someone wants to talk",done:"Visited tonight"};
+ const list=ids.map(id=>{const k=roomStatus(id);return `<button class="nl${k?" "+k:""}" onclick="nmGo('${id}',document.querySelector('#overlay .room[data-r=${id}]'))"><b>${k==="req"?'<em class="bang">!</em>':k==="fam"?'<em class="heart">♥</em>':k==="done"?'<em class="ok">✓</em>':""}${ROOMNAME[id]}</b><small>${NOTE[k]||"Yours to visit or skip"}</small></button>`}).join("");
+ overlay(`<div class="nmwrap"><canvas id="nmap" width="${LW*2}" height="240"></canvas><div class="rooms">${hot}</div></div><div class="nlist">${list}</div>
   <div class="nhud"><div class="ntitle"><b>Night · end of ${MONTHS[S.month-1]}</b><span>${left.length?`${["","Something needs you tonight.","Two matters need you tonight.","Three matters need you tonight.","Four matters need you tonight.","Five matters need you tonight.","Six matters need you tonight."][left.length]||"Many matters need you tonight."}`:nightMood()}</span></div>
   <div class="nright">${resBar()}<div class="nbtns"><button class="hb" onclick="openWorld()">Map</button><button class="hb" onclick="openJournal()">Journal</button><button class="hb" onclick="openSettings()">⚙</button></div></div></div>
   <button class="pb${left.length?" wait":""}" id="nextBtn">${left.length?`<em class="bang">!</em> ${leftRooms.map(r=>ROOMNAME[r]).join(" · ")} first`:`Sleep until ${MONTHS[S.month]}`}</button>`);
