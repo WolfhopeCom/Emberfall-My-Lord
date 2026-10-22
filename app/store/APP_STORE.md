@@ -35,15 +35,15 @@ Your father didn't die in his sleep. Rule Emberfall for one year, hold the ford 
 ```
 Your father is dead, and the throne of Emberfall is yours. Everyone says he died in his sleep. His last letter says otherwise.
 
-Rule a small river city for one year, from spring thaw to midwinter. Every day, someone climbs to your throne with a problem: a starving village, a marriage offer for your daughter, the strange ferrywoman of the Ember, with a bargain she won't explain, an envoy from Baron Vex, who wants your city. Every answer costs gold, grain, soldiers or your people's love.
+Rule a small river city for one year, from the spring thaw to the end of winter. Every day, someone climbs to your throne with a problem: a starving village, a marriage offer for your daughter, a strange ferrywoman with a bargain she won't explain, an envoy from Baron Vex, who wants your city. Every answer costs gold, grain, soldiers or your people's love.
 
 At night, walk the castle. Set taxes in the treasury, send soldiers out from the war room, build walls with your master mason, and spend the evening with your family.
 
-In high summer, Vex's army comes for the ford. Command the battle yourself. Survive it, and your cousin Corvin arrives with a will that names him heir. Eleven lords will vote on who rules Emberfall. Win them over, gather the evidence, and at the Midwinter Council, decide whether to name your father's murderer in front of them all.
+In high summer, Vex's army comes for the ford. Command the battle yourself. Survive it, and your cousin Corvin arrives with a will that names him heir. Eleven lords will vote on who rules Emberfall. Win them over, gather the evidence, and in the King's hall in February, decide whether to name your father's murderer in front of them all.
 
 • A full year of story in two chapters, with a mystery that runs through all of it
 • A playable battle: your preparations and your orders on the night decide it
-• Eleven lords to win over before the Midwinter Council
+• Eleven lords to win over before the Lords' Council
 • Your family, with conversations that change as the year does
 • 21 endings: a stolen crown, a burning city, a kingdom saved, and stranger fates
 • Pixel art with real lighting, seasons and weather, plus an original soundtrack
