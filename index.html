@@ -500,6 +500,8 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 .vol{display:flex;flex-direction:column;gap:2px;font-size:13px;color:#b8a488;margin:0 2px 4px}.vol input{width:100%;accent-color:#c8382a;height:22px}.vol input:disabled{opacity:.4}
 /* ---------- iPad windows (never an iPhone: every iPhone is under 500px tall in landscape, and never in portrait) ---------- */
 .nlist{display:none}
+/* the river country lies framed on the table when the window is taller than the map */
+@media (min-width:320px) and (min-height:500px){#overlay.wm{background:radial-gradient(ellipse at 50% 50%,#2c4058,#121a26 75%)}#overlay.wm .wmwrap{box-shadow:0 0 0 3px #000,0 0 0 5px #5a4020,0 0 0 8px #000,0 18px 50px rgba(0,0,0,.6)}}
 /* tall windows (iPad portrait, square-ish Stage Manager windows): the hall across the top at its own shape, the text below */
 @media (min-width:320px) and (min-height:500px) and (max-aspect-ratio:5/4){
  #app{grid-template-rows:auto min(calc(100vw * .625 - 30px),42%) minmax(0,1fr)}
@@ -532,8 +534,6 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
  .nl.req{box-shadow:inset 0 0 0 2px #f2c14e,0 4px 0 #000}.nl.fam{box-shadow:inset 0 0 0 2px #c85a7a,0 4px 0 #000}.nl.done{opacity:.75}
  #overlay.nm #nextBtn{left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));justify-content:center;padding:13px 20px;font-size:17px}
  /* the river country: the map lies framed in the middle of the table, its text above and below */
- #overlay.wm{background:radial-gradient(ellipse at 50% 50%,#2c4058,#121a26 75%)}
- #overlay.wm .wmwrap{box-shadow:0 0 0 3px #000,0 0 0 5px #5a4020,0 0 0 8px #000,0 18px 50px rgba(0,0,0,.6)}
  #overlay.wm .wmtext{top:calc(env(safe-area-inset-top) + 16px);width:calc(100% - 32px);flex-direction:column;align-items:stretch;padding:14px 18px}
  #overlay.wm .wmtext p{font-size:17px}#overlay.wm .wmtext .dim{font-size:13px}#overlay.wm .wmtext .pb{align-self:center;padding:12px 26px;font-size:17px}
  #overlay.wm .wcard{left:max(16px,env(safe-area-inset-left));right:max(16px,env(safe-area-inset-right));width:auto!important;bottom:calc(env(safe-area-inset-bottom) + 16px);padding:12px 16px}
@@ -2534,7 +2534,7 @@ function react(){
 let TY=null;
 /* Text never scrolls: a long speech is split into pages that fit the box. Tap to finish a page, tap again for the next. */
 let MEAS=null;
-function pageHeight(){const el=$("txt");if(LANDSCAPE.matches)return el.clientHeight;const d=$("dialog");return Math.max(90,d.clientHeight-150)}
+function pageHeight(){const el=$("txt");if(LANDSCAPE.matches)return el.clientHeight-(innerHeight>=500?Math.ceil(parseFloat(getComputedStyle(el).lineHeight)||0):0);/* on an iPad, a line of slack: a page that measures a hair short must never spill over and shrink */const d=$("dialog");return Math.max(90,d.clientHeight-150)}
 function paginate(str){const el=$("txt"),H=pageHeight();if(!(H>24)||!el.clientWidth)return[str];
  if(!MEAS){MEAS=document.createElement("div");MEAS.setAttribute("aria-hidden","true");document.body.appendChild(MEAS)}
  const cs=getComputedStyle(el);MEAS.style.cssText=`position:absolute;left:-9999px;top:0;visibility:hidden;white-space:pre-line;width:${el.clientWidth}px;font-family:${cs.fontFamily};font-size:${cs.fontSize};line-height:${cs.lineHeight};letter-spacing:${cs.letterSpacing};font-weight:${cs.fontWeight};font-style:${cs.fontStyle};padding:${cs.paddingTop} ${cs.paddingRight} ${cs.paddingBottom} ${cs.paddingLeft}`;
