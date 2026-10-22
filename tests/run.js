@@ -5,12 +5,14 @@
      node tests/run.js           (all tests, about 10 minutes)
      node tests/run.js quick     (skips the long playthroughs)
      node tests/run.js play=military:6   (only six playthroughs in one style)
+     node tests/run.js ipad      (only the iPad layout checks)
    Exit code 0 = everything passed. */
 const { chromium } = require('playwright');
 const path = require('path');
 const FILE = 'file://' + path.resolve(__dirname, '..', 'index.html');
 const QUICK = process.argv.includes('quick');
 const PLAY = (process.argv.find(a => a.startsWith('play=')) || '').slice(5);   // e.g. play=military:6 runs only those playthroughs
+const IPAD = process.argv.includes('ipad');   // node tests/run.js ipad: only the iPad layout checks
 const results = [];
 const ok = (name, pass, detail = '') => { results.push({ name, pass, detail }); console.log((pass ? 'PASS ' : 'FAIL ') + name + (detail ? '  — ' + detail : '')); };
 
@@ -33,7 +35,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   const b = await chromium.launch();
 
   /* ---------- 1. economy formulas ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     const p = await fresh(b);
     const r = await p.evaluate(() => {
       const out = {};
@@ -83,7 +85,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 2. new game, save, load, migration, corruption ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     const p = await fresh(b);
     const r = await p.evaluate(async () => {
       const out = {};
@@ -115,7 +117,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 3. the $1.99 unlock ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     const p = await fresh(b);
     const r = await p.evaluate(async () => {
       const out = {};
@@ -169,7 +171,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 4. endings: every one is reachable from a valid state ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     const p = await fresh(b);
     const r = await p.evaluate(() => {
       const cases = {
@@ -193,7 +195,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 5. every line of story text and every choice runs in many random states ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     const p = await fresh(b);
     const TRIALS = QUICK ? 12 : 30; let r = { sets: 0, runs: 0, errs: [] };
     for (let trial = 0; trial < TRIALS; trial++) {
@@ -229,7 +231,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 6. nothing scrolls: every choice set fits on iPhone-sized screens ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     for (const [nm, vp] of [['iPhone', { width: 852, height: 393 }], ['iPhone SE', { width: 667, height: 375 }]]) {
       const p = await fresh(b, vp);
       const r = await p.evaluate(async () => {
@@ -250,7 +252,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 8. regressions found by independent QA: reloads, double taps, broken saves, crowded nights ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     const p = await fresh(b);
     const drive = async (want, tries = 60) => {   // advance text and click the first choice matching `want`
       for (let i = 0; i < tries; i++) {
@@ -321,7 +323,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 9. every choice set in the real game text fits, with agents known, on the smallest phones ---------- */
-  if (!PLAY) {
+  if (!PLAY && !IPAD) {
     for (const [nm, vp] of [['iPhone 15', { width: 852, height: 393 }], ['iPhone SE', { width: 667, height: 375 }]]) {
       const p = await fresh(b, vp);
       const r = await p.evaluate(async () => {
@@ -390,17 +392,17 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
           fitDialog(); await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
           const d = $('dialog').getBoundingClientRect();
           if (c.scrollHeight > c.clientHeight + 2 || d.bottom > innerHeight + 1 || d.right > innerWidth + 1) out.push(tag);
-          else for (const bt of c.children) { const q = bt.getBoundingClientRect(); if (q.height < 40) { out.push(tag + ' (button ' + Math.round(q.height) + 'px tall)'); break } }
+          else for (const bt of c.children) { const q = bt.getBoundingClientRect(); if (q.height < 43.5) { out.push(tag + ' (button ' + Math.round(q.height) + 'px tall)'); break } }
         }
         $('choices').innerHTML = ''; fitDialog();
         return out;
       });
-      ok(`iPad layout: every choice set fits, no scrollbar, targets 40pt+ on ${nm} (${w}x${h})`, r.length === 0, r.slice(0, 8).join(', '));
+      ok(`iPad layout: every choice set fits, no scrollbar, targets 44pt+ on ${nm} (${w}x${h})`, r.length === 0, r.slice(0, 8).join(', '));
       // b. nothing is cut off on the key screens
       const bad = [];
       for (const [k, js] of Object.entries(SCREENS)) {
         await p.evaluate(js => { closeModal(); closeOverlay(); HOLD = false; BT.on = false; eval(js) }, js);
-        await p.waitForTimeout(80);
+        await p.waitForTimeout(450);
         const o = await p.evaluate(outside);
         if (o.length) bad.push(k + ': ' + o.slice(0, 3).join('; '));
       }
@@ -411,7 +413,7 @@ async function fresh(b, vp = { width: 852, height: 393 }, opts = {}) {
   }
 
   /* ---------- 7. full playthroughs with different ruling styles ---------- */
-  if (!QUICK) {
+  if (!QUICK && !IPAD) {
     const [onlyStyle, onlyN] = PLAY.split(':');
     const STYLES = {
       cautious: { tax: 'normal', pref: /Not now|Refuse|Say nothing|Keep it|Volunteers|Train villagers|Hold the walls/, avoid: /Kneel|Flee/ },

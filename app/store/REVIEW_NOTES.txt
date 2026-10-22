@@ -29,6 +29,6 @@ After purchase the game continues straight into July, and Settings shows "The fu
 Restore: Settings > Restore purchase, or Restore purchase on the unlock screen.
 
 DEVICES
-iPhone only. On iPad it runs in iPhone compatibility mode, in landscape.
+iPhone and iPad. On iPhone the game is landscape only; on iPad it runs in every orientation, in Split View and in resizable Stage Manager windows.
 
 Contact: Harrison Wolfhope, wolfhopeco@gmail.com

@@ -2,6 +2,7 @@
 // No state is faked for the store shots: a bot plays a full year (first enabled answer each time) and
 // candidate frames are saved at the moments we want; the best are then copied into ../screenshots/.
 //   PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers PW_MODULE=<path to playwright> node app/store/tools/render_store.js <outdir> <W> <H> [year|paywall]
+//   DSF=2 ... <outdir> 1376 1032 year     iPad 13-inch screenshots (2752x2064); the default scale is 3 (iPhone)
 const { chromium } = require(process.env.PW_MODULE || 'playwright');
 const path = require('path'), fs = require('fs');
 const ROOT = path.resolve(__dirname, '..', '..', '..');
@@ -10,7 +11,7 @@ const TIPS = ['journal', 'start', 'night', 'treasury', 'war', 'mason', 'agents',
 fs.mkdirSync(OUT, { recursive: true });
 (async () => {
   const b = await chromium.launch();
-  const p = await b.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 3, hasTouch: true, isMobile: false });
+  const p = await b.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: +(process.env.DSF || 3), hasTouch: true, isMobile: false });
   p.on('pageerror', e => console.error('PAGE ERROR', e.message));
   await p.goto('file://' + path.join(ROOT, 'index.html'), { waitUntil: 'domcontentloaded' });
   await p.evaluate(([tips, pro]) => { localStorage.clear(); localStorage.setItem('ef_tips', JSON.stringify(tips)); localStorage.setItem('ef_prefs', JSON.stringify({ sp: 'instant' })); if (pro) localStorage.setItem('ef_pro', '1'); }, [TIPS, MODE === 'year']);

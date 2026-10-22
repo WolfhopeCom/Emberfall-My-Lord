@@ -21,7 +21,7 @@ Checked against the current `index.html` on 2026-10-22. The step-by-step submiss
 | App Privacy | **Data Not Collected** | The game has no network code except StoreKit, and saves only to on-device storage. |
 | Export compliance | No non-exempt encryption | `ITSAppUsesNonExemptEncryption = NO` is in Info.plist (`build_app.py`), so App Store Connect won't ask. If it does ask: "None of the algorithms mentioned above". |
 | Content rights | "Yes, it contains third-party content, and I have the necessary rights" | The only third-party content is the bundled fonts (Cinzel, Alegreya, Pixelify Sans), all under the SIL Open Font License. Everything else is original. |
-| Devices | iPhone only. iPads run it in iPhone compatibility mode, in landscape. | `TARGETED_DEVICE_FAMILY = 1`; landscape orientations are also set for `~ipad`. No iPad screenshots are needed. |
+| Devices | Version 1.1: iPhone and iPad (universal). iPhone stays landscape-only; iPad runs in every orientation, in Split View and in resizable Stage Manager windows, with its own layouts. (1.0 was iPhone only.) | `TARGETED_DEVICE_FAMILY = "1,2"`; `UISupportedInterfaceOrientations` = landscape pair, `UISupportedInterfaceOrientations~ipad` = all four; no `UIRequiresFullScreen`. iPad screenshots are required: `screenshots/ipad-13in/`. |
 | Screenshots | `screenshots/6.9in/` (2868×1320) and `screenshots/6.3in/` (2622×1206), both landscape, 6 each | See "Screenshots" below. |
 
 ## Promotional text (max 170)
@@ -132,6 +132,7 @@ These are rendered from the current game (Cinzel title font) by `tools/render_st
 
 - `screenshots/6.9in/`: 2868×1320. Upload these to the **iPhone 6.9" Display** slot (the Dynamic Island, large display class). App Store Connect also scales them for smaller iPhones.
 - `screenshots/6.3in/`: 2622×1206. Upload these to the **iPhone 6.3" Display** slot (the Dynamic Island, medium display class). Apple's screenshot specifications page, as of October 2026, lists this class as required ("At least one screenshot for iPhone with Dynamic Island (medium display)"). Uploading both sets covers either reading of the rules.
+- `screenshots/ipad-13in/`: 2752×2064 landscape (version 1.1). Upload these to the **iPad 13" Display** slot; App Store Connect scales them for smaller iPads.
 - `screenshots/old/`: the previous October 13 set (Pixelify title, 2622×1206). Don't upload these.
 - Screenshots 4 and 6 come from paid content. That's allowed, because the description says plainly that March to June is free and the rest is a $1.99 unlock.
 
@@ -144,5 +145,6 @@ cd emberfall-my-lord
 PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers PW_MODULE=<path to playwright> node app/store/tools/render_store.js <outdir> 956 440 year      # 2868x1320 candidates
 PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers PW_MODULE=<path to playwright> node app/store/tools/render_store.js <outdir> 874 402 year      # 2622x1206 candidates
 PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers PW_MODULE=<path to playwright> node app/store/tools/render_store.js <outdir> 932 430 paywall   # IAP review screenshot 2796x1290
+DSF=2 PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers PW_MODULE=<path to playwright> node app/store/tools/render_store.js <outdir> 1376 1032 year   # iPad 13" 2752x2064 candidates
 node app/store/tools/playthrough.js instant   # counts the taps from New Reign to the unlock screen
 ```
