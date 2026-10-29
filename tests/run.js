@@ -344,6 +344,148 @@ async function fresh(b, vp = { width: 852, height: 393 }) {
     }
   }
 
+  /* ---------- 10. iPad (1.1): every size and orientation, crisp art, rotation, Split View ---------- */
+  if (!PLAY) {
+    const IPADS = [['iPad Pro 13" landscape', 1376, 1032], ['iPad Pro 13" portrait', 1032, 1376], ['iPad Air 11" landscape', 1180, 820], ['iPad Air 11" portrait', 820, 1180],
+      ['iPad mini landscape', 1133, 744], ['iPad mini portrait', 744, 1133], ['iPad 10th gen landscape', 1180, 820], ['Split View half', 678, 820], ['Split View third', 507, 820],
+      ['Slide Over', 375, 1000], ['Stage Manager window', 980, 560], ['short square window', 700, 780]];
+    const PHONES = [['iPhone 16 Pro Max', 956, 440], ['iPhone 15', 852, 393], ['iPhone SE', 667, 375]];
+    const layoutBad = [], artBad = [], fitBad = [];
+    for (const [nm, w, h] of [...IPADS, ...PHONES]) {
+      const p = await fresh(b, { width: w, height: h });
+      const r = await p.evaluate(async () => {
+        const out = { art: [], fit: [], layout: [] };
+        const tick = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+        // the hall: drawn 1:1 in shape (no stretched pixel art), never smoothed
+        S = fresh(); S.month = 3; render(); closeOverlay(); await tick(); await tick();
+        const c = $('sceneWide'), cr = c.getBoundingClientRect();
+        const stretch = (cr.width / cr.height) / (c.width / c.height);
+        if (Math.abs(stretch - 1) > .02) out.art.push('hall stretched ' + stretch.toFixed(3));
+        for (const el of document.querySelectorAll('canvas,img')) { const ir = getComputedStyle(el).imageRendering; if (el.getBoundingClientRect().width && !/pixelated|crisp-edges/.test(ir)) out.art.push((el.id || el.tagName) + ' is ' + ir) }
+        // nothing wider than the screen; the HUD and the text box are on screen
+        const W = innerWidth, H = innerHeight;
+        for (const id of ['hud', 'dialog', 'choices']) { const b = $(id).getBoundingClientRect(); if (b.right > W + 1 || b.bottom > H + 1 || b.left < -1) out.layout.push(id + ' off screen') }
+        // every story event's last page and choices fit without scrolling, at a readable size
+        S.month = 8; S.gold = 0; ['spy', 'foxPardoned', 'witchPact', 'harwinAlly', 'brannocJailed'].forEach(f => S.f[f] = 1); render();
+        const sets = []; E.forEach((e, i) => sets.push(['E' + i, e])); R.forEach((e, i) => sets.push(['R' + i, e])); SCENES.forEach(s => sets.push(['SC:' + s.id, s]));
+        const tablet = W >= 680 && H >= 700;
+        for (const [tag, e] of sets) {
+          let t = ''; try { t = typeof e.text === 'function' ? e.text() : e.text } catch (x) { continue }
+          PCHAR = C[e.who] || null; $('who').textContent = C[e.who] ? C[e.who].n : ''; $('choices').innerHTML = ''; await tick();
+          let str = String(t); if (LANDSCAPE.matches) str = str.replace(/\n\n+/g, '\n');
+          const pages = paginate(str); $('txt').className = ''; $('txt').textContent = pages[pages.length - 1];
+          const ch = $('choices');
+          (e.choices || []).forEach((o, i) => { let ok = true; try { ok = !o.req || o.req() } catch (x) { } if (!ok) return; const bt = choiceBtn(o, i, () => { }); bt.style.animation = 'none'; ch.appendChild(bt) });
+          await tick(); fitDialog();
+          const tx = $('txt'), dr = $('dialog').getBoundingClientRect(), chr = ch.getBoundingClientRect();
+          if (tx.scrollHeight > tx.clientHeight + 1 || ch.scrollHeight > ch.clientHeight + 2 || chr.bottom > dr.bottom + 1) out.fit.push(tag);
+          else if (tablet && parseFloat(getComputedStyle(tx).fontSize) < 15) out.fit.push(tag + ' (text under 15pt)');
+        }
+        $('choices').innerHTML = '';
+        // full-screen story cards stay inside the screen
+        S = fresh(); S.month = 12; PRO = true; ending('emberLord'); $('cutBtn').click(); $('cutBtn').click(); await tick();
+        const card = document.querySelector('#overlay .ovb.ending').getBoundingClientRect(); if (card.right > W + 1 || card.left < -1) out.layout.push('ending card off screen');
+        S = fresh(); S.month = 4; S.night = { req: [], reqDone: {}, evs: [], evDone: {} }; showNight(); await tick();
+        const nb = $('nextBtn').getBoundingClientRect(); if (nb.bottom > H + 1 || nb.right > W + 1) out.layout.push('Sleep button off screen');
+        closeOverlay(); openSettings(); await tick(); const sb = document.querySelector('#modal .box').getBoundingClientRect(); if (sb.right > W + 1 || sb.left < -1) out.layout.push('Settings off screen'); closeModal();
+        return out;
+      });
+      if (r.art.length) artBad.push(nm + ': ' + r.art.join(', '));
+      if (r.fit.length) fitBad.push(nm + ': ' + r.fit.slice(0, 6).join(', '));
+      if (r.layout.length) layoutBad.push(nm + ': ' + r.layout.join(', '));
+      if (p.errs.length) layoutBad.push(nm + ': page error ' + p.errs[0]);
+      await p.close();
+    }
+    const n = IPADS.length + PHONES.length;
+    ok(`iPad: pixel art keeps its shape and stays crisp on ${n} screen sizes`, artBad.length === 0, artBad.join(' | '));
+    ok(`iPad: every story event and its choices fit, no scrolling, on ${n} screen sizes`, fitBad.length === 0, fitBad.join(' | '));
+    ok(`iPad: HUD, text box, night map, ending card and Settings stay on screen on ${n} sizes`, layoutBad.length === 0, layoutBad.join(' | '));
+
+    // rotating an iPad (and resizing a Stage Manager window) mid-game
+    const p = await fresh(b, { width: 1180, height: 820 });
+    const rot = [];
+    // a. the night map refits to the new screen
+    await p.evaluate(() => { S = fresh(); S.month = 4; S.night = { req: [], reqDone: {}, evs: [], evDone: {} }; showNight(); });
+    await p.setViewportSize({ width: 820, height: 1180 }); await p.waitForTimeout(400);
+    await p.setViewportSize({ width: 1180, height: 820 }); await p.waitForTimeout(400);
+    const nm = await p.evaluate(() => { const r = document.querySelector('.nmwrap').getBoundingClientRect(); return { w: r.width, h: r.height } });
+    if (Math.abs(Math.max(nm.w / 1180, nm.h / 820) - 1) > .02) rot.push('night map did not refit after rotation: ' + JSON.stringify(nm));
+    // b. a choice set tightened for one shape is measured again for the next
+    await p.evaluate(() => { closeOverlay(); S = fresh(); S.month = 7; render(); const e = E.reduce((a, x) => (x.choices || []).length > (a.choices || []).length ? x : a, E[0]);
+      PCHAR = C[e.who]; $('txt').textContent = typeof e.text === 'function' ? e.text() : e.text; const c = $('choices'); c.innerHTML = ''; e.choices.forEach((o, i) => { const bt = choiceBtn(o, i, () => { }); bt.style.animation = 'none'; c.appendChild(bt) }); });
+    await p.setViewportSize({ width: 667, height: 375 }); await p.waitForTimeout(500);
+    await p.setViewportSize({ width: 820, height: 1180 }); await p.waitForTimeout(500);
+    const fit = await p.evaluate(() => ({ cls: [...$('dialog').classList].filter(c => /^ft|many2/.test(c)), inline: [...$('choices').children].some(b => b.style.fontSize), over: $('choices').scrollHeight > $('choices').clientHeight + 2 }));
+    if (fit.cls.length || fit.inline || fit.over) rot.push('choices kept the phone-sized squeeze after rotating: ' + JSON.stringify(fit));
+    // c. a long speech waiting on its first page is cut into pages again for a smaller box: nothing clipped, nothing lost
+    await p.setViewportSize({ width: 852, height: 393 }); await p.waitForTimeout(400);
+    const sp = await p.evaluate(() => { $('choices').innerHTML = ''; const long = E.map(e => typeof e.text === 'function' ? '' : e.text).sort((a, b) => b.length - a.length)[0];
+      TY = { str: long, done: () => { window.__spoke = 1 }, voice: 1, pages: paginate(long), pi: 0, waiting: false }; showPage(false); return { long, n: TY.pages.length } });
+    await p.setViewportSize({ width: 667, height: 375 }); await p.waitForTimeout(500);
+    const rp = await p.evaluate(() => { const t = $('txt'); const r = { clip: t.scrollHeight > t.clientHeight + 1, words: TY ? TY.pages.join(' ').split(/\s+/).length : 0 }; finishType(); r.done = window.__spoke === 1; return r });
+    if (sp.n < 2 || rp.clip || rp.words !== sp.long.replace(/\n\n+/g, '\n').split(/\s+/).length || !rp.done) rot.push('speech after rotating: ' + JSON.stringify([sp.n, rp]));
+    // d. the last page with its choices, cut for a big iPad box, on a much smaller window: shrinks, and scrolls rather than clipping
+    await p.setViewportSize({ width: 1376, height: 1032 }); await p.waitForTimeout(400);
+    await p.evaluate(() => { const e = E.reduce((a, x) => (typeof x.text === 'string' && x.text.length > (a.text || '').length) ? x : a, E[0]); PCHAR = C[e.who]; $('txt').textContent = e.text; const c = $('choices'); c.innerHTML = ''; e.choices.forEach((o, i) => { const bt = choiceBtn(o, i, () => { }); bt.style.animation = 'none'; c.appendChild(bt) }) });
+    await p.setViewportSize({ width: 667, height: 375 }); await p.waitForTimeout(500);
+    const last = await p.evaluate(() => { const t = $('txt'); return t.scrollHeight <= t.clientHeight + 1 || getComputedStyle(t).overflowY === 'auto' });
+    if (!last) rot.push('last page clipped after shrinking the window');
+    ok('iPad: rotating mid-game refits the night map, the choices and the speech', rot.length === 0, rot.join(' | '));
+    ok('no page errors (iPad)', p.errs.length === 0, p.errs.slice(0, 3).join(' | '));
+    await p.close();
+  }
+
+  /* ---------- 11. 1.1: the rating prompt, accessibility labels ---------- */
+  if (!PLAY) {
+    const p = await fresh(b);
+    const r = await p.evaluate(async () => {
+      const out = {}; let asks = 0;
+      const plug = { requestReview: async () => { asks++ } };
+      const native = () => { window.Capacitor = { isNativePlatform: () => true, Plugins: { InAppReview: plug, NativePurchases: { getProducts: async () => ({ products: [] }), getPurchases: async () => ({ purchases: [] }) } } } };
+      const wait = () => new Promise(r => setTimeout(r, 30));
+      // browser: never asks
+      delete window.Capacitor; localStorage.removeItem('ef_review'); out.browser = askReview('t') === false;
+      // a won battle asks once; a second good moment in the same version does not
+      native(); PRO = true; S = fresh(); S.month = 5; S.men = 40; render(); battleBegin(); BSCORE = 130; aftermath('victory'); await wait();
+      out.battleAsks = asks === 1;
+      S = fresh(); S.month = 12; ending('emberLord'); $('cutBtn').click(); $('cutBtn').click(); await wait();
+      out.onlyOnce = asks === 1;
+      // a defeat never asks, even in a new version
+      localStorage.removeItem('ef_review'); asks = 0; closeOverlay();
+      S = fresh(); S.month = 5; ending('fallen'); $('cutBtn').click(); $('cutBtn').click(); await wait();
+      S = fresh(); S.month = 5; S.men = 40; render(); battleBegin(); BSCORE = 10; aftermath('pyrrhic'); await wait();
+      out.noAskOnLoss = asks === 0;
+      // a good ending asks; never within 120 days of the last ask, even after an update
+      S = fresh(); S.month = 12; ending('longYear'); $('cutBtn').click(); $('cutBtn').click(); await wait();
+      out.goodEndingAsks = asks === 1;
+      window.EF_VERSION = '9.9'; S = fresh(); S.month = 12; ending('emberLord'); $('cutBtn').click(); $('cutBtn').click(); await wait();
+      out.spaced = asks === 1; delete window.EF_VERSION;
+      // never over the paywall
+      localStorage.removeItem('ef_review'); asks = 0; PRO = false; S = fresh(); S.month = 4; paywall(() => { }); out.notOverPaywall = askReview('t') === false && asks === 0; closeOverlay(); PAYWALL.open = false;
+      // a missing or failing plugin never breaks the game
+      localStorage.removeItem('ef_review'); window.Capacitor.Plugins.InAppReview = { requestReview: () => { throw new Error('nope') } }; out.failSafe = askReview('t') === true;
+      delete window.Capacitor.Plugins.InAppReview; localStorage.removeItem('ef_review'); out.noPlugin = askReview('t') === false;
+      delete window.Capacitor; PRO = false;
+      // VoiceOver: icon buttons have names, resources read their values
+      S = fresh(); S.gold = 37; render();
+      out.gear = [...document.querySelectorAll('button')].filter(x => x.textContent.trim() === '⚙').every(x => x.getAttribute('aria-label') === 'Settings');
+      out.statValue = $('s-gold').getAttribute('aria-label') === 'Gold: 37';
+      return out;
+    });
+    ok('rating: never asked in the browser', r.browser === true);
+    ok('rating: asked after the July battle is won', r.battleAsks === true);
+    ok('rating: asked at most once per version', r.onlyOnce === true);
+    ok('rating: never asked after a defeat or a costly battle', r.noAskOnLoss === true);
+    ok('rating: asked after a good ending', r.goodEndingAsks === true);
+    ok('rating: never asked again within 120 days, even after an update', r.spaced === true);
+    ok('rating: never asked over the unlock screen', r.notOverPaywall === true);
+    ok('rating: a failing or missing plugin is harmless', r.failSafe === true && r.noPlugin === true);
+    ok('accessibility: the gear buttons are named "Settings"', r.gear === true);
+    ok('accessibility: resources read their value ("Gold: 37")', r.statValue === true);
+    ok('no page errors (rating, accessibility)', p.errs.length === 0, p.errs.slice(0, 3).join(' | '));
+    await p.close();
+  }
+
   /* ---------- 7. full playthroughs with different ruling styles ---------- */
   if (!QUICK) {
     const [onlyStyle, onlyN] = PLAY.split(':');

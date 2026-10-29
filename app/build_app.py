@@ -27,13 +27,20 @@ APP_ID = CONFIG["appId"]
 
 MIN_IOS = "15.0"          # @capgo/native-purchases uses StoreKit 2 (iOS 15+); its newer releases require 15.0
 LANDSCAPE = ["UIInterfaceOrientationLandscapeRight", "UIInterfaceOrientationLandscapeLeft"]
+# 1.1 is universal. iPhone stays landscape only. iPad gets all four orientations: iPadOS 26 deprecates UIRequiresFullScreen,
+# App Store uploads warn that iPad apps must support every orientation, and Split View / Stage Manager windows can be any
+# shape anyway. The game lays itself out for any window (index.html: the wide layout from 680 points, portrait included).
+IPAD_ORIENTATIONS = ["UIInterfaceOrientationPortrait", "UIInterfaceOrientationPortraitUpsideDown"] + LANDSCAPE
+DEVICE_FAMILY = "1,2"     # 1 = iPhone, 2 = iPad
 TESTER_MARK = "window.EF_TESTER=true"
 TESTER_FN = "function testerOn(){return !!window.EF_TESTER&&!!window.EF_TESTER_UNTIL&&Date.now()<window.EF_TESTER_UNTIL}"
 TESTER_BANNER = """${testerOn()?'<p class="dim" style="color:#ff8a6a;font-size:12px;margin:-6px 0 6px">TESTER BUILD · everything unlocked · not for the App Store</p>':""}"""
 # Native plugin classes that must be registered (ios/App/App/capacitor.config.json "packageClassList").
 REQUIRED_PLUGINS = {"NativePurchasesPlugin": "@capgo/native-purchases", "HapticsPlugin": "@capacitor/haptics"}
 EXPECTED_PLUGINS = {"SplashScreenPlugin": "@capacitor/splash-screen", "StatusBarPlugin": "@capacitor/status-bar"}
-NPM_PLUGINS = ["@capacitor/haptics", "@capacitor/splash-screen", "@capacitor/status-bar", "@capgo/native-purchases"]
+# the rating prompt (1.1) is optional: without it the game simply never asks. Matched loosely: any registered class with "Review".
+REVIEW_PLUGIN = "@capacitor-community/in-app-review"
+NPM_PLUGINS = ["@capacitor/haptics", "@capacitor/splash-screen", "@capacitor/status-bar", "@capgo/native-purchases", REVIEW_PLUGIN]
 
 
 def run(cmd, cwd=APP, check=True):
@@ -57,6 +64,13 @@ def ver_tuple(v):
     return tuple(int(x) for x in re.findall(r"\d+", str(v))[:3]) or (0,)
 
 
+def app_version():
+    """The store version and build number live in package.json ("version", "iosBuild"), so they are in git and every
+    build on the Mac gets them; patch_podfile writes them into the Xcode project."""
+    pkg = json.loads((APP / "package.json").read_text())
+    return pkg.get("version", "1.0.0"), int(pkg.get("iosBuild", 1))
+
+
 def build_web(tester=False):
     WWW.mkdir(exist_ok=True)
     html = (ROOT / "index.html").read_text()
@@ -67,7 +81,8 @@ def build_web(tester=False):
     except Exception:
         rev = ""
     stamp = (rev or "local") + (" tester" if tester else "")
-    html = html.replace("<script>", f'<script>window.EF_BUILD="{stamp}";</script>\n<script>', 1)
+    ver, build = app_version()
+    html = html.replace("<script>", f'<script>window.EF_BUILD="{stamp}";window.EF_VERSION="{ver} ({build})";</script>\n<script>', 1)
     print(f"build stamp: {stamp} (shown at the bottom of Settings)")
     if tester:
         import time
@@ -160,13 +175,19 @@ def patch_podfile():
         q = re.sub(r"(IPHONEOS_DEPLOYMENT_TARGET = )([\d.]+)(;)", _raise_target, p)
         # Xcode's user-script sandbox blocks CocoaPods' "[CP] Embed Pods Frameworks" step (PhaseScriptExecution failed)
         q = q.replace("ENABLE_USER_SCRIPT_SANDBOXING = YES;", "ENABLE_USER_SCRIPT_SANDBOXING = NO;")
-        # Version 1 is iPhone only (iPads run it in iPhone compatibility mode): no iPad multitasking/orientation rules
-        q = re.sub(r"TARGETED_DEVICE_FAMILY = [^;]+;", "TARGETED_DEVICE_FAMILY = 1;", q)
+        # 1.1: universal (iPhone and iPad). The value is quoted the way Xcode writes it.
+        q = re.sub(r"TARGETED_DEVICE_FAMILY = [^;]+;", f'TARGETED_DEVICE_FAMILY = "{DEVICE_FAMILY}";', q)
+        # version and build from package.json; a build number already higher in the project is never lowered
+        ver, build = app_version()
+        cur = [int(b) for b in re.findall(r"CURRENT_PROJECT_VERSION = (\d+);", q)]
+        build = max([build] + [b for b in cur if b > build and set(re.findall(r"MARKETING_VERSION = ([^;]+);", q)) == {ver}])
+        q = re.sub(r"MARKETING_VERSION = [^;]+;", f"MARKETING_VERSION = {ver};", q)
+        q = re.sub(r"CURRENT_PROJECT_VERSION = [^;]+;", f"CURRENT_PROJECT_VERSION = {build};", q)
         if "ENABLE_USER_SCRIPT_SANDBOXING" not in q:
             q = q.replace(f"IPHONEOS_DEPLOYMENT_TARGET = {MIN_IOS};", f"IPHONEOS_DEPLOYMENT_TARGET = {MIN_IOS};\n\t\t\t\tENABLE_USER_SCRIPT_SANDBOXING = NO;")
         if q != p:
             proj.write_text(q)
-            print(f"Xcode project: iOS Deployment Target {MIN_IOS}, iPhone only, script sandboxing off")
+            print(f"Xcode project: iOS Deployment Target {MIN_IOS}, iPhone + iPad, version {ver} ({build}), script sandboxing off")
 
 
 STOREKIT_REF = '<StoreKitConfigurationFileReference\n         identifier = "../../Emberfall.storekit">\n      </StoreKitConfigurationFileReference>'
@@ -294,12 +315,15 @@ def patch_ios(scene=True):
     data = plistlib.loads(plist.read_bytes())
     before = json.dumps(data, sort_keys=True, default=str)
     data["CFBundleDisplayName"] = APP_NAME
-    # Landscape only. The app is iPhone only (TARGETED_DEVICE_FAMILY = 1), so iPads run it in iPhone compatibility
-    # mode; the ~ipad list is set to the same landscape pair so every lookup agrees with what Capacitor's view
-    # controller reports (it reads UISupportedInterfaceOrientations). Portrait on iPad would never be honoured anyway.
+    # iPhone: landscape only. iPad: every orientation, with multitasking (no UIRequiresFullScreen: deprecated in
+    # iPadOS 26 and ignored by the iOS 27 SDK, see Apple TN3192). If Capacitor's view controller only honours the
+    # iPhone list on iPad, the iPad simply stays in landscape, which the game also handles.
     data["UISupportedInterfaceOrientations"] = list(LANDSCAPE)
-    data["UISupportedInterfaceOrientations~ipad"] = list(LANDSCAPE)
-    data.pop("UIRequiresFullScreen", None)   # deprecated in iPadOS 26 and meaningless for an iPhone-only app
+    data["UISupportedInterfaceOrientations~ipad"] = list(IPAD_ORIENTATIONS)
+    data.pop("UIRequiresFullScreen", None)
+    data.pop("UIRequiresFullScreen~ipad", None)
+    data["CFBundleShortVersionString"] = "$(MARKETING_VERSION)"
+    data["CFBundleVersion"] = "$(CURRENT_PROJECT_VERSION)"
     # No custom encryption: skips the export-compliance question on every upload.
     data["ITSAppUsesNonExemptEncryption"] = False
     if scene:
@@ -425,12 +449,17 @@ def verify_ios(ck, tester, strict, scene):
         extra_missing = [c for c in EXPECTED_PLUGINS if c not in classes]
         if extra_missing:
             ck.warn("plugin(s) not registered: " + ", ".join(extra_missing))
+        if not any("Review" in c for c in classes):
+            ck.warn(f"rating prompt plugin not registered ({REVIEW_PLUGIN}): the game will never ask for a rating. Run `npm install`")
         ck.check(native.get("appId") == APP_ID, f"native config appId {APP_ID}", f"native config appId is {native.get('appId')!r}, expected {APP_ID}")
 
     # 3. Info.plist
     info = plistlib.loads((app_dir / "Info.plist").read_bytes())
-    ck.check(info.get("UISupportedInterfaceOrientations") == LANDSCAPE and info.get("UISupportedInterfaceOrientations~ipad") == LANDSCAPE,
-             "orientations: landscape left/right (iPhone and iPad compatibility mode)", "Info.plist orientations are not the landscape pair")
+    ck.check(info.get("UISupportedInterfaceOrientations") == LANDSCAPE, "iPhone orientations: landscape left/right",
+             "Info.plist iPhone orientations are not the landscape pair")
+    ck.check(sorted(info.get("UISupportedInterfaceOrientations~ipad") or []) == sorted(IPAD_ORIENTATIONS),
+             "iPad orientations: all four (multitasking)", "Info.plist iPad orientations are not all four (App Store upload warns)")
+    ck.check(not info.get("UIRequiresFullScreen"), "no UIRequiresFullScreen (deprecated in iPadOS 26)", "UIRequiresFullScreen is set")
     ck.check(info.get("ITSAppUsesNonExemptEncryption") is False, "ITSAppUsesNonExemptEncryption = NO", "ITSAppUsesNonExemptEncryption not set")
     ck.check(bool(info.get("UILaunchStoryboardName")), "launch screen storyboard set", "UILaunchStoryboardName missing (required by the iOS 27 SDK)")
     has_scene = "UIApplicationSceneManifest" in info
@@ -445,8 +474,9 @@ def verify_ios(ck, tester, strict, scene):
     # 4. Xcode project
     pbx_path = IOS / "App" / "App.xcodeproj" / "project.pbxproj"
     pbx = pbx_path.read_text()
-    fams = set(re.findall(r"TARGETED_DEVICE_FAMILY = ([^;]+);", pbx))
-    ck.check(fams == {"1"}, "iPhone only (TARGETED_DEVICE_FAMILY = 1)", f"TARGETED_DEVICE_FAMILY is {sorted(fams)}; expected 1 (iPhone only)")
+    fams = {f.strip('"') for f in re.findall(r"TARGETED_DEVICE_FAMILY = ([^;]+);", pbx)}
+    ck.check(fams == {DEVICE_FAMILY}, "universal: iPhone + iPad (TARGETED_DEVICE_FAMILY = 1,2)",
+             f"TARGETED_DEVICE_FAMILY is {sorted(fams)}; expected {DEVICE_FAMILY} (iPhone + iPad)")
     targets = set(re.findall(r"IPHONEOS_DEPLOYMENT_TARGET = ([\d.]+);", pbx))
     ck.check(targets and all(ver_tuple(t) >= ver_tuple(MIN_IOS) for t in targets), f"iOS Deployment Target {', '.join(sorted(targets))}",
              f"iOS Deployment Target {sorted(targets)} is below {MIN_IOS}")
@@ -454,7 +484,9 @@ def verify_ios(ck, tester, strict, scene):
     ck.check(ids == {APP_ID}, f"bundle id {APP_ID}", f"bundle id is {sorted(ids)}, expected {APP_ID}")
     mv = sorted(set(re.findall(r"MARKETING_VERSION = ([^;]+);", pbx)))
     bn = sorted(set(re.findall(r"CURRENT_PROJECT_VERSION = ([^;]+);", pbx)))
-    ck.ok(f"version {'/'.join(mv)} build {'/'.join(bn)} (each upload needs a new build: --set-version X.Y.Z)")
+    ver, build = app_version()
+    ck.check(mv == [ver], f"version {ver} build {'/'.join(bn)} (each upload needs a new build: --set-version X.Y.Z)",
+             f"MARKETING_VERSION is {mv}, package.json says {ver}")
 
     # 5. native dependencies: versions that cannot resolve, or that need a higher iOS than the project
     cap_ios = npm_version("@capacitor/ios")
@@ -526,7 +558,7 @@ def print_checklist(ck, tester, synced):
         print("READY to archive. Before uploading, by hand:")
         print("  1. Xcode > Product > Scheme > Edit Scheme > Run > Build Configuration: Release, run on your iPhone,")
         print("     force-quit the app and open it again from the Home Screen (not from Xcode).")
-        print("  2. Run it on an iPad simulator (iPad Air, newest iPadOS): App Review tests iPhone apps on iPads too.")
+        print("  2. Run it on iPad simulators (iPad Pro 13-inch and iPad mini), in landscape AND portrait, and in Split View.")
         print("  3. Product > Archive, then Distribute App. Don't run --tester in between.")
     print("=" * 70)
 
@@ -537,7 +569,12 @@ def set_version(version, build):
     if not re.fullmatch(r"\d+\.\d+(\.\d+)?", version):
         sys.exit("version must look like 1.2.0")
     pkg = APP / "package.json"
-    pkg.write_text(re.sub(r'("version":\s*")[^"]+(")', rf"\g<1>{version}\g<2>", pkg.read_text(), count=1))
+    if build is None:
+        build = app_version()[1] + 1
+    t = re.sub(r'("version":\s*")[^"]+(")', rf"\g<1>{version}\g<2>", pkg.read_text(), count=1)
+    t = re.sub(r'("iosBuild":\s*)\d+', rf"\g<1>{build}", t, count=1)
+    pkg.write_text(t)
+    print(f"package.json: version {version}, iosBuild {build}")
     gradle = ANDROID / "app" / "build.gradle"
     if gradle.exists():
         g = gradle.read_text()

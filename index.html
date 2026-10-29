@@ -137,7 +137,7 @@ img.px{image-rendering:pixelated}
 @keyframes pop{0%{transform:scale(.4);opacity:0}70%{transform:scale(1.1)}}
 @keyframes fade{from{opacity:0}}
 /* ---------- Landscape: the hall fills the screen, a text box runs along the bottom with the choices on its right ---------- */
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  #app{max-width:none;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) 34%}
  #hud{grid-row:1;grid-column:1;display:flex;align-items:center;gap:20px;padding:calc(env(safe-area-inset-top) + 5px) max(14px,env(safe-area-inset-right)) 5px max(14px,env(safe-area-inset-left))}
  #stats{flex:1;justify-content:flex-start;gap:clamp(14px,3vw,34px)}
@@ -169,7 +169,7 @@ img.px{image-rendering:pixelated}
  #tip h3{margin-bottom:6px}#tip p{font-size:15.5px;line-height:1.4;margin:4px 0}#tip .pb{margin-top:8px}
  .bigtext #txt{font-size:19.5px}.bigtext .ch{font-size:17.5px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){
  #sceneWide{height:calc(100% + 24px)}
  #dialog{padding:8px 12px;grid-template-columns:auto minmax(0,1.3fr) minmax(205px,1fr)}
  #pbox{width:42px;height:42px}#portrait{width:36px;height:36px}
@@ -177,7 +177,7 @@ img.px{image-rendering:pixelated}
  #txt{font-size:15.5px;line-height:1.28;margin-top:4px}
  .ch{font-size:14.5px;padding:6px 8px 6px 24px}#choices{gap:6px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  /* title: the castle fills the screen, logo on top, the menu along the bottom */
  #overlay.ts,#overlay.fb{display:block;overflow:hidden}
  #overlay.ts .cwrap,#overlay.fb .cwrap{position:absolute;inset:0;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -201,7 +201,7 @@ img.px{image-rendering:pixelated}
  #overlay.fb .summary h3.sm{font-size:16px;margin:8px 0 4px}#overlay.fb .summary ul{columns:2;column-gap:24px;font-size:14px;margin:4px 0}
  #overlay.fb .summary{max-width:none}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  /* night map: map on the left, a compact list of rooms on the right, Sleep always on screen */
  #overlay.nt .cwrap{flex:1.15 1 0}
  #overlay.nt .ovb{padding:10px max(14px,env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px) 14px;display:flex;flex-direction:column;align-items:stretch}
@@ -215,7 +215,7 @@ img.px{image-rendering:pixelated}
  #overlay.nt #nextBtn{position:sticky;bottom:0;margin:6px auto 0;min-width:0;width:100%;box-shadow:inset 0 0 0 2px #e0705a,0 -6px 14px rgba(5,3,8,.9)}
  #overlay.nt .must{font-size:13.5px!important;margin:2px 0!important}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){
  #app{grid-template-rows:auto minmax(0,1fr) 40%}
  .ch{padding:5px 8px 5px 22px;font-size:14.5px}#choices{gap:5px}
  #overlay.fb .ovb p{font-size:14.5px}#overlay.fb .ovb h3{font-size:19px}#overlay.fb .nums b{font-size:18px}#overlay.fb .summary ul{font-size:13px}
@@ -225,25 +225,25 @@ img.px{image-rendering:pixelated}
  #overlay.fb .summary h3.sm:nth-of-type(2),#overlay.fb .summary ul{display:none}
  #overlay.nt .ovb>p.dim:not(.must){display:none}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:380px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:380px),(min-width:680px) and (max-height:380px){
  #overlay.fb .summary h3.sm:nth-of-type(2),#overlay.fb .summary ul{display:none}
  #overlay.nt .council{display:none}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  #overlay.nt .rooms{grid-template-columns:repeat(auto-fit,minmax(118px,1fr))}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px),(min-width:680px) and (max-height:400px){
  #app{grid-template-rows:auto minmax(0,1fr) 42%}
  #txt{font-size:14.5px;line-height:1.26}
  .ch{font-size:14px;padding:5px 8px 5px 22px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:380px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:380px),(min-width:680px) and (max-height:380px){
  #txt{font-size:13.5px;line-height:1.22}
  #overlay.nt .rooms{gap:4px}
  #overlay.nt .ovb h3{margin:0 0 2px}
 }
 /* ---------- panels & settings: header with Done, sections laid out side by side, no scrolling in landscape ---------- */
-#modal .box.pnl{width:min(920px,96vw);max-width:none;max-height:94%;padding:0;display:flex;flex-direction:column;text-align:left;overflow:hidden}
+#modal .box.pnl{width:min(920px,100%);max-width:none;max-height:94%;padding:0;display:flex;flex-direction:column;text-align:left;overflow:hidden}
 .phead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px 8px 18px;border-bottom:2px solid #000;box-shadow:0 1px 0 #5a4020;background:linear-gradient(#2c1e33,#1e1424);flex:none}
 .phead h3{margin:0;font-size:22px;text-align:left;line-height:1.1}
 .phead p{margin:2px 0 0;font-size:14px;color:#b8a488;font-style:italic;line-height:1.2}
@@ -286,30 +286,30 @@ img.px{image-rendering:pixelated}
 .tg.on i{background:#3e6a2c;box-shadow:inset 0 0 0 1px #7ac060}.tg.on i::after{left:18px;background:#f4e2c0}
 .act{flex-direction:row;justify-content:center;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.5px;padding:8px;margin:2px 0;background:#3a2c40;box-shadow:inset 0 0 0 1px #6a5070,0 3px 0 #000}
 .act.gold{background:#a8322a;box-shadow:inset 0 0 0 1px #e0705a,0 3px 0 #000}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.pbody.t3,.pbody.t2{grid-template-columns:1fr}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+@media (max-width:679px) and (orientation:portrait),(max-width:679px) and (max-aspect-ratio:1249/1000){.pbody.t3,.pbody.t2{grid-template-columns:1fr}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){
  .phead{padding:6px 10px 6px 14px}.phead h3{font-size:19px}.phead p{font-size:12.5px}.pb.done{padding:6px 16px;font-size:14px}
  .pbody{padding:8px 10px 10px;gap:8px}.pbody section{padding:6px 8px}.lrow{font-size:14px;line-height:1.25}.note{font-size:12px}
  .tg{padding:5px 9px;font-size:14.5px}.seg button{padding:5px 2px;font-size:12.5px}.act{padding:6px;font-size:13px}
  .mis{padding:5px 7px;gap:4px}.mb button{padding:3px 2px}.mb em{font-size:12px}.bcard{padding:5px 8px}.bcard small{font-size:12px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  #dialog.many{grid-template-columns:auto minmax(0,1fr) minmax(0,1.25fr)}
  #dialog.many #choices{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:6px}
  #dialog.many .ch{padding-right:6px}
  #dialog.many .ch.go{grid-column:1/-1}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px),(min-width:680px) and (min-width:600px){
  .pbody.wr{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
  .wr .mh{flex-direction:column;align-items:flex-start;gap:1px}.wr .mh small{max-width:none;text-align:left}
  .wr .mh b{font-size:12.5px}.wr .mb b{font-size:12px}.wr .mb em{font-size:11.5px;white-space:nowrap}.wr .mb button{padding:3px 1px}.wr .mis{gap:3px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px) and (max-height:440px){
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:600px) and (max-height:440px),(min-width:680px) and (min-width:600px) and (max-height:440px){
  .wr .mis{padding:4px 6px}.wr .mh b{font-size:12px;line-height:1.08}.wr .mh small{font-size:11.5px;line-height:1.1}
  .wr .mb b{font-size:11px}.wr .mb em{font-size:11px}.wr .mb button{padding:2px 1px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:800px){.pbody.wr{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){#modal:has(.pnl){padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}#modal .box.pnl{max-height:100%}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (min-width:800px),(min-width:680px) and (min-width:800px){.pbody.wr{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){#modal:has(.pnl){padding:max(6px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}#modal .box.pnl{max-height:100%}}
 /* prologue: the vista fills the screen, the story runs along the bottom */
 #overlay.pl{display:block;overflow:hidden}
 #overlay.pl .cwrap{position:absolute;inset:0;padding:0;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#05030a}
@@ -325,19 +325,19 @@ img.px{image-rendering:pixelated}
 #overlay.pl .pb{min-width:0;margin:0;padding:9px 18px;font-size:15px}
 .pl-faces{display:flex;gap:12px;margin:2px 0 8px}.pl-faces figure{margin:0;text-align:center}.pl-faces canvas{width:52px;height:52px;background:#2a1d2e;border:2px solid #000;box-shadow:inset 0 0 0 1px #6a4a2a}
 .pl-faces figcaption{font-family:var(--display);font-size:12px;color:var(--gold);margin-top:2px}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){#overlay.pl .ovb{flex-direction:column;align-items:stretch}#overlay.pl .pl-btns{flex-direction:row-reverse;justify-content:space-between}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){
+@media (max-width:679px) and (orientation:portrait),(max-width:679px) and (max-aspect-ratio:1249/1000){#overlay.pl .ovb{flex-direction:column;align-items:stretch}#overlay.pl .pl-btns{flex-direction:row-reverse;justify-content:space-between}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){
  #overlay.pl .ovb{padding-top:40px;padding-bottom:calc(env(safe-area-inset-bottom) + 12px)}#overlay.pl h3{font-size:21px}#overlay.pl p{font-size:15.5px;line-height:1.36}
  .pl-faces canvas{width:40px;height:40px}.pl-faces{margin:0 0 4px}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  #pbox{width:92px;height:92px;background:radial-gradient(circle at 60% 35%,#4a3450,#1e1424 75%)}#portrait{width:86px;height:86px}
  #pbox::after{background:radial-gradient(transparent 60%,rgba(0,0,0,.4))}
 }
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){#pbox{width:78px;height:78px}#portrait{width:72px;height:72px}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){#pbox{width:78px;height:78px}#portrait{width:72px;height:72px}}
 #pbox{background:radial-gradient(circle at 60% 35%,#4a3450,#1e1424 75%)}
 #txt.tight{font-size:calc(1em - 1.5px)!important;line-height:1.2!important}#txt.tight2{font-size:calc(1em - 3px)!important}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
 #dialog.ftW{grid-template-columns:auto minmax(0,1fr) minmax(0,1.5fr)!important}
 #dialog.ftP{grid-template-columns:0 minmax(0,1fr) minmax(0,1.8fr)!important;column-gap:10px}#dialog.ftP #pbox{display:none}}
 #dialog.many2 #choices{display:grid;grid-template-columns:1fr 1fr;align-content:center;gap:5px}#dialog.many2 .ch.go{grid-column:1/-1}
@@ -345,12 +345,13 @@ img.px{image-rendering:pixelated}
 #dialog.ftB .ch .cost{display:inline-flex;margin:0 0 0 6px;vertical-align:baseline}#dialog.ftB #choices{padding-bottom:2px}
 #dialog.ft3 #choices{grid-template-columns:1fr 1fr 1fr!important}
 #dialog.ftC .ch{font-size:12px!important;padding:3px 5px 3px 18px!important}#dialog.ftC #choices{gap:3px!important}
+#choices.ntight{gap:6px}#choices.ntight .ch{padding-top:6px;padding-bottom:6px}#choices.ntight .ch .cost{margin-top:1px}
 #choices.tight{gap:4px!important}#choices.tight .ch{padding-top:4px;padding-bottom:4px;font-size:13.5px}
 #txt.more::after{content:" ▼";color:#a03020;font-size:.8em;display:inline-block;animation:bob .6s infinite alternate}
 #dialog{cursor:pointer}
 /* keep every box clear of the notch and the rounded corners in landscape */
 :root{--sl:max(14px,env(safe-area-inset-left));--sr:max(14px,env(safe-area-inset-right));--safeW:calc(100vw - var(--sl) - var(--sr) - 12px)}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){
  #modal .box.pnl{width:min(900px,var(--safeW))}
  #modal .box.pnl:has(.set){width:min(640px,var(--safeW))}
  #modal .box:not(.pnl){max-width:min(620px,var(--safeW))}
@@ -380,8 +381,8 @@ img.px{image-rendering:pixelated}
 .fz.on{background:#5a2420;box-shadow:inset 0 0 0 2px #f2c14e}
 .fz em.good{color:#b8f0a0}.fz em.ok{color:#f2d080}.fz em.meh{color:#f0a860}.fz em.bad{color:#ffb0a0}
 .act.send{margin-top:auto;font-size:15px;padding:9px}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.pbody.wr2{grid-template-columns:1fr}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.wrow{padding:3px 7px}.wrow b{font-size:12.5px}.wrow small{font-size:11.5px}.fz{padding:3px 2px}.fz b{font-size:16px}}
+@media (max-width:679px) and (orientation:portrait),(max-width:679px) and (max-aspect-ratio:1249/1000){.pbody.wr2{grid-template-columns:1fr}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){.wrow{padding:3px 7px}.wrow b{font-size:12.5px}.wrow small{font-size:11.5px}.fz{padding:3px 2px}.fz b{font-size:16px}}
 /* the Journal */
 .jtabs{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}.jtabs button{font-family:var(--display);font-weight:700;font-size:12.5px;padding:4px 9px;background:#2e2234;color:#d8c8b0;border:2px solid #000;cursor:pointer}.jtabs button.on{background:#a8322a;color:#fff4dc}
 .pbody.jr .big{font-size:17px;margin:2px 0 6px}.dw{font-family:var(--display);font-size:20px}.dw.good{color:#a8e08a}.dw.ok{color:#f2d080}.dw.meh{color:#f0a860}.dw.bad{color:#ff8a7a}
@@ -394,9 +395,9 @@ img.px{image-rendering:pixelated}
 .lord.yes{box-shadow:inset 0 0 0 1px #6ac05a}.lord.yes i{color:#8ad070}.lord.no{box-shadow:inset 0 0 0 1px #c04a3a}.lord.no i{color:#ff8a7a}.lord.und i{color:#f2d080}
 ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8;columns:2;column-gap:24px}
 .pbody.jr .neg{color:#ff9a8a}.pbody.jr .pos{color:#a8e08a}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.clues,.lords{grid-template-columns:1fr 1fr}ul.chron{columns:1}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.lord small{display:none}.clue small{font-size:11px}.lords{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px){
+@media (max-width:679px) and (orientation:portrait),(max-width:679px) and (max-aspect-ratio:1249/1000){.clues,.lords{grid-template-columns:1fr 1fr}ul.chron{columns:1}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){.lord small{display:none}.clue small{font-size:11px}.lords{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:400px),(min-width:680px) and (max-height:400px){
  #overlay.nt .room small{-webkit-line-clamp:1}#overlay.nt .resbar{margin-bottom:4px}#overlay.nt h3{font-size:16px}
  #overlay.nt .ovb>p.must{font-size:12.5px!important}
 }
@@ -405,9 +406,41 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 .seat canvas{width:52px;height:52px;background:radial-gradient(circle at 60% 35%,#4a3450,#1e1424 75%);border:2px solid #000}
 .seat b{display:block;font-family:var(--display);color:var(--gold);font-size:12.5px;margin-top:3px}.seat small{display:block;font-size:12.5px;color:#f4e2c0}.seat em{display:block;font-style:normal;font-size:11px;color:#b8a488;line-height:1.2;margin-top:2px}
 .seat.empty{opacity:.55}.seat.empty canvas{background:#120b16}
-@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px){.seat canvas{width:40px;height:40px}.seat em{font-size:10.5px}}
-@media not ((orientation:landscape) and (min-aspect-ratio:5/4)){.seats{grid-template-columns:repeat(3,1fr)}}
-@media (orientation:landscape) and (min-aspect-ratio:5/4){#dialog.lots{grid-template-columns:auto minmax(0,.8fr) minmax(0,1.5fr)}#dialog.lots #choices{grid-template-columns:1fr 1fr 1fr}#dialog.lots .ch{font-size:13.5px;padding:5px 5px 5px 20px}#dialog.lots .ch::before{left:7px}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4) and (max-height:440px),(min-width:680px) and (max-height:440px){.seat canvas{width:40px;height:40px}.seat em{font-size:10.5px}}
+@media (max-width:679px) and (orientation:portrait),(max-width:679px) and (max-aspect-ratio:1249/1000){.seats{grid-template-columns:repeat(3,1fr)}}
+@media (orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px){#dialog.lots{grid-template-columns:auto minmax(0,.8fr) minmax(0,1.5fr)}#dialog.lots #choices{grid-template-columns:1fr 1fr 1fr}#dialog.lots .ch{font-size:13.5px;padding:5px 5px 5px 20px}#dialog.lots .ch::before{left:7px}}
+/* ---------- iPad (1.1): every screen at least 680 points wide uses the wide layout above, in either orientation ---------- */
+/* portrait-shaped (an iPad held upright, or a tall window): the hall keeps its true shape on top and the story box takes the rest,
+   instead of the hall being squashed into the row. The scene canvas always matches its box, so no art pixel is stretched. */
+@media (min-width:680px) and (max-aspect-ratio:5/4){
+ #app{grid-template-rows:auto auto minmax(0,1fr)}
+ #sceneWide{height:clamp(150px,calc(100vh - 520px),min(62.5vw,56vh));margin-bottom:-24px}/* never taller than the art (192:120); a shorter box just shows more of the hall */
+ #overlay.pl .ovb{padding-bottom:calc(env(safe-area-inset-bottom) + 28px)}
+ /* the text runs beside the portrait, the choices sit under it across the whole box */
+ #dialog,#dialog.many,#dialog.lots,#dialog.ftW,#dialog.ftP{grid-template-columns:auto minmax(0,1fr) 0!important;grid-template-rows:auto minmax(0,1fr) auto}
+ #dialog.ftP #pbox{display:block}
+ #choices{grid-column:1/-1;grid-row:3;border-left:0;padding-left:0;border-top:2px dashed rgba(42,24,16,.25);padding-top:10px;margin-top:6px;justify-content:flex-start;overflow:visible}
+ #dialog.many #choices,#dialog.many2 #choices,#dialog.lots #choices{display:grid;grid-template-columns:1fr 1fr}
+}
+/* narrow windows (iPad Split View / Slide Over, 1.1): the hall gives up height before the story box has to scroll */
+@media (max-width:679px) and (orientation:portrait),(max-width:679px) and (max-aspect-ratio:1249/1000){
+ #sceneWide{height:clamp(140px,calc(100vh - 560px),min(62.5vw,325px))}
+}
+/* tablet-sized screens: story type and portraits a step larger. A 96-point portrait is exactly 3 screen pixels per art pixel on iPad. */
+@media (min-width:680px) and (max-aspect-ratio:5/4) and (min-height:820px),(min-width:1000px) and (min-height:700px){
+ #dialog{padding:14px 18px;grid-template-columns:auto minmax(0,1.35fr) minmax(280px,1fr);column-gap:16px}
+ #pbox{width:102px;height:102px}#portrait{width:96px;height:96px}
+ #who{font-size:21px}#role{font-size:15.5px}
+ #txt{font-size:20px;line-height:1.4;margin-top:8px}
+ .ch{font-size:17.5px;padding:9px 12px 9px 28px}.ch .cost{font-size:13px}#choices{gap:9px}
+ .bigtext #txt{font-size:23px}.bigtext .ch{font-size:20px}
+ .stat img{width:26px;height:26px}.stat b{font-size:23px}.stat small{font-size:11px}#daylbl{font-size:15px}#daylbl small{font-size:12.5px!important}
+ .hb{font-size:15px;padding:5px 12px}
+ #overlay.fb .ovb p{font-size:17.5px}#overlay.fb .ovb h3{font-size:26px}#overlay.fb .ovb>.pb{padding:11px 20px;font-size:16px}
+ #overlay.pl p{font-size:20px}#overlay.pl h3{font-size:30px}
+ .ovb.cut p{font-size:19px}
+ #overlay.nm .ntitle b{font-size:20px}#overlay.nm .ntitle span{font-size:15px}#overlay.nm .plq{font-size:14.5px}#overlay.nm #nextBtn{font-size:17px;padding:11px 24px}
+}
 
 /* ---------- the night map: the castle fills the screen, rooms are tapped where they're painted ---------- */
 #overlay.nm{display:block;overflow:hidden;background:linear-gradient(#03051a 50%,#120a08 50%);padding:0}
@@ -505,7 +538,7 @@ ul.chron{margin:0;padding-left:18px;font-size:14px;line-height:1.4;color:#d8c8a8
 <div id="app">
  <div id="hud">
   <div id="stats"></div>
-  <div id="hudrow"><div id="daylbl">EMBERFALL</div><div><button class="hb" onclick="S&&openJournal()">Journal</button><button class="hb" onclick="openSettings()">⚙</button></div></div>
+  <div id="hudrow"><div id="daylbl">EMBERFALL</div><div><button class="hb" onclick="S&&openJournal()">Journal</button><button class="hb" onclick="openSettings()" aria-label="Settings">⚙</button></div></div>
  </div>
  <canvas id="scene" width="192" height="120"></canvas>
  <canvas id="sceneWide" width="192" height="120"></canvas>
@@ -1539,7 +1572,8 @@ function drawNightMap(x){const t=++NM.t,LW=NM.LW,L=nmLayoutNow(),R=L.rooms,G=L.G
  if(!NM.vig||NM.vig.width!==LW){const v=document.createElement("canvas");v.width=LW;v.height=120;const vx=v.getContext("2d");const g=vx.createRadialGradient(LW/2,64,40,LW/2,64,LW*.62);g.addColorStop(0,"rgba(0,0,0,0)");g.addColorStop(1,"rgba(0,0,0,.55)");vx.fillStyle=g;vx.fillRect(0,0,LW,120);NM.vig=v}
  x.imageSmoothingEnabled=true;x.drawImage(NM.vig,0,0,LW,120);x.imageSmoothingEnabled=false}
 function nmSize(){const o=$("overlay"),w=o.clientWidth||innerWidth,h=o.clientHeight||innerHeight;NM.LW=Math.max(200,Math.min(300,Math.round(120*w/h)))}
-addEventListener("resize",()=>{if($("nmap")){const old=NM.LW;nmSize();if(NM.LW!==old)showNight()}});
+// rotating an iPad or resizing its window: redraw the map if its shape changed, and always refit it to the new screen
+addEventListener("resize",()=>{if($("nmap")){const old=NM.LW;nmSize();if(NM.LW!==old)showNight();else nmFit()}});
 
 /* =========================================================
    THE RIVER COUNTRY: a painted map of the whole realm.
@@ -1685,17 +1719,24 @@ addEventListener("resize",()=>{if($("wmap"))wmFit()});
    MAIN LOOP
    ========================================================= */
 /* lots of choices: in landscape they spread into two columns instead of scrolling */
-new MutationObserver(()=>{const n=$("choices").children.length,d=$("dialog");d.classList.toggle("many",n>3);d.classList.toggle("lots",n>5);
- delete d.dataset.fit;d.classList.remove("ftB","ftC","ftW","ftP","ft3","many2");$("choices").classList.remove("tight");$("txt").style.fontSize="";$("txt").style.lineHeight="";requestAnimationFrame(fitDialog)}).observe($("choices"),{childList:true});
+new MutationObserver(()=>{const n=$("choices").children.length,d=$("dialog");d.classList.toggle("many",n>3);d.classList.toggle("lots",n>5);refit()}).observe($("choices"),{childList:true});
+/* forget the last fit and measure again: new choices, or a new screen shape (iPad rotation, Split View, Stage Manager) */
+function refit(){const d=$("dialog");delete d.dataset.fit;d.classList.remove("ftB","ftC","ftW","ftP","ft3","many2");$("choices").classList.remove("tight","ntight");$("txt").style.fontSize="";$("txt").style.lineHeight="";$("txt").style.overflowY="";
+ for(const b of $("choices").children){b.style.fontSize=b.style.paddingTop=b.style.paddingBottom=b.style.lineHeight=""}requestAnimationFrame(fitDialog)}
+{let rz=0;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{repage();refit();if(typeof fitCard==="function")fitCard()},120)})}
+/* the pages of a speech were cut for the old box: cut what is left again, so nothing is clipped after a rotation */
+function repage(){const T=TY;if(!T)return;const rest=T.pages.slice(T.pi).join(" ");T.pages=paginate(LANDSCAPE.matches?rest.replace(/\n\n+/g,"\n"):rest);T.pi=0;if(T.typing)typePage();else showPage(false)}
 const pctx=$("portrait").getContext("2d");let PCHAR=null;
 const RM=matchMedia("(prefers-reduced-motion: reduce)");
-const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4)");
+/* the wide layout (scene on top, text box along the bottom) is used in landscape and on any screen at least 680 points
+   wide, so an iPad uses it in portrait too (there the choices sit under the text: see "iPad (1.1)" in the CSS) */
+const LANDSCAPE=matchMedia("(orientation:landscape) and (min-aspect-ratio:5/4),(min-width:680px)");
 /* ---------------- Wide stage for landscape: the hall is extended to fill the screen ---------------- */
 const K=2;// render scale: each logical pixel is 2x2 device pixels on the stage, so characters, edges and light get finer detail
 const WIDE={on:true,LW:W,E:0,cache:null,key:"",vig:null,torches:[],light:null,lx:null};
 const wcv=$("sceneWide"),wctx=wcv.getContext("2d");
 function stageSize(){const cw=wcv.clientWidth,ch=wcv.clientHeight;
- const LW=(!cw||!ch)?W:Math.max(W,Math.min(420,Math.round(H*cw/ch/2)*2));
+ const LW=(!cw||!ch)?W:Math.max(W,Math.min(600,Math.round(H*cw/ch/2)*2));
  if(wcv.width!==LW*K||wcv.height!==H*K){wcv.width=LW*K;wcv.height=H*K;WIDE.LW=LW;WIDE.E=(LW-W)>>1;WIDE.key="";WIDE.vig=null;return true}return false}
 /* 1x background -> 2x: scale2x smooths diagonals and rounds stone corners, then every shape gets a thin bevel and a fine grain */
 function hsh(i,j){let h=(i*374761393+j*668265263)|0;h=(h^(h>>>13))*1274126177|0;return (h^(h>>>16))>>>0}
@@ -1727,7 +1768,11 @@ function buildWide1(){const LW=WIDE.LW,E=WIDE.E,R=E+W,c=document.createElement("
  if(!base)return c;
  if(SC.room==="mason"){ // outdoors: mirror the yard outwards
   x.save();x.beginPath();x.rect(0,0,E,H);x.clip();x.translate(2*E,0);x.scale(-1,1);x.drawImage(base,E,0);x.restore();
-  x.save();x.beginPath();x.rect(R,0,LW-R,H);x.clip();x.translate(2*R,0);x.scale(-1,1);x.drawImage(base,E,0);x.restore();return c}
+  x.save();x.beginPath();x.rect(R,0,LW-R,H);x.clip();x.translate(2*R,0);x.scale(-1,1);x.drawImage(base,E,0);x.restore();
+  // the mirror copied the moon too: paint the sky back over the copies (one moon, however wide the screen), with fresh stars
+  const sky=x.createLinearGradient(0,0,0,70);sky.addColorStop(0,"#05081a");sky.addColorStop(1,"#22325c");x.fillStyle=sky;x.fillRect(0,0,E,20);x.fillRect(R,0,LW-R,20);
+  seed=41;for(const[a,b]of[[0,E],[R,LW]])for(let i=0;i<(b-a)/8;i++){x.globalAlpha=.3+rnd()*.7;cfill(x,"#fff",a+Math.floor(rnd()*(b-a)),Math.floor(rnd()*20),1,1)}x.globalAlpha=1;
+  return c}
  const wall=hexAt(base,2,62),floor=hexAt(base,3,100),mold=hexAt(base,2,83);seed=29;
  const pal=[wall,shade(wall,-.07),shade(wall,.06),shade(wall,-.03)];
  x.fillStyle=shade(wall,-.38);x.fillRect(0,0,LW,86);
@@ -1797,6 +1842,13 @@ function wideDungeon(x,E,R,LW){
 function fitDialog(){const d=$("dialog"),ch=$("choices"),tx=$("txt");
  if(!ch.children.length){if(d.dataset.fit){delete d.dataset.fit;d.classList.remove("ftB","ftC","ftW","ftP","ft3","many2")}return}
  if(d.dataset.fit)return;d.dataset.fit=1;
+ /* narrow windows (iPad Split View / Slide Over) use the stacked layout, where the whole box would scroll: step the type down
+    and lay long choice lists out in two columns until it fits, then leave the box to scroll only as a last resort */
+ if(!LANDSCAPE.matches){const dOver=()=>d.scrollHeight>d.clientHeight+1;if(!dOver())return;
+  ch.classList.add("ntight");if(dOver()&&ch.children.length>3)d.classList.add("many2");
+  let k=1;const bs=[...ch.children],f0=bs.map(b=>parseFloat(getComputedStyle(b).fontSize)),t0=parseFloat(getComputedStyle(tx).fontSize);
+  while(dOver()&&k>.8){k-=.04;bs.forEach((b,i)=>{b.style.fontSize=(f0[i]*k).toFixed(1)+"px";b.style.lineHeight="1.15"});tx.style.fontSize=(t0*k).toFixed(1)+"px";tx.style.lineHeight="1.3"}
+  return}
  /* step down until every choice is on screen: tighter spacing, smaller type, two columns, and only then
     a wider choice column, and only if the page of text beside it still fits. Never a scrollbar. */
  const over=()=>ch.scrollHeight>ch.clientHeight+1,txOver=()=>tx.scrollHeight>tx.clientHeight+1;
@@ -1807,7 +1859,9 @@ function fitDialog(){const d=$("dialog"),ch=$("choices"),tx=$("txt");
  if(over())d.classList.add("ftW");
  if(over())d.classList.add("ftP");
  if(over()){const bs=[...ch.children],f0=bs.map(b=>parseFloat(getComputedStyle(b).fontSize));let k=1;while(over()&&k>.88){k-=.04;bs.forEach((b,i)=>{b.style.fontSize=(f0[i]*k).toFixed(1)+"px";b.style.paddingTop=b.style.paddingBottom=(k>.9?"":"3px");b.style.lineHeight="1.12"})}}
- if(txOver()){let fs=parseFloat(getComputedStyle(tx).fontSize);while(txOver()&&fs>12){fs-=.5;tx.style.fontSize=fs+"px";tx.style.lineHeight="1.2"}}}
+ if(txOver()){let fs=parseFloat(getComputedStyle(tx).fontSize);while(txOver()&&fs>12){fs-=.5;tx.style.fontSize=fs+"px";tx.style.lineHeight="1.2"}}
+ // a page cut for a bigger screen (an iPad rotated, or a window made smaller) that still doesn't fit can be scrolled, never clipped
+ tx.style.overflowY=txOver()?"auto":""}
 /* Battery: while nothing on screen moves quickly, only every other frame is painted (30 fps). The skipped frame
    still runs every update (ticks, particles, walkers, random flicker) against a context that draws nothing, so
    every animation keeps its speed and every painted frame is the same picture it would have been at 60 fps. */
@@ -2263,7 +2317,8 @@ const BUILD={
    ENGINE
    ========================================================= */
 function buildStats(){$("stats").innerHTML=[["gold","Gold"],["food","Grain"],["men","Army"],["favor","Favor"]].map(([k,l])=>`<div class="stat" id="s-${k}" onclick="statInfo('${k}')" role="button" aria-label="${l}"><img class="px" src="${ICONURL[k]}"><div><b>0</b><small>${l.toUpperCase()}</small></div></div>`).join("")}
-function render(){for(const k of["gold","food","men","favor"])$("s-"+k).querySelector("b").textContent=S[k];
+const STATNAME={gold:"Gold",food:"Grain",men:"Army",favor:"Favor"};
+function render(){for(const k of["gold","food","men","favor"]){const el=$("s-"+k);el.querySelector("b").textContent=S[k];el.setAttribute("aria-label",`${STATNAME[k]}: ${S[k]}`)}
  $("s-food").classList.toggle("warn",S.food<=5||!!S.hunger);$("s-gold").classList.toggle("warn",S.gold<0);$("s-favor").classList.toggle("warn",S.favor<=15);$("daylbl").innerHTML=`${MONTHS[S.month-1].toUpperCase()}<span class="se"> · ${SEASON(S.month).toUpperCase()}</span><small>${threatText()}</small>`}
 function floatStat(k,v){const el=$("s-"+k);const f=document.createElement("span");f.className="float";f.textContent=(v>0?"+":"")+v;f.style.color=v>0?"#9ef08a":"#ff7a6a";
  el.appendChild(f);setTimeout(()=>f.remove(),1400);el.classList.remove("bump");void el.offsetWidth;el.classList.add("bump")}
@@ -2770,7 +2825,7 @@ function showNight(){
  const hot=ids.map(id=>{const k=roomStatus(id);return `<button class="room${k?" "+k:""}" style="${pct(R[id])}" onclick="nmGo('${id}',this)" aria-label="${ROOMNAME[id]}"><span class="plq">${k==="req"?'<em class="bang">!</em>':k==="fam"?'<em class="heart">♥</em>':k==="done"?'<em class="ok">✓</em>':""}<span>${ROOMNAME[id]}</span></span></button>`}).join("");
  overlay(`<div class="nmwrap"><canvas id="nmap" width="${LW*2}" height="240"></canvas><div class="rooms">${hot}</div></div>
   <div class="nhud"><div class="ntitle"><b>Night · end of ${MONTHS[S.month-1]}</b><span>${left.length?`${["","Something needs you tonight.","Two matters need you tonight.","Three matters need you tonight.","Four matters need you tonight.","Five matters need you tonight.","Six matters need you tonight."][left.length]||"Many matters need you tonight."}`:nightMood()}</span></div>
-  <div class="nright">${resBar()}<div class="nbtns"><button class="hb" onclick="openWorld()">Map</button><button class="hb" onclick="openJournal()">Journal</button><button class="hb" onclick="openSettings()">⚙</button></div></div></div>
+  <div class="nright">${resBar()}<div class="nbtns"><button class="hb" onclick="openWorld()">Map</button><button class="hb" onclick="openJournal()">Journal</button><button class="hb" onclick="openSettings()" aria-label="Settings">⚙</button></div></div></div>
   <button class="pb${left.length?" wait":""}" id="nextBtn">${left.length?`<em class="bang">!</em> ${leftRooms.map(r=>ROOMNAME[r]).join(" · ")} first`:`Sleep until ${MONTHS[S.month]}`}</button>`);
  nmFit();setTimeout(()=>showTip("night"),300);
  $("nextBtn").onclick=()=>{if(nightLeft().length){SFX.blip&&SFX.blip(300);document.querySelectorAll("#overlay .room.req").forEach(r=>{r.classList.remove("nudge");void r.offsetWidth;r.classList.add("nudge")});return}
@@ -2935,6 +2990,7 @@ function aftermath(k){
   <button class="pb" id="onBtn">Onward to August</button></div>`);
  const goOn=()=>{closeOverlay();setPhase("day",SEASON(6));Music.play(dayTrack());monthCard(()=>missionReport(()=>{buildMonth();next()}))};
  $("onBtn").onclick=()=>{SFX.click();if(!PRO)return paywall(goOn);goOn()};
+ if(["victory","crowned","peace"].includes(k))askReview("battle");
 }
 /* =========================================================
    THE MAIN STORY: who killed Lord Roderick, and who will rule Emberfall.
@@ -3295,7 +3351,7 @@ function winterEnd(){
  if(F.cor)T[1]+=" Corvin fled back to Greymarch before dawn. By the time the snow melts, the King and every lord on the river will know what he did in the dark.";
  setCastle(r==="won"?"dawn":"snow");Music.play("night");r==="won"?SFX.fanfare():SFX.toll();HOLD=false;save();
  overlay(`${castleHTML()}</div><div class="ovb ending"><div class="dim">— THE LONGEST NIGHT —</div><h3>${T[0]}</h3><p>${T[1]}</p><button class="pb" id="onBtn2">To the morning</button></div>`);
- $("onBtn2").onclick=()=>{SFX.click();closeOverlay();winterAfter()}}
+ $("onBtn2").onclick=()=>{SFX.click();closeOverlay();winterAfter()};if(r==="won")askReview("winter")}
 let winterAfter=()=>{};
 
 /* ---------------- The Lords' Council: a trial in the throne room ---------------- */
@@ -3787,6 +3843,14 @@ const IAP_ID="emberfall_full_unlock",STORE={price:"$1.99",native:false},FREE_MON
    so a tester build that reaches the App Store by mistake can't give the game away for long */
 function testerOn(){return !!window.EF_TESTER&&!!window.EF_TESTER_UNTIL&&Date.now()<window.EF_TESTER_UNTIL}
 let PRO=testerOn();try{PRO=PRO||localStorage.getItem("ef_pro")==="1"}catch(e){}
+/* 1.1: after a moment the player enjoyed (surviving the July battle, winning the Longest Night, a good ending) ask iOS for the
+   rating prompt. iOS decides whether it actually appears (at most three times a year, never in TestFlight). We ask at most once
+   per app version and never twice within 120 days, never on a defeat, never over a purchase, and never in the browser. */
+function askReview(why){try{if(!isNativeApp()||PAYWALL&&PAYWALL.open&&!PAYWALL.done)return false;const Cap=window.Capacitor,R=Cap&&Cap.Plugins&&Cap.Plugins.InAppReview;if(!R||!R.requestReview)return false;
+ const v=window.EF_VERSION||"dev";let st={};try{st=JSON.parse(localStorage.getItem("ef_review")||"{}")||{}}catch(e){}
+ if(st.v===v||(st.at&&Date.now()-st.at<120*864e5))return false;
+ try{localStorage.setItem("ef_review",JSON.stringify({v,at:Date.now(),why}))}catch(e){}
+ setTimeout(()=>{try{const r=R.requestReview();if(r&&r.catch)r.catch(()=>{})}catch(e){}},FAST?0:2600);return true}catch(e){return false}}
 function setPro(){PRO=true;try{localStorage.setItem("ef_pro","1")}catch(e){}}
 function isNativeApp(){try{const Cap=window.Capacitor;return !!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform())}catch(e){return false}}
 function nativeStore(){try{const Cap=window.Capacitor;return Cap&&Cap.isNativePlatform&&Cap.isNativePlatform()&&Cap.Plugins&&Cap.Plugins.NativePurchases||null}catch(e){return null}}
@@ -3967,8 +4031,8 @@ function endingCard(k,t,d){const got=gotEndings();if(!got.includes(k))got.push(k
   ${reignSummary()}
   <p class="dim">Endings discovered: ${got.length} / ${Object.keys(ENDINGS).length}</p>
   <button class="pb" onclick="newGame()">Begin a New Reign</button><button class="pb alt" onclick="openChron()">Read the Chronicle</button><button class="pb alt" onclick="showTitle()">Title Screen</button></div>`);
- fitCard();return true}
-function fitCard(){const o=document.querySelector("#overlay .ovb.ending");if(!o)return;const ps=[...o.querySelectorAll("p")];let f=parseFloat(getComputedStyle(ps[0]||o).fontSize)||15;
+ fitCard();if(GOOD.includes(k))askReview("ending");return true}
+function fitCard(){const o=document.querySelector("#overlay .ovb.ending");if(!o)return;const ps=[...o.querySelectorAll("p")];ps.forEach(p=>{p.style.fontSize=p.style.lineHeight=""});let f=parseFloat(getComputedStyle(ps[0]||o).fontSize)||15;
  while(o.scrollHeight>o.clientHeight+1&&f>12){f-=.5;ps.forEach(p=>{p.style.fontSize=f+"px";p.style.lineHeight="1.3"})}}
 function overlay(h){const o=$("overlay");o.className=/id="nmap"/.test(h)?"nm":/id="wmap"/.test(h)?"wm":/class="rooms"/.test(h)?"nt":/class="logo"/.test(h)?"ts":/class="ovb prolog/.test(h)?"pl":/class="ovb (siege|ending|cut)/.test(h)?"fb":"";o.innerHTML=h;o.style.display="flex";o.scrollTop=0}
 function closeOverlay(){$("overlay").style.display="none";$("overlay").innerHTML=""}
@@ -3995,7 +4059,7 @@ function openSettings(quiet){if(!quiet)SFX.click();else SFX.blip&&SFX.blip(700);
   <button class="act" onclick="resetTips()">Show tips again</button>
   ${S&&!document.querySelector("#overlay .logo")?`<button class="act" onclick="closeModal();showTitle()">Save &amp; quit to title</button>`:""}
   ${PRO?'<p class="note">The full game is unlocked. Thank you!</p>':`<button class="act gold" onclick="closeModal();unlockFull()">Unlock the full game · ${STORE.price}</button>`}
-  <button class="act" onclick="restoreFull()">Restore purchase</button><p class="note" style="margin-top:auto;opacity:.6">Build ${window.EF_BUILD||"preview"}</p></section>
+  <button class="act" onclick="restoreFull()">Restore purchase</button><p class="note" style="margin-top:auto;opacity:.6">${window.EF_VERSION?`Version ${window.EF_VERSION} · `:""}Build ${window.EF_BUILD||"preview"}</p></section>
  </div>`,"pnl")}
 function openEndings(){SFX.page();const got=gotEndings();modal(`<button class="mx" onclick="closeModal()" aria-label="Close">✕</button><h3>Endings ${got.length} / ${Object.keys(ENDINGS).length}</h3><div class="elist">${Object.keys(ENDINGS).sort((a,b)=>(GOOD.includes(b)?1:0)-(GOOD.includes(a)?1:0)).map(k=>got.includes(k)?`<div>👑 ${ENDINGS[k][0]}</div>`:`<div class="lock">??? <small>Hint: ${HINTS[k]||"Keep ruling."}</small></div>`).join("")}</div><br><button class="pb" onclick="closeModal()">Close</button>`)}
 /* while a battle, ceremony, trial or ending is playing, nothing is saved: a reload goes back to the moment before it began */

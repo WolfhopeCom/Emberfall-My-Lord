@@ -1,4 +1,6 @@
-# Emberfall: My Lord · App Store listing (version 1.0)
+# Emberfall: My Lord · App Store listing (version 1.1)
+
+> **1.1 (iPad)**: submit only after 1.0 has been approved. What changed for the listing: the **Devices** row, a new **iPad 13" screenshots** slot, the **What's New** text, and one line in the review notes. Everything else below is unchanged from 1.0.
 
 Checked against the current `index.html` on 2026-10-22. The step-by-step submission guide is `SUBMIT_TOMORROW.md`, and the review notes to paste are in `REVIEW_NOTES.txt`.
 
@@ -21,7 +23,7 @@ Checked against the current `index.html` on 2026-10-22. The step-by-step submiss
 | App Privacy | **Data Not Collected** | The game has no network code except StoreKit, and saves only to on-device storage. |
 | Export compliance | No non-exempt encryption | `ITSAppUsesNonExemptEncryption = NO` is in Info.plist (`build_app.py`), so App Store Connect won't ask. If it does ask: "None of the algorithms mentioned above". |
 | Content rights | "Yes, it contains third-party content, and I have the necessary rights" | The only third-party content is the bundled fonts (Cinzel, Alegreya, Pixelify Sans), all under the SIL Open Font License. Everything else is original. |
-| Devices | iPhone only. iPads run it in iPhone compatibility mode, in landscape. | `TARGETED_DEVICE_FAMILY = 1`; landscape orientations are also set for `~ipad`. No iPad screenshots are needed. |
+| Devices | **1.1: iPhone and iPad.** iPhone in landscape; iPad in every orientation, with Split View, Slide Over and Stage Manager. | `TARGETED_DEVICE_FAMILY = "1,2"`, `UISupportedInterfaceOrientations~ipad` = all four (`build_app.py`). iPad screenshots are now **required** (13" slot). |
 | Screenshots | `screenshots/6.9in/` (2868×1320) and `screenshots/6.3in/` (2622×1206), both landscape, 6 each | See "Screenshots" below. |
 
 ## Promotional text (max 170)
@@ -63,6 +65,15 @@ Changes from the previous draft:
 
 ```
 kingdom,medieval,choices,story,throne,king,pixel,narrative,castle,ruler,fantasy,rpg,mystery,siege
+```
+
+## What's New (1.1)
+```
+Emberfall now rules on iPad! Play in landscape or portrait, in Split View or Stage Manager, with crisp pixel art at every size.
+• Larger story text and portraits on iPad
+• The throne room keeps its true shape on every iPhone too
+• The Mason's Yard has one moon again
+• Small fixes for rotating the screen mid-conversation
 ```
 
 ## What's New (1.0)
@@ -134,6 +145,23 @@ These are rendered from the current game (Cinzel title font) by `tools/render_st
 - `screenshots/6.3in/`: 2622×1206. Upload these to the **iPhone 6.3" Display** slot (the Dynamic Island, medium display class). Apple's screenshot specifications page, as of October 2026, lists this class as required ("At least one screenshot for iPhone with Dynamic Island (medium display)"). Uploading both sets covers either reading of the rules.
 - `screenshots/old/`: the previous October 13 set (Pixelify title, 2622×1206). Don't upload these.
 - Screenshots 4 and 6 come from paid content. That's allowed, because the description says plainly that March to June is free and the rest is a $1.99 unlock.
+
+## iPad screenshots (1.1)
+App Store Connect requires at least one screenshot in the **iPad 13" Display** slot once the app runs on iPad (accepted: 2064×2752 portrait or 2752×2064 landscape; 2048×2732 also works). The 11" and smaller iPad slots are filled from it automatically.
+
+Rendered with `tools/render_store.js <outdir> 1376 1032 year 2` (landscape, 2752×2064) and `... 1032 1376 year 2` (portrait, 2064×2752). Upload the seven in `screenshots/ipad-13in/`, in this order (same story as the iPhone set; App Store Connect accepts mixed landscape and portrait in one slot):
+
+| # | File | Moment |
+|---|---|---|
+| 1 | `01-title.png` | Title screen at dusk |
+| 2 | `02-throne-petition.png` | Throne room, April: Sir Gerrit, Vex's envoy, demands tribute |
+| 3 | `03-night-castle.png` | Night castle map |
+| 4 | `04-battle-of-the-ford.png` | The Battle of the Ford (paid content, allowed: the description says what is free) |
+| 5 | `05-world-map.png` | The River Country map |
+| 6 | `06-ending.png` | The ending "The Ember Crown" with "Your reign in numbers" |
+| 7 | `07-portrait.png` | 2064×2752: the throne room with the iPad held upright, to show it works both ways |
+
+Check each by eye before uploading (no toasts, nothing gory, no "test"/"demo" text), as for the iPhone set.
 
 ## Testing the unlock before the in-app purchase exists
 `build_app.py` copies `store/Emberfall.storekit` into the iOS project and turns on StoreKit testing in the Xcode scheme. Runs started from Xcode then use a local test store: the $1.99 unlock works and nothing is charged. TestFlight and App Store builds ignore this file and use the real product `emberfall_full_unlock`, which must be created in App Store Connect (non-consumable, $1.99) before submitting. In TestFlight the purchase uses the sandbox and is free.
