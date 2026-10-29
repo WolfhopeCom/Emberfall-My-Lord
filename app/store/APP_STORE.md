@@ -149,16 +149,17 @@ These are rendered from the current game (Cinzel title font) by `tools/render_st
 ## iPad screenshots (1.1)
 App Store Connect requires at least one screenshot in the **iPad 13" Display** slot once the app runs on iPad (accepted: 2064×2752 portrait or 2752×2064 landscape; 2048×2732 also works). The 11" and smaller iPad slots are filled from it automatically.
 
-Rendered with `tools/render_store.js <outdir> 1376 1032 year 2` (landscape, 2752×2064) and `... 1032 1376 year 2` (portrait, 2064×2752). Upload the six in `screenshots/ipad-13in/`, in this order (same story as the iPhone set):
+Rendered with `tools/render_store.js <outdir> 1376 1032 year 2` (landscape, 2752×2064) and `... 1032 1376 year 2` (portrait, 2064×2752). Upload the seven in `screenshots/ipad-13in/`, in this order (same story as the iPhone set; App Store Connect accepts mixed landscape and portrait in one slot):
 
 | # | File | Moment |
 |---|---|---|
 | 1 | `01-title.png` | Title screen at dusk |
-| 2 | `02-throne-petition.png` | Throne room petition with choices |
+| 2 | `02-throne-petition.png` | Throne room, April: Sir Gerrit, Vex's envoy, demands tribute |
 | 3 | `03-night-castle.png` | Night castle map |
 | 4 | `04-battle-of-the-ford.png` | The Battle of the Ford (paid content, allowed: the description says what is free) |
 | 5 | `05-world-map.png` | The River Country map |
-| 6 | `06-portrait.png` | The game held upright (portrait), to show it works both ways |
+| 6 | `06-ending.png` | The ending "The Ember Crown" with "Your reign in numbers" |
+| 7 | `07-portrait.png` | 2064×2752: the throne room with the iPad held upright, to show it works both ways |
 
 Check each by eye before uploading (no toasts, nothing gory, no "test"/"demo" text), as for the iPhone set.
 
