@@ -1,4 +1,4 @@
-Emberfall: My Lord 1.0 - notes for App Review
+Emberfall: My Lord 1.1 - notes for App Review
 
 1. SCREEN RECORDING
 Attached: a recording from a physical iPhone (TestFlight build of this version, sandbox Apple Account). It starts at app launch and shows the title screen, Settings, the night castle map, the unlock screen, a sandbox purchase, the paid content that follows (July and the Battle of the Ford) and Restore purchase. To stay under 3 minutes it continues a reign that was saved at the end of June.
@@ -7,7 +7,7 @@ Attached: a recording from a physical iPhone (TestFlight build of this version, 
 A single-player story game for teens and adults (general audience, not made for children). You rule a fictional medieval city for one in-game year: answer petitioners at the throne, manage gold, grain, soldiers and favor, defend the city in a battle and solve your father's murder before a council of lords votes on your crown. 21 endings.
 
 3. SETUP AND ACCESS
-No account, login or sign-in, so no demo account is needed. Works fully offline. Landscape only. Launch, tap New Reign (the prologue has a Skip button), then tap an answer for each visitor. At the end of each month a night castle map opens: rooms marked "!" must be visited (tap the room, read, choose, Leave), then tap "Sleep until [next month]". Settings is on the title screen and the gear icon in the top bar. Tip: Settings > Text speed > Instant makes play much faster.
+No account, login or sign-in, so no demo account is needed. Works fully offline. iPhone: landscape. iPad: any orientation, Split View and Stage Manager. Launch, tap New Reign (the prologue has a Skip button), then tap an answer for each visitor. At the end of each month a night castle map opens: rooms marked "!" must be visited (tap the room, read, choose, Leave), then tap "Sleep until [next month]". Settings is on the title screen and the gear icon in the top bar. Tip: Settings > Text speed > Instant makes play much faster.
 
 4. EXTERNAL SERVICES
 None. No server, backend, analytics, advertising, tracking, web content or third-party SDKs. The only network use is Apple's StoreKit for the in-app purchase (through the open-source Capacitor plugin @capgo/native-purchases, which calls StoreKit directly and sends nothing anywhere else). The saved game stays on the device.
@@ -29,6 +29,6 @@ After purchase the game continues straight into July, and Settings shows "The fu
 Restore: Settings > Restore purchase, or Restore purchase on the unlock screen.
 
 DEVICES
-iPhone only. On iPad it runs in iPhone compatibility mode, in landscape.
+iPhone and iPad (new in 1.1). On iPad the game runs natively in every orientation, including Split View, Slide Over and Stage Manager. After a good moment (winning a battle, a good ending) the game may show Apple's standard rating prompt (SKStoreReviewController via requestReview); it never asks after a defeat or on the purchase screen.
 
 Contact: Harrison Wolfhope, wolfhopeco@gmail.com

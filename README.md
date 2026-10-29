@@ -34,9 +34,10 @@ A pixel-art medieval story game. Your father is dead and the throne of **Emberfa
 |---|---|
 | `index.html` | The whole game: one file of HTML, CSS and JavaScript. All art is drawn in code. |
 | `fonts/` | Cinzel (names, headings), Alegreya (story text, numbers) and Pixelify Sans (logo, top bar), all SIL Open Font License (see `fonts/OFL.txt`), bundled so the game works offline. |
-| `app/` | Capacitor wrapper for the iPhone and Android apps (same setup as TypeMonkey). |
+| `app/` | Capacitor wrapper for the iPhone, iPad and Android apps (same setup as TypeMonkey). |
 | `app/resources/` | App icon, adaptive-icon layers and splash screens. |
-| `app/store/` | App Store listing text (`APP_STORE.md`) and 2622×1206 landscape screenshots. |
+| `app/store/` | App Store listing text (`APP_STORE.md`), iPhone screenshots and (1.1) iPad 13" screenshots. |
+| `tests/run.js` | Automated tests in headless Chromium (`node tests/run.js quick`, about 3 minutes; without `quick` it adds 10 full playthroughs). |
 
 The Privacy Policy, Terms, Support and marketing pages live on the public website repo, at
 **https://wolfhopecom.github.io/emberfall/**, so this repo can be made private at any time.
@@ -46,7 +47,14 @@ The Privacy Policy, Terms, Support and marketing pages live on the public websit
 Open `index.html` in Safari or Chrome. Tap **New Reign** (the tap also starts the music).
 Add `?fast` to the address to skip animations when testing.
 
-## Build the iPhone app (on the Mac)
+## iPad (version 1.1)
+
+The app is universal from 1.1. iPhone stays landscape only; iPad runs in every orientation, in Split View, Slide Over and Stage Manager.
+Any screen at least 680 points wide uses the wide layout (hall on top, story box below); on a portrait-shaped iPad the choices sit under the text.
+The hall's canvas always has the shape of its box, so pixel art is never stretched, and every canvas and icon is drawn with `image-rendering: pixelated`.
+After a good moment (the July battle won, the Longest Night won, a good ending) the game asks iOS for the rating prompt, at most once per version and never within 120 days (`askReview()`, plugin `@capacitor-community/in-app-review`).
+
+## Build the iPhone and iPad app (on the Mac)
 
 ```
 cd app
@@ -56,7 +64,7 @@ npm run ios                       # rebuilds and opens Xcode
 ```
 
 After changing `index.html`, run `python3 build_app.py` again, then **Product → Clean Build Folder** and **▶ Run** in Xcode.
-To set the version: `python3 build_app.py --set-version 1.0.1`.
+The store version and build number live in `app/package.json` (`version`, `iosBuild`) and are written into the Xcode project on every build. To set them: `python3 build_app.py --set-version 1.1.1` (build number +1) or add `--build 14`.
 
 To re-render the icon, splash screens and App Store screenshots: `cd app && npx playwright install chromium && npm run render`.
 
