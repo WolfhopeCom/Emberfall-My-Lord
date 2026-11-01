@@ -65,6 +65,11 @@ Changes from the previous draft:
 kingdom,medieval,choices,story,throne,king,pixel,narrative,castle,ruler,fantasy,rpg,mystery,siege
 ```
 
+## What's New (1.1)
+```
+Emberfall now plays on iPad. The castle, the throne room and every screen fill the whole iPad, in landscape or portrait, and adapt as you resize the window. Text and buttons are larger and easier to read on the big screen. Your reign and your unlock carry over.
+```
+
 ## What's New (1.0)
 Not shown for a first release. If App Store Connect asks for it anyway: `First release.`
 
